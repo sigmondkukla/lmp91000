@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "RF_Antenna_Johanson")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/RF_Antenna_Johanson.pretty")(options "")(descr ""))
+)

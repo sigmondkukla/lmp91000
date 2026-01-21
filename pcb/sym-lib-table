@@ -1,0 +1,9 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "SiliconLabs")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/SiliconLabs.kicad_sym")(options "")(descr ""))
+  (lib (name "TI_LMP91000")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/TI_LMP91000.kicad_sym")(options "")(descr ""))
+  (lib (name "TI_DCDC")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/TI_DCDC.kicad_sym")(options "")(descr ""))
+  (lib (name "TI_Regulator_Linear")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/TI_Regulator_Linear.kicad_sym")(options "")(descr ""))
+  (lib (name "RF_Antenna_Johanson")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/RF_Antenna_Johanson.kicad_sym")(options "")(descr ""))
+  (lib (name "Sensor_STMicroelectronics")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/symbols/Sensor_STMicroelectronics.kicad_sym")(options "")(descr ""))
+)
