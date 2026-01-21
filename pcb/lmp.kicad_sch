@@ -4,6 +4,9 @@
 	(generator_version "9.0")
 	(uuid "4cdef645-ac90-435b-a7c5-1a6b7b52012a")
 	(paper "A4")
+	(title_block
+		(title "LMP91000 Portable Potentiostat")
+	)
 	(lib_symbols
 		(symbol "Connector:Conn_01x03_Pin"
 			(pin_names

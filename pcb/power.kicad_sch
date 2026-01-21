@@ -4,6 +4,9 @@
 	(generator_version "9.0")
 	(uuid "c7a9660c-b9c0-4d13-987f-48bd029c0f13")
 	(paper "A4")
+	(title_block
+		(title "LMP91000 Portable Potentiostat")
+	)
 	(lib_symbols
 		(symbol "Battery_Management:MCP73811T-420I-OT"
 			(exclude_from_sim no)
