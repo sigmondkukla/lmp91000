@@ -1,4 +1,8 @@
 (fp_lib_table
   (version 7)
   (lib (name "RF_Antenna_Johanson")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/RF_Antenna_Johanson.pretty")(options "")(descr ""))
+  (lib (name "Connector_USB_SameSky")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/Connector_USB_SameSky.pretty")(options "")(descr ""))
+  (lib (name "PTS815_SJM_250_SMTR_LFS")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/PTS815_SJM_250_SMTR_LFS.pretty")(options "")(descr ""))
+  (lib (name "Connector_Molex_Easy-On")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/Connector_Molex_Easy-On.pretty")(options "")(descr ""))
+  (lib (name "TerminalBlock_SameSky")(type "KiCad")(uri "${KIPRJMOD}/kicad-library-sigmondkukla/footprints/TerminalBlock_SameSky.pretty")(options "")(descr ""))
 )
