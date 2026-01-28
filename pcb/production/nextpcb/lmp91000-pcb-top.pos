@@ -1,0 +1,50 @@
+### Footprint positions - created on 2026-01-28T11:35:34-0500 ###
+### Printed by KiCad version 9.0.5
+## Unit = mm, Angle = deg.
+## Side : top
+# Ref     Val                      Package                                           PosX       PosY       Rot  Side
+C1        1u                       C_0402_1005Metric                              44.5000   -44.0000   90.0000  top
+C2        1u                       C_0402_1005Metric                              45.7000   -44.0000   90.0000  top
+C4        GCM1555C1H180GA16D       C_0402_1005Metric                              43.7000   -59.9200   90.0000  top
+C5        GJM1555C1H1R4WB01D       C_0402_1005Metric                              44.1800   -58.3000    0.0000  top
+C6        1u                       C_0402_1005Metric                              46.9000   -44.0000   90.0000  top
+C7        1u                       C_0402_1005Metric                              50.2500   -35.5000    0.0000  top
+C8        1u                       C_0402_1005Metric                              45.7500   -39.5000  -90.0000  top
+C9        1u                       C_0402_1005Metric                              42.5000   -42.5000  180.0000  top
+C10       1u                       C_0402_1005Metric                              44.5000   -39.5000  -90.0000  top
+C11       1u                       C_0402_1005Metric                              51.5000   -38.5000  -90.0000  top
+C12       DNP                      C_0603_1608Metric_Pad1.08x0.95mm_HandSolder    50.8000   -56.8000  180.0000  top
+C13       1u                       C_0402_1005Metric                              36.6200   -55.0000  180.0000  top
+C14       1u                       C_0402_1005Metric                              34.6200   -55.0000    0.0000  top
+D1        BAT54C                   SOT-23                                         48.0000   -34.2500    0.0000  top
+D2        B2841USD-20D001014U1930  LED_0402_1005Metric                            40.5000   -44.5000  180.0000  top
+D3        B2841USD-20D001014U1930  LED_0402_1005Metric                            49.0000   -44.0000  -90.0000  top
+FB1       BLM15AX700SN1D           L_0402_1005Metric                              42.9000   -53.0000  -90.0000  top
+J2        UJC-H-G-SMT-2-P6-TR      SAMESKY_UJC-H-G-SMT-2-P6-TR                    34.0000   -43.0000  -90.0000  top
+J4        TB0011-350-03GR          SAMESKY_TB0011-350-03GR                        59.0000   -43.5000  -90.0000  top
+J5        0528070310               528070310                                      59.0000   -54.5000   90.0000  top
+L1        MHQ1005P1N8BT000         L_0402_1005Metric                              43.7000   -56.7000   90.0000  top
+Q1        NTR4003N                 SOT-23                                         53.5000   -34.2500    0.0000  top
+R1        300                      R_0402_1005Metric                              44.8000   -33.4000    0.0000  top
+R2        300                      R_0402_1005Metric                              44.8000   -34.4000    0.0000  top
+R3        100k                     R_0402_1005Metric                              50.7500   -34.0000  -90.0000  top
+R4        5.1k                     R_0402_1005Metric                              40.5000   -43.5000  180.0000  top
+R5        5.1k                     R_0402_1005Metric                              40.5000   -42.5000  180.0000  top
+R6        100k                     R_0402_1005Metric                              50.2500   -36.5000    0.0000  top
+R7        300                      R_0402_1005Metric                              42.5000   -44.5000    0.0000  top
+R8        100k                     R_0402_1005Metric                              42.7400   -37.5000  180.0000  top
+R9        100k                     R_0402_1005Metric                              40.5000   -37.5000  180.0000  top
+R10       5.1k                     R_0402_1005Metric                              49.9900   -47.0000  180.0000  top
+R11       5.1k                     R_0402_1005Metric                              52.0100   -47.0000    0.0000  top
+R12       DNP                      R_0603_1608Metric_Pad0.98x0.95mm_HandSolder    50.8000   -55.2000  180.0000  top
+R13       300                      R_0402_1005Metric                              42.5000   -43.5000  180.0000  top
+R14       300                      R_0402_1005Metric                              50.0000   -44.0000  -90.0000  top
+SW1       PTS815SJM250SMTRLFS      SW_Push_PTS815_SJM_250_SMTR_LFS                40.5000   -34.5000  180.0000  top
+U1        2450AT18D0100001E        Johanson_2450AT18D0100001E                     40.2000   -61.0500  180.0000  top
+U2        EFR32BG24L210F768IM40-B  QFN-40-1EP_5x5mm_P0.4mm_EP3.8x3.8mm            44.3000   -48.5000    0.0000  top
+U3        MCP73811T-420I-OT        SOT-23-5                                       41.5000   -40.0000  180.0000  top
+U4        TLV77133PDBVR            SOT-23-5                                       48.7500   -39.0000    0.0000  top
+U5        LMP91000SDX/NOPB         WSON-14-1EP_4.0x4.0mm_P0.5mm_EP2.6x2.6mm       51.5000   -50.4750  -90.0000  top
+U6        LSM6DSV                  LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y         35.5000   -52.5000    0.0000  top
+Y1        XTL501250-S315-038       Crystal_SMD_2016-4Pin_2.0x1.6mm                40.0000   -53.5000  -90.0000  top
+## End

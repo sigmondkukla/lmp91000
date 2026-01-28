@@ -1,0 +1,7 @@
+### Footprint positions - created on 2026-01-28T11:35:34-0500 ###
+### Printed by KiCad version 9.0.5
+## Unit = mm, Angle = deg.
+## Side : bottom
+# Ref     Val         Package                                                  PosX       PosY       Rot  Side
+J3        0530480210  Molex_PicoBlade_53048-0210_1x02_P1.25mm_Horizontal    45.7500   -37.5000  180.0000  bottom
+## End
