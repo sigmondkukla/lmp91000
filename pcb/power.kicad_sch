@@ -3790,6 +3790,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "RTT02301JTH"
+			(at 44.45 114.3 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "6857a8f2-58cd-407c-ba7b-72aff4642b82")
 		)
@@ -3853,6 +3862,15 @@
 		)
 		(property "Description" "dual schottky barrier diode, common cathode"
 			(at 50.8 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "DS0140568"
+			(at 50.8 101.6 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3999,6 +4017,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
+			(at 76.2 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "45959250-ed59-44de-9951-5c8c85c15991")
 		)
@@ -4126,6 +4153,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 152.4 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 152.4 38.1 0)
 			(effects
 				(font
@@ -4336,6 +4372,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "RTT02301JTH"
+			(at 76.2 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "bb935630-a6d4-48e6-9ee7-1aab85659cd0")
 		)
@@ -4398,6 +4443,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 127 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 127 40.64 0)
 			(effects
 				(font
@@ -4486,6 +4540,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "F.0402.00003/P2-0402R1TS2-045T-001 "
+			(at 76.2 31.75 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "8460f6d5-8228-4ace-84b2-4c53e1074dc5")
 		)
@@ -4546,6 +4609,15 @@
 			)
 		)
 		(property "Description" "USB Power-Only 6P Type-C Receptacle connector"
+			(at 35.56 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "UJC-H-G-SMT-2-P6-TR"
 			(at 35.56 33.02 0)
 			(effects
 				(font
@@ -4631,6 +4703,15 @@
 			)
 		)
 		(property "Description" "N-MOSFET transistor, gate/source/drain"
+			(at 60.96 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "DS0188329"
 			(at 60.96 139.7 0)
 			(effects
 				(font
@@ -4778,6 +4859,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "WR04X1003FTL"
+			(at 203.2 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "9dbe1a18-3a2a-4813-94f3-6051ac8cd049")
 		)
@@ -4913,6 +5003,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "RTT02301JTH"
+			(at 50.8 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "1a42a23f-1ec7-42c8-a8e8-9bbc66579abe")
 		)
@@ -4975,6 +5074,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 203.2 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "WR04X1003FTL"
 			(at 203.2 43.18 0)
 			(effects
 				(font
@@ -5382,6 +5490,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "MCP73811T-420I/OT"
+			(at 139.7 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "4"
 			(uuid "e1a72d78-c3db-4498-80fe-865c70f0bd76")
 		)
@@ -5518,6 +5635,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 114.3 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 114.3 86.36 0)
 			(effects
 				(font
@@ -5728,6 +5854,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "530480210"
+			(at 170.18 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "69fec267-c1ac-467b-8ab3-3cab00d6a97b")
 		)
@@ -5790,6 +5925,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 177.8 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 177.8 86.36 0)
 			(effects
 				(font
@@ -5925,6 +6069,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 57.15 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "WR04X5101FTL"
 			(at 57.15 48.26 0)
 			(effects
 				(font
@@ -6069,6 +6222,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "RTT02301JTH"
+			(at 76.2 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "3e77e559-79b5-4d30-97c7-04b11302a035")
 		)
@@ -6205,6 +6367,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "WR04X5101FTL"
+			(at 63.5 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "758666ff-77fe-4a17-96cc-85b970135c1a")
 		)
@@ -6266,6 +6437,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 50.8 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "WR04X1003FTL"
 			(at 50.8 144.78 0)
 			(effects
 				(font
@@ -6341,6 +6521,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "SKRPADE010"
+			(at 31.75 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "1367f6d3-84b7-4086-bc13-17a2c8c3eb16")
 		)
@@ -6403,6 +6592,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 63.5 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "WR04X1003FTL"
 			(at 63.5 106.68 0)
 			(effects
 				(font
@@ -6604,6 +6802,15 @@
 		)
 		(property "Description" "Linear Voltage Regulator IC Positive Fixed 1 Output 150mA SOT-23-5 LDO"
 			(at 152.4 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "TLV77133PDBVR"
+			(at 152.4 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)

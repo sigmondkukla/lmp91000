@@ -3236,7 +3236,7 @@
 		(uuid "28263d0f-8496-4b49-8cb9-d7f87330f58e")
 	)
 	(junction
-		(at 83.82 106.68)
+		(at 83.82 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "305aaa66-8512-4f55-85fe-60658175bc3a")
@@ -3252,12 +3252,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "58087b0c-34f9-4e9d-af35-fe197411ec4e")
-	)
-	(junction
-		(at 83.82 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "638896ac-27d6-4da3-ac9f-29cddaa02f9c")
 	)
 	(junction
 		(at 228.6 78.74)
@@ -3296,8 +3290,8 @@
 		(uuid "f79afdec-c106-40b4-92dc-cb996c28580c")
 	)
 	(no_connect
-		(at 38.1 147.32)
-		(uuid "890a4fb0-3384-41bf-aa92-271bbab9d757")
+		(at 50.8 147.32)
+		(uuid "e1d54fbb-8690-4835-a47b-f71b294dc4ac")
 	)
 	(wire
 		(pts
@@ -3341,7 +3335,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 106.68) (xy 86.36 106.68)
+			(xy 83.82 109.22) (xy 86.36 109.22)
 		)
 		(stroke
 			(width 0)
@@ -3398,6 +3392,16 @@
 			(type default)
 		)
 		(uuid "0f179263-6d73-43ed-bd6f-99718224a059")
+	)
+	(wire
+		(pts
+			(xy 50.8 147.32) (xy 38.1 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "133e5b0f-4ae2-4694-87a9-ed1cd5e7c259")
 	)
 	(wire
 		(pts
@@ -3511,6 +3515,16 @@
 	)
 	(wire
 		(pts
+			(xy 106.68 109.22) (xy 104.14 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3202c70b-3c37-4e01-81c2-5382450cad33")
+	)
+	(wire
+		(pts
 			(xy 38.1 73.66) (xy 50.8 73.66)
 		)
 		(stroke
@@ -3571,7 +3585,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 104.14) (xy 86.36 104.14)
+			(xy 83.82 106.68) (xy 86.36 106.68)
 		)
 		(stroke
 			(width 0)
@@ -3581,7 +3595,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 106.68) (xy 83.82 104.14)
+			(xy 83.82 109.22) (xy 83.82 106.68)
 		)
 		(stroke
 			(width 0)
@@ -3621,7 +3635,17 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 109.22) (xy 83.82 106.68)
+			(xy 106.68 111.76) (xy 106.68 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5835161b-9d24-48b8-a564-327e697f9e9a")
+	)
+	(wire
+		(pts
+			(xy 83.82 111.76) (xy 83.82 109.22)
 		)
 		(stroke
 			(width 0)
@@ -3658,16 +3682,6 @@
 			(type default)
 		)
 		(uuid "5b39666a-6db0-41ae-8567-f80bfccdd8be")
-	)
-	(wire
-		(pts
-			(xy 106.68 101.6) (xy 83.82 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5cd251b7-c8dd-4613-9a9e-1b5c64c7bf18")
 	)
 	(wire
 		(pts
@@ -3748,16 +3762,6 @@
 			(type default)
 		)
 		(uuid "77ef74d6-d2e8-4931-8103-ed42f19b5d7a")
-	)
-	(wire
-		(pts
-			(xy 83.82 101.6) (xy 83.82 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8394c59e-2886-4351-ae82-24119bb0827d")
 	)
 	(wire
 		(pts
@@ -4051,16 +4055,6 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 104.14) (xy 104.14 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d8af3612-a4a2-4de2-af3f-2e6f4766f9fb")
-	)
-	(wire
-		(pts
 			(xy 25.4 34.29) (xy 25.4 35.56)
 		)
 		(stroke
@@ -4118,16 +4112,6 @@
 			(type default)
 		)
 		(uuid "de2c9433-c370-4af8-b0b1-84019546e4e6")
-	)
-	(wire
-		(pts
-			(xy 106.68 104.14) (xy 106.68 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e55441e8-9751-469c-b1c9-fe2101fdfe27")
 	)
 	(wire
 		(pts
@@ -4400,6 +4384,16 @@
 			(justify right bottom)
 		)
 		(uuid "4e0aef65-c0b9-4125-bed0-9cdd16e1e40f")
+	)
+	(label "IMU_INT1"
+		(at 50.8 147.32 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5541e785-4c2c-4523-8c8b-0787f4d572b6")
 	)
 	(label "LMP_SDA"
 		(at 266.7 104.14 180)
@@ -4749,7 +4743,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 83.82 109.22 0)
+		(at 83.82 111.76 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4757,7 +4751,7 @@
 		(dnp no)
 		(uuid "0f75d88e-9c03-4811-bcf9-0c23c7bc02fd")
 		(property "Reference" "#PWR04"
-			(at 83.82 115.57 0)
+			(at 83.82 118.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4766,7 +4760,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 83.82 114.3 0)
+			(at 83.82 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4774,7 +4768,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 83.82 109.22 0)
+			(at 83.82 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4783,7 +4777,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 83.82 109.22 0)
+			(at 83.82 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4792,7 +4786,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 83.82 109.22 0)
+			(at 83.82 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4857,6 +4851,15 @@
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
 			(at 114.3 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CC0402FRNPO9BN180"
+			(at 114.3 106.68 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5260,6 +5263,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "MHQ1005P1N5BT000"
+			(at 139.7 106.68 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "267f751c-f9ab-4060-9330-1461482b3509")
 		)
@@ -5322,6 +5334,15 @@
 			)
 		)
 		(property "Description" "Mounting Hole without connection"
+			(at 50.8 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" ""
 			(at 50.8 177.8 0)
 			(effects
 				(font
@@ -5394,6 +5415,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "BLM15AX700SN1D"
+			(at 238.76 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "5f371394-490a-4749-aa2c-499b28dc13ad")
 		)
@@ -5456,6 +5486,15 @@
 			)
 		)
 		(property "Description" "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin"
+			(at 137.16 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" ""
 			(at 137.16 31.75 0)
 			(effects
 				(font
@@ -5546,10 +5585,85 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" ""
+			(at 63.5 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(instances
 			(project "lmp91000-pcb"
 				(path "/c5dc7468-0018-4ea3-a638-bcb85b791a5d"
 					(reference "H4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 106.68 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "73df8ea7-3b26-49d1-b48f-2f1ea1e88d47")
+		(property "Reference" "#PWR040"
+			(at 106.68 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 106.68 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 106.68 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 106.68 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 106.68 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cce23907-1698-4c4d-9ae0-390cb646ba71")
+		)
+		(instances
+			(project ""
+				(path "/c5dc7468-0018-4ea3-a638-bcb85b791a5d"
+					(reference "#PWR040")
 					(unit 1)
 				)
 			)
@@ -5675,6 +5789,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "RTT02301JTH"
+			(at 190.5 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "6a275df4-668f-4645-8e1e-21b72230e7c4")
 		)
@@ -5737,6 +5860,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 38.1 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 38.1 31.75 0)
 			(effects
 				(font
@@ -5815,6 +5947,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
+			(at 196.85 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "deb38a25-2917-4246-993e-139907285959")
 		)
@@ -5877,6 +6018,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 25.4 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 25.4 31.75 0)
 			(effects
 				(font
@@ -6087,6 +6237,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "EFR32BG24L210F768IM40-B"
+			(at 228.6 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "20"
 			(uuid "536ce9b8-8044-4e93-a5c2-264f60eb1199")
 		)
@@ -6274,6 +6433,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" ""
+			(at 38.1 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(instances
 			(project "lmp91000-pcb"
 				(path "/c5dc7468-0018-4ea3-a638-bcb85b791a5d"
@@ -6328,6 +6496,15 @@
 		)
 		(property "Description" "Four pin crystal, GND on pins 2 and 4"
 			(at 82.55 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "7D039000I01"
+			(at 82.55 31.75 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6485,6 +6662,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "F.0402.00003/P2-0402R1TS2-045T-001 "
+			(at 184.15 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "dd02564d-fa35-4c63-84e5-889671782c6c")
 		)
@@ -6502,7 +6688,7 @@
 	)
 	(symbol
 		(lib_id "RF_Antenna_Johanson:Johanson_2450AT18D0100001E")
-		(at 95.25 102.87 0)
+		(at 95.25 105.41 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6512,14 +6698,6 @@
 		(fields_autoplaced yes)
 		(uuid "ef685eb9-615c-4f17-840d-aa5961334be9")
 		(property "Reference" "U1"
-			(at 95.25 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "2450AT18D0100001E"
 			(at 95.25 100.33 0)
 			(effects
 				(font
@@ -6527,8 +6705,16 @@
 				)
 			)
 		)
-		(property "Footprint" "RF_Antenna_Johanson:Johanson_2450AT18D0100001E"
+		(property "Value" "2450AT18D0100001E"
 			(at 95.25 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "RF_Antenna_Johanson:Johanson_2450AT18D0100001E"
+			(at 95.25 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6537,7 +6723,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.johansontechnology.com/docs/967/2450AT18D0100001E_PLLZ5ar.pdf"
-			(at 95.25 102.87 0)
+			(at 95.25 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6546,7 +6732,16 @@
 			)
 		)
 		(property "Description" "RF Antenna 2.4GHz Bluetooth, Wifi, ZigBee, Chip"
-			(at 95.25 102.87 0)
+			(at 95.25 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "2450AT18D0100001E"
+			(at 95.25 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6559,12 +6754,14 @@
 		)
 		(pin "1"
 			(uuid "797279c9-45e4-4b0f-9e98-b6dd1f27cb56")
+			(alternate "GND")
 		)
 		(pin "2"
 			(uuid "6db04b4d-c6fd-404f-8244-b142882a7ff8")
 		)
 		(pin "4"
 			(uuid "adf8e73f-2735-4897-930a-9e3751865a2f")
+			(alternate "FEED")
 		)
 		(instances
 			(project ""
@@ -6622,6 +6819,15 @@
 			)
 		)
 		(property "Description" "Mounting Hole without connection"
+			(at 25.4 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" ""
 			(at 25.4 177.8 0)
 			(effects
 				(font
@@ -6751,6 +6957,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 127 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "GJM1555C1H1R4WB01D"
 			(at 127 111.76 0)
 			(effects
 				(font

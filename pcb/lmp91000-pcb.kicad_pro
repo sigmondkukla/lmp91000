@@ -60,7 +60,19 @@
       ],
       "drc_exclusions": [
         [
-          "courtyards_overlap|59609380|57583860|af5aa548-8ea5-45a2-9951-d6b7f9920c93|db47fa89-b9c3-4174-a95e-a58608582d3b",
+          "courtyards_overlap|61402883|37005000|1e3fc94c-4734-472d-9bca-6eae82f4fd8f|8fb61728-580f-4ef8-bff5-e7e69c3b425b",
+          ""
+        ],
+        [
+          "courtyards_overlap|62695000|48505001|1e3fc94c-4734-472d-9bca-6eae82f4fd8f|af5aa548-8ea5-45a2-9951-d6b7f9920c93",
+          ""
+        ],
+        [
+          "lib_footprint_mismatch|35322500|54500000|3169fc9e-cbcf-4a8f-b6dc-cc2906d8b9fc|00000000-0000-0000-0000-000000000000",
+          ""
+        ],
+        [
+          "lib_footprint_mismatch|45500000|61000000|92482f7a-db3a-428a-bddd-46ef2bffefa7|00000000-0000-0000-0000-000000000000",
           ""
         ]
       ],
@@ -113,7 +125,7 @@
         "starved_thermal": "error",
         "text_height": "warning",
         "text_on_edge_cuts": "error",
-        "text_thickness": "warning",
+        "text_thickness": "ignore",
         "through_hole_pad_without_hole": "error",
         "too_many_vias": "error",
         "track_angle": "error",
@@ -144,7 +156,7 @@
         "min_track_width": 0.0,
         "min_via_annular_width": 0.1,
         "min_via_diameter": 0.5,
-        "solder_mask_to_copper_clearance": 0.0,
+        "solder_mask_to_copper_clearance": 0.005,
         "use_height_for_length_calcs": true
       },
       "teardrop_options": [
@@ -159,7 +171,7 @@
       "teardrop_parameters": [
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -170,7 +182,7 @@
         },
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -181,7 +193,7 @@
         },
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -195,6 +207,7 @@
         0.0,
         0.2,
         0.25,
+        0.35,
         0.5,
         0.6,
         1.0
@@ -539,8 +552,8 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
-      "pos_files": "",
+      "plot": "production/nextpcb/gerber",
+      "pos_files": "production/nextpcb/",
       "specctra_dsn": "",
       "step": "",
       "svg": "",
@@ -579,27 +592,27 @@
         },
         {
           "group_by": true,
-          "label": "Value",
-          "name": "Value",
+          "label": "HQ_MPN",
+          "name": "HQ_MPN",
           "show": true
         },
         {
           "group_by": true,
-          "label": "DNP",
-          "name": "${DNP}",
-          "show": true
+          "label": "Value",
+          "name": "Value",
+          "show": false
         },
         {
           "group_by": true,
           "label": "Exclude from BOM",
           "name": "${EXCLUDE_FROM_BOM}",
-          "show": true
+          "show": false
         },
         {
           "group_by": true,
           "label": "Exclude from Board",
           "name": "${EXCLUDE_FROM_BOARD}",
-          "show": true
+          "show": false
         },
         {
           "group_by": true,
@@ -608,16 +621,40 @@
           "show": true
         },
         {
+          "group_by": true,
+          "label": "DNP",
+          "name": "${DNP}",
+          "show": false
+        },
+        {
           "group_by": false,
           "label": "Datasheet",
           "name": "Datasheet",
-          "show": true
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Sim.Pins",
+          "name": "Sim.Pins",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
         }
       ],
       "filter_string": "",
       "group_symbols": true,
       "include_excluded_from_bom": true,
-      "name": "Default Editing",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },

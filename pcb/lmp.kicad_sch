@@ -2276,7 +2276,7 @@
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp yes)
 		(uuid "150397ac-5064-4add-a9bd-f06a678b9b53")
@@ -2317,6 +2317,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 101.6 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" ""
 			(at 101.6 52.07 0)
 			(effects
 				(font
@@ -2395,6 +2404,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "WR04X5101FTL"
+			(at 57.15 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "fdeca92a-c1c2-40c5-b92b-ddbf05395fa5")
 		)
@@ -2457,6 +2475,15 @@
 			)
 		)
 		(property "Description" "Generic screw terminal, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "TB0011-350-03GR"
 			(at 157.48 40.64 0)
 			(effects
 				(font
@@ -2539,6 +2566,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" ""
+			(at 157.48 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "3"
 			(uuid "a42cb2d8-00d6-43a7-8853-9fdf40dd6c38")
 		)
@@ -2604,6 +2640,15 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 157.48 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "0528070310"
 			(at 157.48 53.34 0)
 			(effects
 				(font
@@ -2751,6 +2796,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "LMP91000SDX/NOPB"
+			(at 76.2 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "15"
 			(uuid "141c21a5-0712-4927-9110-f4facf620810")
 		)
@@ -2810,7 +2864,7 @@
 		(at 107.95 52.07 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp yes)
 		(fields_autoplaced yes)
@@ -2852,6 +2906,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 107.95 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" ""
 			(at 107.95 52.07 0)
 			(effects
 				(font
@@ -2922,6 +2985,15 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
+			(at 50.8 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "WR04X5101FTL"
 			(at 50.8 35.56 0)
 			(effects
 				(font

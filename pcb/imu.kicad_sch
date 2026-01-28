@@ -1152,6 +1152,15 @@
 				(hide yes)
 			)
 		)
+		(property "HQ_MPN" "LSM6DSVTR"
+			(at 50.8 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "8"
 			(uuid "f155f50a-dd76-4940-a362-75221d703372")
 		)
@@ -1318,6 +1327,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 101.6 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 101.6 38.1 0)
 			(effects
 				(font
@@ -1586,6 +1604,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 114.3 38.1 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "HQ_MPN" "CL05X105KP5NNNC"
 			(at 114.3 38.1 0)
 			(effects
 				(font
