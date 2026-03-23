@@ -2812,6 +2812,16 @@
 		)
 		(uuid "c7f86cfc-3915-4764-a40f-86b1f3e2a520")
 	)
+	(text "max 2.1V at full charge\nto 1.75V when discarged to LDO cutoff"
+		(exclude_from_sim no)
+		(at 210.058 60.198 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "fe2f1ab9-567f-40ee-aadf-e2f4130868c1")
+	)
 	(junction
 		(at 76.2 111.76)
 		(diameter 0)
@@ -3176,7 +3186,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 132.08) (xy 63.5 132.08)
+			(xy 63.5 132.08) (xy 76.2 132.08)
 		)
 		(stroke
 			(width 0)

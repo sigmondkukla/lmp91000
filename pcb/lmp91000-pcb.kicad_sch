@@ -3092,7 +3092,7 @@
 		)
 		(uuid "34aaad55-1b75-4b6c-9e81-4278df0070a2")
 	)
-	(text "1.8nF"
+	(text "1.8nH"
 		(exclude_from_sim no)
 		(at 139.7 99.06 0)
 		(effects
@@ -3127,6 +3127,16 @@
 			(href "https://www.silabs.com/documents/public/application-notes/an0016.2-efr32-series-2-oscillator-design-considerations.pdf")
 		)
 		(uuid "5607b7a9-a493-4ee9-9072-84bc914430b1")
+	)
+	(text "SWD\nSerial Wire Debug"
+		(exclude_from_sim no)
+		(at 275.844 97.79 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "5c7e037d-8bc8-405c-92c8-721e2d46c3b5")
 	)
 	(text "RF antenna\n50 ohms routing"
 		(exclude_from_sim no)

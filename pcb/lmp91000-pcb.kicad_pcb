@@ -8,7 +8,10 @@
 	)
 	(paper "A5")
 	(title_block
+		(title "Wireless Potentiostat")
 		(date "2026-01-28")
+		(rev "v1.0")
+		(company "Clarkson University")
 	)
 	(layers
 		(0 "F.Cu" signal)

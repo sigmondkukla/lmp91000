@@ -1,0 +1,56 @@
+/*
+ * experiment.h
+ *
+ *  Created on: May 28, 2025
+ *      Author: Sigmond
+ */
+
+#include "lmp91000.h"
+#include "sl_sleeptimer.h"
+#include "em_cmu.h"
+#include <vector>
+#include <cstdint>
+#include <string>
+#include "RingBuffer.h"
+
+#ifndef EXPERIMENT_EXPERIMENT_H_
+#define EXPERIMENT_EXPERIMENT_H_
+
+struct DataPoint {
+  uint32_t timestamp; // [ms] 4 bytes
+  int32_t voltage; // [mV] 4 bytes
+  float current; // [A] 4 bytes, subject to change
+};
+
+typedef void (*SetStatusFlagCallback)(uint8_t, uint8_t);
+
+class Experiment {
+public:
+
+  Experiment(lmp91000* lmp, uint32_t timestep, SetStatusFlagCallback status_flag_callback): lmp(lmp), timestep(timestep), status_flag_callback(status_flag_callback) {};
+  virtual ~Experiment();
+
+  void init(void);
+  void begin(void);
+  void end(void);
+
+  RingBuffer<DataPoint, 128> results_buffer;
+
+protected:
+
+  static void timerCallback(sl_sleeptimer_timer_handle_t *handle, void *data);
+  void tickHandler(void);
+
+  virtual bool get_next_voltage(int32_t &out) = 0; // true if continues, out written to next voltage
+
+  lmp91000 *lmp;
+
+  uint32_t iteration = 0; // tracks progress, ticks = ms / timestep
+  const uint32_t timestep; // [ms] should be 10 ideally
+
+  sl_sleeptimer_timer_handle_t experiment_timer;
+
+  SetStatusFlagCallback status_flag_callback = nullptr;
+};
+
+#endif /* EXPERIMENT_EXPERIMENT_H_ */
