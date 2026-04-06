@@ -54,9 +54,15 @@ void lmp91000::initI2C(void)
   GPIO_PinModeSet(i2c_scl_port, i2c_scl_pin, gpioModeWiredAndPullUpFilter, 1);
 
   // Route I2C pins to GPIO
-  I2C0->ROUTEPEN |= I2C_ROUTEPEN_SCLPEN | I2C_ROUTEPEN_SDAPEN;
-  //   I2C0->ROUTELOC0 = I2C_ROUTELOC0_SDALOC_LOC6 | I2C_ROUTELOC0_SCLLOC_LOC6;
-  I2C0->ROUTELOC0 |= i2c_routeloc0_sdaloc | i2c_routeloc0_sclloc;
+  GPIO->I2CROUTE[0].SDAROUTE = (GPIO->I2CROUTE[0].SDAROUTE & ~_GPIO_I2C_SDAROUTE_MASK) |
+                               (i2c_sda_port << _GPIO_I2C_SDAROUTE_PORT_SHIFT |
+                                (i2c_sda_pin << _GPIO_I2C_SDAROUTE_PIN_SHIFT));
+
+  GPIO->I2CROUTE[0].SCLROUTE = (GPIO->I2CROUTE[0].SCLROUTE & ~_GPIO_I2C_SCLROUTE_MASK) |
+                               (i2c_scl_port << _GPIO_I2C_SCLROUTE_PORT_SHIFT |
+                                (i2c_scl_pin << _GPIO_I2C_SCLROUTE_PIN_SHIFT));
+
+  GPIO->I2CROUTE[0].ROUTEEN = GPIO_I2C_ROUTEEN_SDAPEN | GPIO_I2C_ROUTEEN_SCLPEN;
 
   I2C_Init(I2C0, &i2cInit); // Initialize the I2C
 }
