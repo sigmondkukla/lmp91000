@@ -69,20 +69,39 @@ void lmp91000::initI2C(void)
 
 void lmp91000::initADC(void)
 {
-  ADC_Init_TypeDef init = ADC_INIT_DEFAULT;
-  ADC_InitSingle_TypeDef initSingle = ADC_INITSINGLE_DEFAULT;
+  IADC_Init_t init = IADC_INIT_DEFAULT;
+  IADC_AllConfigs_t initAllConfigs = IADC_ALLCONFIGS_DEFAULT;
 
-  init.prescale = ADC_PrescaleCalc(clk_adc_freq, 0);
-  init.timebase = ADC_TimebaseCalc(0);
-  initSingle.diff = false;
-  initSingle.reference = adcRefVDD;
-  initSingle.resolution = adcRes12Bit;
-  initSingle.acqTime = adcAcqTime256;
-  initSingle.posSel = pos_sel;
+  // InitSingle for LMP_VOUT
+  IADC_InitSingle_t initSingle = IADC_INITSINGLE_DEFAULT;
+  IADC_SingleInput_t singleInput = IADC_SINGLEINPUT_DEFAULT;
 
-  ADC_Init(ADC0, &init);
-  ADC_InitSingle(ADC0, &initSingle);
-  ADC_IntEnable(ADC0, ADC_IEN_SINGLE);
+  // InitScan for BATT_MEAS
+  IADC_InitScan_t initScan = IADC_INITSCAN_DEFAULT;
+  IADC_ScanTable_t scanTable = IADC_SCANTABLE_DEFAULT;
+
+  // Clock configuration
+  init.srcClkPrescale = IADC_calcSrcClkPrescale(IADC0, clk_src_adc_freq, 0);
+  initAllConfigs.configs[0].reference = iadcCfgReferenceVddx;
+  initAllConfigs.configs[0].vRef = vref; // [mV] TODO: measure actual voltage and update
+  initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
+
+  // Analog bus allocation
+  GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00
+  GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
+
+  // LMP_VOUT on PA00
+  singleInput.posInput = iadcPosInputPortAPin0;
+  singleInput.negInput = iadcNegInputGnd;
+
+  // BATT_MEAS on PD00
+  scanTable.entries[0].posInput = iadcPosInputPortDPin0;
+  scanTable.entries[0].negInput = iadcNegInputGnd;
+  scanTable.entries[0].includeInScan = true;
+
+  IADC_init(IADC0, &init, &initAllConfigs);
+  IADC_initSingle(IADC0, &initSingle, &singleInput);
+  IADC_initScan(IADC0, &initScan, &scanTable);
 }
 
 void lmp91000::initDAC(void)
@@ -338,13 +357,16 @@ uint32_t lmp91000::get_vdac_value(uint32_t mv)
 
 uint32_t lmp91000::sample_adc(void)
 {
-  ADC_Start(ADC0, adcStartSingle); // start ADC single sample
-  while (ADC0->STATUS & ADC_STATUS_SINGLEACT)
+  IADC_command(IADC0, iadcCmdStartSingle); // start single queue conversion (LMP_VOUT)
+
+  while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)
   {
-  } // wait for ADC ready
-  uint32_t sample = ADC_DataSingleGet(adc);       // get sample
-  uint32_t single_result = sample * vref / 0xFFF; // convert to mv (12 bits ADC)
-                                                  //  printf("sample: %lu, result: %lu\n", sample, single_result);
+    // wait for conversion to complete
+  }
+
+  IADC_Result_t sample = IADC_pullSingleFifoResult(IADC0);
+  uint32_t single_result = sample.data * vref / 0xFFF;
+
   return single_result;
 }
 
