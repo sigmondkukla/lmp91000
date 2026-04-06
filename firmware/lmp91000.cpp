@@ -17,6 +17,7 @@
 #include "em_i2c.h"
 #include "em_iadc.h"
 #include "em_gpio.h"
+#include "em_vdac.h"
 
 #include "sl_sleeptimer.h"
 
@@ -69,6 +70,9 @@ void lmp91000::initI2C(void)
 
 void lmp91000::initADC(void)
 {
+  uint32_t clk_src_adc_freq = CMU_ClockFreqGet(cmuClock_IADC0); // Get actual frequency of IADC clock source
+  uint32_t clk_adc_freq = 16000000;                             // target conversion clock frequency is 16 MHz
+
   IADC_Init_t init = IADC_INIT_DEFAULT;
   IADC_AllConfigs_t initAllConfigs = IADC_ALLCONFIGS_DEFAULT;
 
@@ -106,9 +110,18 @@ void lmp91000::initADC(void)
 
 void lmp91000::initDAC(void)
 {
-  SPIDRV_Init_t initData = SPIDRV_MASTER_USART1;
-  SPIDRV_Init(sl_spidrv_dac_handle, &initData);
-  DAC_write(0);
+  VDAC_Init_TypeDef init = VDAC_INIT_DEFAULT;
+  VDAC_InitChannel_TypeDef initChannel = VDAC_INITCHANNEL_DEFAULT;
+
+  init.prescaler = VDAC_PrescaleCalc(VDAC0, 1000000); // get prescaler for 1 MHz VDAC clock
+  init.reference = vdacRefAvdd;
+
+  VDAC_Init(VDAC0, &init);
+  VDAC_InitChannel(VDAC0, &initChannel, 0); // Using channel 0 (PA00 I think)
+
+  VDAC_Enable(VDAC0, 0, true);
+
+  DAC_write(0); // start with 0 output voltage
 }
 
 void lmp91000::enable(bool enabled)
@@ -121,15 +134,7 @@ void lmp91000::enable(bool enabled)
 
 void lmp91000::DAC_write(const uint16_t value)
 {
-  uint8_t buffer[2];
-  buffer[0] = value >> 8;
-  buffer[1] = value & 0xFF;
-
-  Ecode_t tx_ret = SPIDRV_MTransmitB(sl_spidrv_dac_handle, buffer, 2);
-  if (tx_ret != ECODE_OK)
-  {
-    printf("Error writing to DAC");
-  }
+  VDAC_ChannelOutputSet(VDAC0, 0, value); // write to channel 0 DATA register the value to output
   //  printf("DAC write %u\n", value);
 }
 
@@ -352,7 +357,7 @@ void lmp91000::output_voltage(int32_t voltage)
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
 {
-  return mv * 0xFFFF / vref;
+  return mv * 0xFFF / vref; // 12-bit instead of 16-bit DAC, and vref is in mV so it cancels out factor of 1000
 }
 
 uint32_t lmp91000::sample_adc(void)

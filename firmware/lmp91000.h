@@ -14,14 +14,13 @@
 #include "em_cmu.h"
 #include "em_i2c.h"
 #include "em_iadc.h"
+#include "em_vdac.h"
 #include "em_gpio.h"
 
 #include "sl_sleeptimer.h"
 
 #ifndef LMP91000_LMP91000_H_
 #define LMP91000_LMP91000_H_
-
-#define LMP91000_ADC_FREQ 16000000
 
 // LMP91000 registers
 #define LMP91000_REG_STATUS 0x00 // Status register
@@ -63,10 +62,8 @@ public:
            uint32_t vref) : i2c(i2c),
                             i2c_scl_port(i2c_scl_port),
                             i2c_scl_pin(i2c_scl_pin),
-                            i2c_routeloc0_sclloc(i2c_routeloc0_sclloc),
                             i2c_sda_port(i2c_sda_port),
                             i2c_sda_pin(i2c_sda_pin),
-                            i2c_routeloc0_sdaloc(i2c_routeloc0_sdaloc),
 
                             menb_port(menb_port),
                             menb_pin(menb_pin),
@@ -126,8 +123,6 @@ private:
   uint32_t menb_pin;
 
   IADC_TypeDef *iadc = IADC0;
-  uint32_t clk_src_adc_freq = 16000000;
-  uint32_t clk_adc_freq = 16000000;
   IADC_PosInput_t pos_input;
 
   uint32_t vref; // [mV]
