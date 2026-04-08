@@ -32,12 +32,13 @@
 #include "app_assert.h"
 #include "app.h"
 #include "ble_experiment_service.h"
+#include "em_iadc.h"
 
 lmp91000 lmp(I2C0,
              gpioPortB, 12,
              gpioPortB, 11,
              gpioPortB, 13,
-             IADC0, IADC_PosInput_0, 3350);
+             IADC0, iadcPosInputPortAPin0, 3350);
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
