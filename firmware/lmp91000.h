@@ -49,10 +49,8 @@ public:
   lmp91000(I2C_TypeDef *i2c,
            GPIO_Port_TypeDef i2c_scl_port,
            uint32_t i2c_scl_pin,
-           uint32_t i2c_routeloc0_sclloc,
            GPIO_Port_TypeDef i2c_sda_port,
            uint32_t i2c_sda_pin,
-           uint32_t i2c_routeloc0_sdaloc,
 
            GPIO_Port_TypeDef menb_port,
            unsigned int menb_pin,

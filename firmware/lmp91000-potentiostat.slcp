@@ -75,6 +75,9 @@ component:
   id: clock_manager
 - package: simplicity_sdk
   vendor: silabs
+  id: cpp_support
+- package: simplicity_sdk
+  vendor: silabs
   id: debug_swo
 - package: simplicity_sdk
   vendor: silabs
