@@ -5,7 +5,7 @@
  *      Author: Sigmond
  */
 
-#include <lmp91000.h>
+#include "lmp91000.h"
 
 #include <stdio.h>
 #include <stdlib.h>

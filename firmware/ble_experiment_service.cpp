@@ -12,7 +12,6 @@
 #include "app.h" // For access to lmp1 / lmp2
 #include "experiment_status.h"
 
-#define ACTIVE_LMP (&lmp1) // future: allow choosing channel
 #define TIMESTEP 10 // [ms] let's keep it at 100 Hz for now
 
 // bring in global instances
@@ -48,7 +47,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             const CVConfig* cfg = reinterpret_cast<const CVConfig*>(data); // if all's well convert it
 
             currentExperiment = new CyclicVoltammetry(
-                ACTIVE_LMP, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->vertex_1, cfg->vertex_2,
                 cfg->scan_rate, cfg->scans,
                 cfg->quiet_time, cfg->scan_delay
@@ -60,7 +59,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             const SWVConfig* cfg = reinterpret_cast<const SWVConfig*>(data);
 
             currentExperiment = new SquareWaveVoltammetry(
-                ACTIVE_LMP, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency, cfg->quiet_time
             );
@@ -71,7 +70,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             const DPVConfig* cfg = reinterpret_cast<const DPVConfig*>(data);
 
             currentExperiment = new DifferentialPulseVoltammetry(
-                ACTIVE_LMP, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency,
                 cfg->quiet_time, cfg->duty_cycle
@@ -83,7 +82,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             const CAConfig* cfg = reinterpret_cast<const CAConfig*>(data);
 
             currentExperiment = new Chronoamperometry(
-                ACTIVE_LMP, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->quiet_time,
                 cfg->e_1, cfg->duration_1,
                 cfg->e_2, cfg->duration_2,

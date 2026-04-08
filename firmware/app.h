@@ -37,6 +37,8 @@
 
 #include "lmp91000.h"
 extern lmp91000 lmp;
+
+extern "C" {
 #endif
 
 /**************************************************************************
@@ -81,5 +83,9 @@ void app_mutex_release(void);
  * @note Must not be used from ISR context.
  *****************************************************************************/
 void app_init_bt(void);
+
+#ifdef __cplusplus
+} // end extern "C"
+#endif
 
 #endif // APP_H

@@ -42,6 +42,9 @@ component:
   id: app_assert
 - package: simplicity_sdk
   vendor: silabs
+  id: app_log
+- package: simplicity_sdk
+  vendor: silabs
   id: app_os_helper
 - package: simplicity_sdk
   vendor: silabs
@@ -97,6 +100,9 @@ component:
 - package: simplicity_sdk
   vendor: silabs
   id: gatt_service_device_information_override
+- package: simplicity_sdk
+  vendor: silabs
+  id: iostream_swo
 - package: simplicity_sdk
   vendor: silabs
   id: mpu
