@@ -5,7 +5,7 @@
  *      Author: Sigmond
  */
 
-#include <DifferentialPulseVoltammetry.h>
+#include "DifferentialPulseVoltammetry.h"
 
 bool DifferentialPulseVoltammetry::get_next_voltage(int32_t &voltage_out) {
     uint32_t time = iteration * timestep; // [ms]

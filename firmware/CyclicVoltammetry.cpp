@@ -5,7 +5,7 @@
  *      Author: Sigmond
  */
 
-#include <CyclicVoltammetry.h>
+#include "CyclicVoltammetry.h"
 
 bool CyclicVoltammetry::get_next_voltage(int32_t &voltage_out) {
     if (current_state == QUIET_TIME || current_state == SCAN_DELAY) {

@@ -5,7 +5,7 @@
  *      Author: Sigmond
  */
 
-#include <Chronoamperometry.h>
+#include "Chronoamperometry.h"
 
 bool Chronoamperometry::get_next_voltage(int32_t &voltage_out) {
     uint32_t t = iteration * timestep;

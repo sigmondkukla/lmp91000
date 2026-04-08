@@ -5,7 +5,7 @@
  *      Author: Sigmond
  */
 
-#include <SquareWaveVoltammetry.h>
+#include "SquareWaveVoltammetry.h"
 
 bool SquareWaveVoltammetry::get_next_voltage(int32_t &voltage_out) {
     uint32_t time_ms = iteration * timestep; // track current experiment progress
