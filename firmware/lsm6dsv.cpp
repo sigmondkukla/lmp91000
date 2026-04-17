@@ -16,8 +16,8 @@
 
  void lsm6dsv::init(void){
     spi_init();
-
-
+    sl_sleeptimer_delay_millisecond(10);
+    
     if (read_reg(WHOAMI) != 0x70){
         // failed to initialize
     }

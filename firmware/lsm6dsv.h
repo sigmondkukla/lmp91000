@@ -55,7 +55,7 @@ class lsm6dsv
         USART_TypeDef *spi_inst;
 
         GPIO_Port_TypeDef gpio_MOSI_port;
-        uint8_t gpio_MOSI_pin,;
+        uint8_t gpio_MOSI_pin;
 
         GPIO_Port_TypeDef gpio_MISO_port;
         uint8_t gpio_MISO_pin;
@@ -75,7 +75,7 @@ class lsm6dsv
         uint8_t spi_transfer(uint8_t data);
 
         void write_reg(uint8_t reg, uint8_t data);
-        uint8_t read_reg(uint8_t reg)
+        uint8_t read_reg(uint8_t reg);
         
 };
 
