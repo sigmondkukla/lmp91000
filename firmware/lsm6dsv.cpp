@@ -7,7 +7,10 @@
 
 #include "lsm6dsv.h"
 
+/*TODO: TRY CHANGING TO USART SEE https://docs.silabs.com/gecko-platform/4.0/emlib/api/efr32xg24/group-usart */
+
 #include <cstddef>
+#include <stdio.h>
 
 #include "em_cmu.h"
 #include "em_gpio.h"
@@ -18,8 +21,12 @@
     spi_init();
     sl_sleeptimer_delay_millisecond(10);
     
-    if (read_reg(WHOAMI) != 0x70){
+    uint8_t whoami = read_reg(WHOAMI);
+    if (whoami != 0x70){
         // failed to initialize
+        printf("FAILED TO INITIALIZE\r\n");
+        printf("%x", whoami);
+        // TODO: add error handling
     }
     
     // set SW_RESET
@@ -35,14 +42,46 @@
     // configure gyro ODR
     write_reg(CTR2, 0x77); // 0b01110111 for normal mode (see user guide pages 5, 17, 18)
 
+    if (whoami == 0x70){
+      printf("INITIALIZATION LIKELY SUCCESFULL\r\n");
+    }
+
 
  }
 
-/* ------ helper function implementation ------*/
+/* ------ getter function implementation ------ */
+
+uint16_t lsm6dsv::read_AccX(void){
+   return 1;
+}
+uint16_t lsm6dsv::read_AccY(void){
+   return 1;
+}
+uint16_t lsm6dsv::read_AccZ(void){
+   return 1;
+}
+
+uint16_t lsm6dsv::read_GyroX(void){
+   return 1;
+}
+uint16_t lsm6dsv::read_GyroY(void){
+   return 1;
+}
+uint16_t lsm6dsv::read_GyroZ(void){
+   return 1;
+}
+
+/* ------ helper function implementation ------ */
 
  void lsm6dsv::spi_init(void){
+
+    EUSART_SpiAdvancedInit_TypeDef adv = EUSART_SPI_ADVANCED_INIT_DEFAULT;
+    adv.msbFirst = true; // SPI standard MSB first
+
     EUSART_SpiInit_TypeDef init_master = EUSART_SPI_MASTER_INIT_DEFAULT_HF;
+    init_master.bitRate = baudrate;
     init_master.clockMode = eusartClockMode3;
+    init_master.advancedSettings = &adv;
 
     // Enable clocks
     CMU_ClockEnable(cmuClock_GPIO, true);
@@ -79,18 +118,19 @@
     GPIO_PinOutSet(gpio_CS_port, gpio_CS_pin);
  }
 
- uint8_t lsm6dsv::spi_transfer(uint8_t data){
-    // Wait for the TXFL bit of the STATUS register to be set
-    while (!(EUSART1->STATUS & EUSART_STATUS_TXFL));
+ uint16_t lsm6dsv::spi_transfer(uint8_t data){
+   //  // Wait for the TXFL bit of the STATUS register to be set
+   //  while (!(EUSART1->STATUS & EUSART_STATUS_TXFL));
 
-    // Write the data to the TXDATA register
-    EUSART1->TXDATA = data;
+   //  // Write the data to the TXDATA register
+   //  EUSART1->TXDATA = data;
 
-    // Wait for the RXFL bit of the STATUS register to be set
-    while (!(EUSART1->STATUS & EUSART_STATUS_RXFL));
+   //  // Wait for the RXFL bit of the STATUS register to be set
+   //  while (!(EUSART1->STATUS & EUSART_STATUS_RXFL));
 
-    // Return the data that was written to the RXDATA register
-    return EUSART1->RXDATA;
+   //  // Return the data that was written to the RXDATA register
+   //  return EUSART1->RXDATA;
+   return EUSART_Spi_TxRx(EUSART1, data);
  }
 
  void lsm6dsv::write_reg(uint8_t reg, uint8_t data){
@@ -100,10 +140,11 @@
     spi_cs_deassert();
  }
 
- uint8_t lsm6dsv::read_reg(uint8_t reg){
+ uint16_t lsm6dsv::read_reg(uint8_t reg){
+    uint16_t data;
     spi_cs_assert();
     spi_transfer(reg | RW);
-    uint8_t data = spi_transfer(0x00);
+    data = spi_transfer(0x00);
     spi_cs_deassert();
     return data;
  }

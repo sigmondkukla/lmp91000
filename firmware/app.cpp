@@ -34,11 +34,20 @@
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
 
+
 lmp91000 lmp(I2C0,
              gpioPortB, 12,
              gpioPortB, 11,
              gpioPortB, 13,
              IADC0, iadcPosInputPortAPin0, 3350);
+
+lsm6dsv imu(EUSART1,
+            gpioPortC, 4,
+            gpioPortC, 3,
+            gpioPortC, 5,
+            gpioPortC, 6,
+            1000000);
+
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -54,11 +63,13 @@ extern "C"
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
     // lmp.init();
+    imu.init();
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
+    //printf("hello world\n");
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
@@ -68,7 +79,6 @@ extern "C"
       /////////////////////////////////////////////////////////////////////////////
       // notify_experiment_results();
       // notify_experiment_status();
-      printf("hello world\n");
     }
   }
 

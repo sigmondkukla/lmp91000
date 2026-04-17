@@ -29,7 +29,7 @@
 class lsm6dsv
 {
     public:
-        lsm6dsv(USART_TypeDef *spi_inst,
+        lsm6dsv(EUSART_TypeDef *spi_inst,
 
                 GPIO_Port_TypeDef gpio_MOSI_port, uint8_t gpio_MOSI_pin,
                 GPIO_Port_TypeDef gpio_MISO_port, uint8_t gpio_MISO_pin,
@@ -40,19 +40,25 @@ class lsm6dsv
                                      gpio_MOSI_port(gpio_MOSI_port), gpio_MOSI_pin(gpio_MOSI_pin),
                                      gpio_MISO_port(gpio_MISO_port), gpio_MISO_pin(gpio_MISO_pin),
                                      gpio_SCLK_port(gpio_SCLK_port), gpio_SCLK_pin(gpio_SCLK_pin),
-                                     gpio_CS_port(gpio_SCLK_port),   gpio_CS_pin(gpio_SCLK_pin),
+                                     gpio_CS_port(gpio_CS_port),   gpio_CS_pin(gpio_CS_pin),
 
                                      baudrate(baudrate) {};
-        ~lsm6dsv();
+        //~lsm6dsv();
 
         void init(void);
 
+        // getters
+        uint16_t read_AccX(void);
+        uint16_t read_AccY(void);
+        uint16_t read_AccZ(void);
 
+        uint16_t read_GyroX(void);
+        uint16_t read_GyroY(void);
+        uint16_t read_GyroZ(void);
         
-
     private:
         // variables
-        USART_TypeDef *spi_inst;
+        EUSART_TypeDef *spi_inst;
 
         GPIO_Port_TypeDef gpio_MOSI_port;
         uint8_t gpio_MOSI_pin;
