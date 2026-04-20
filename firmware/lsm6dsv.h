@@ -78,10 +78,10 @@ class lsm6dsv
         void spi_init(void);
         void spi_cs_assert(void); 
         void spi_cs_deassert(void); 
-        uint8_t spi_transfer(uint8_t data);
+        uint16_t spi_transfer(uint8_t data);
 
         void write_reg(uint8_t reg, uint8_t data);
-        uint8_t read_reg(uint8_t reg);
+        uint16_t read_reg(uint8_t reg);
         
 };
 

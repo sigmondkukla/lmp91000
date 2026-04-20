@@ -42,10 +42,10 @@ lmp91000 lmp(I2C0,
              IADC0, iadcPosInputPortAPin0, 3350);
 
 lsm6dsv imu(EUSART1,
-            gpioPortC, 4,
-            gpioPortC, 3,
-            gpioPortC, 5,
-            gpioPortC, 6,
+            gpioPortC, 4, // MOSI
+            gpioPortC, 3, // MISO
+            gpioPortC, 5, // SCLK
+            gpioPortC, 6, // CS
             1000000);
 
 

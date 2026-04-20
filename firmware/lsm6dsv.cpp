@@ -7,7 +7,7 @@
 
 #include "lsm6dsv.h"
 
-/*TODO: TRY CHANGING TO USART SEE https://docs.silabs.com/gecko-platform/4.0/emlib/api/efr32xg24/group-usart */
+/*TODO: TRY CHANGING TO USART0 SEE https://docs.silabs.com/gecko-platform/4.0/emlib/api/efr32xg24/group-usart */
 
 #include <cstddef>
 #include <stdio.h>
@@ -19,19 +19,32 @@
 
  void lsm6dsv::init(void){
     spi_init();
-    sl_sleeptimer_delay_millisecond(10);
+    sl_sleeptimer_delay_millisecond(100);
     
     uint8_t whoami = read_reg(WHOAMI);
     if (whoami != 0x70){
         // failed to initialize
-        printf("FAILED TO INITIALIZE\r\n");
-        printf("%x", whoami);
+        printf("FAILED TO INITIALIZE: ");
+        printf("%x", whoami); printf("\r\n");
+
+        if (GPIO_PinInGet(gpio_CS_port, gpio_CS_pin)){
+         printf("CS HIGH\r\n");
+        } else {
+         printf("CS LOW");
+        }
+
+        if (GPIO_PinInGet(gpio_SCLK_port, gpio_SCLK_pin)){
+         printf("SCLK HIGH\r\n");
+        } else {
+         printf("SCLK LOW");
+        }
+
         // TODO: add error handling
     }
     
     // set SW_RESET
     write_reg(CTR3, 0x01);
-    sl_sleeptimer_delay_millisecond(10); // wait for reset to complete
+    sl_sleeptimer_delay_millisecond(100); // wait for reset to complete
 
     // set BDU
     write_reg(CTR3, 0x40);
@@ -90,7 +103,7 @@ uint16_t lsm6dsv::read_GyroZ(void){
     // Configure GPIO pins
     GPIO_PinModeSet(gpio_MOSI_port, gpio_MOSI_pin, gpioModePushPull, 0);
     GPIO_PinModeSet(gpio_MISO_port, gpio_MISO_pin, gpioModeInput,    0);
-    GPIO_PinModeSet(gpio_SCLK_port, gpio_SCLK_pin, gpioModePushPull, 0);
+    GPIO_PinModeSet(gpio_SCLK_port, gpio_SCLK_pin, gpioModePushPull, 1); // spi mode 3: clock is idle high
     GPIO_PinModeSet(gpio_CS_port,   gpio_CS_pin,   gpioModePushPull, 1); // CS start HIGH, active LOW
 
     // connect eusart to ports
@@ -119,17 +132,6 @@ uint16_t lsm6dsv::read_GyroZ(void){
  }
 
  uint16_t lsm6dsv::spi_transfer(uint8_t data){
-   //  // Wait for the TXFL bit of the STATUS register to be set
-   //  while (!(EUSART1->STATUS & EUSART_STATUS_TXFL));
-
-   //  // Write the data to the TXDATA register
-   //  EUSART1->TXDATA = data;
-
-   //  // Wait for the RXFL bit of the STATUS register to be set
-   //  while (!(EUSART1->STATUS & EUSART_STATUS_RXFL));
-
-   //  // Return the data that was written to the RXDATA register
-   //  return EUSART1->RXDATA;
    return EUSART_Spi_TxRx(EUSART1, data);
  }
 
