@@ -14,50 +14,36 @@
 
 #include "em_cmu.h"
 #include "em_gpio.h"
-#include "em_eusart.h"
-#include "sl_sleeptimer.h"
+#include "em_usart.h"
+#include "spidrv.h"
+#include "sl_spidrv_instances.h"
 
- void lsm6dsv::init(void){
-    spi_init();
-    sl_sleeptimer_delay_millisecond(100);
+void lsm6dsv::init(void){
+   spi_init();
+   
+   uint8_t whoami = read_reg(WHOAMI);
+   if (whoami != 0x70){
+      // failed to initialize
+      printf("DID NOT GET CORRECT WHOAMI: ");
+      printf("%x", whoami); printf("\r\n");
+   }
     
-    uint8_t whoami = read_reg(WHOAMI);
-    if (whoami != 0x70){
-        // failed to initialize
-        printf("FAILED TO INITIALIZE: ");
-        printf("%x", whoami); printf("\r\n");
+   // set SW_RESET
+   write_reg(CTR3, 0x01);
+   sl_sleeptimer_delay_millisecond(100); // wait for reset to complete
 
-        if (GPIO_PinInGet(gpio_CS_port, gpio_CS_pin)){
-         printf("CS HIGH\r\n");
-        } else {
-         printf("CS LOW");
-        }
+   // set BDU
+   write_reg(CTR3, 0x40);
 
-        if (GPIO_PinInGet(gpio_SCLK_port, gpio_SCLK_pin)){
-         printf("SCLK HIGH\r\n");
-        } else {
-         printf("SCLK LOW");
-        }
+   // configure accelerometer ODR
+   write_reg(CTR1, 0x77);
 
-        // TODO: add error handling
-    }
-    
-    // set SW_RESET
-    write_reg(CTR3, 0x01);
-    sl_sleeptimer_delay_millisecond(100); // wait for reset to complete
+   // configure gyro ODR
+   write_reg(CTR2, 0x77); // 0b01110111 for normal mode (see user guide pages 5, 17, 18)
 
-    // set BDU
-    write_reg(CTR3, 0x40);
-
-    // configure accelerometer ODR
-    write_reg(CTR1, 0x77);
-
-    // configure gyro ODR
-    write_reg(CTR2, 0x77); // 0b01110111 for normal mode (see user guide pages 5, 17, 18)
-
-    if (whoami == 0x70){
-      printf("INITIALIZATION LIKELY SUCCESFULL\r\n");
-    }
+   if (whoami == 0x70){
+      printf("IMU INITIALIZATION LIKELY SUCCESFULL\r\n");
+   }
 
 
  }
@@ -65,7 +51,24 @@
 /* ------ getter function implementation ------ */
 
 uint16_t lsm6dsv::read_AccX(void){
-   return 1;
+   uint8_t tx_buf[3] = { (uint8_t)(0x28 | 0x80), 0x00, 0x00 };
+   uint8_t rx_buf[3] = { 0, 0, 0 };
+
+   // Perform a 3-byte transfer: [Address + RW] -> [Data LSB] -> [Data MSB]
+   Ecode_t status = SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buf, rx_buf, 3);
+
+   if (status != ECODE_EMDRV_SPIDRV_OK) {
+      return 0; // Or handle error appropriately
+   }
+
+   // rx_buf[0] is garbage (received during address phase)
+   // rx_buf[1] is OUTX_L_A
+   // rx_buf[2] is OUTX_H_A
+   
+   // Combine into a signed 16-bit integer
+   int16_t acc_x = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
+
+   return acc_x;
 }
 uint16_t lsm6dsv::read_AccY(void){
    return 1;
@@ -85,68 +88,36 @@ uint16_t lsm6dsv::read_GyroZ(void){
 }
 
 /* ------ helper function implementation ------ */
+void lsm6dsv::spi_init(void){
 
- void lsm6dsv::spi_init(void){
+   sl_spidrv_init_instances();
 
-    EUSART_SpiAdvancedInit_TypeDef adv = EUSART_SPI_ADVANCED_INIT_DEFAULT;
-    adv.msbFirst = true; // SPI standard MSB first
+   sl_sleeptimer_delay_millisecond(100);
+}
 
-    EUSART_SpiInit_TypeDef init_master = EUSART_SPI_MASTER_INIT_DEFAULT_HF;
-    init_master.bitRate = baudrate;
-    init_master.clockMode = eusartClockMode3;
-    init_master.advancedSettings = &adv;
+uint8_t lsm6dsv::spi_transfer(uint8_t data){
+   uint8_t rxbuffer;
+   SPIDRV_MTransferB(sl_spidrv_imu_handle, &data, &rxbuffer, 1);
+   return rxbuffer;
+}
 
-    // Enable clocks
-    CMU_ClockEnable(cmuClock_GPIO, true);
-    CMU_ClockEnable(cmuClock_EUSART1,true);
-
-    // Configure GPIO pins
-    GPIO_PinModeSet(gpio_MOSI_port, gpio_MOSI_pin, gpioModePushPull, 0);
-    GPIO_PinModeSet(gpio_MISO_port, gpio_MISO_pin, gpioModeInput,    0);
-    GPIO_PinModeSet(gpio_SCLK_port, gpio_SCLK_pin, gpioModePushPull, 1); // spi mode 3: clock is idle high
-    GPIO_PinModeSet(gpio_CS_port,   gpio_CS_pin,   gpioModePushPull, 1); // CS start HIGH, active LOW
-
-    // connect eusart to ports
-    GPIO->EUSARTROUTE[EUSART_NUM(EUSART1)].TXROUTE = (gpio_MOSI_port << _GPIO_EUSART_TXROUTE_PORT_SHIFT)
-       | (gpio_MOSI_pin << _GPIO_EUSART_TXROUTE_PIN_SHIFT);
-
-    GPIO->EUSARTROUTE[EUSART_NUM(EUSART1)].RXROUTE = (gpio_MISO_port << _GPIO_EUSART_RXROUTE_PORT_SHIFT)
-      | (gpio_MISO_pin << _GPIO_EUSART_RXROUTE_PIN_SHIFT);
-    
-    GPIO->EUSARTROUTE[EUSART_NUM(EUSART1)].SCLKROUTE = (gpio_SCLK_port << _GPIO_EUSART_SCLKROUTE_PORT_SHIFT)
-      | (gpio_SCLK_pin << _GPIO_EUSART_SCLKROUTE_PIN_SHIFT);
-
-    GPIO->EUSARTROUTE[EUSART_NUM(EUSART1)].ROUTEEN = GPIO_EUSART_ROUTEEN_TXPEN | GPIO_EUSART_ROUTEEN_RXPEN | GPIO_EUSART_ROUTEEN_SCLKPEN;
-    
-    // initialize the eusart
-    EUSART_SpiInit(EUSART1, &init_master);
+void lsm6dsv::write_reg(uint8_t reg, uint8_t data){
+   uint8_t tx_buffer[2];
    
- }
+   tx_buffer[0] = reg & ~RW; // set MSB for write
+   tx_buffer[1] = data;
 
- void lsm6dsv::spi_cs_assert(void){
-    GPIO_PinOutClear(gpio_CS_port, gpio_CS_pin); // active low
- }
+   SPIDRV_MTransmitB(sl_spidrv_imu_handle, tx_buffer, 2);
+}
 
- void lsm6dsv::spi_cs_deassert(void){
-    GPIO_PinOutSet(gpio_CS_port, gpio_CS_pin);
- }
-
- uint16_t lsm6dsv::spi_transfer(uint8_t data){
-   return EUSART_Spi_TxRx(EUSART1, data);
- }
-
- void lsm6dsv::write_reg(uint8_t reg, uint8_t data){
-    spi_cs_assert();
-    spi_transfer(reg & ~(RW));
-    spi_transfer(data);
-    spi_cs_deassert();
- }
-
- uint16_t lsm6dsv::read_reg(uint8_t reg){
-    uint16_t data;
-    spi_cs_assert();
-    spi_transfer(reg | RW);
-    data = spi_transfer(0x00);
-    spi_cs_deassert();
-    return data;
- }
+uint8_t lsm6dsv::read_reg(uint8_t reg){
+   uint8_t tx_buffer[2];
+   uint8_t rx_buffer[2];
+   
+   tx_buffer[0] = reg | RW; // set MSB for read
+   tx_buffer[1] = 0x00;     // dummy byte
+   
+   SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buffer, rx_buffer, 2);
+   
+   return rx_buffer[1]; 
+}

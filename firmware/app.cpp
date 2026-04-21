@@ -41,12 +41,7 @@ lmp91000 lmp(I2C0,
              gpioPortB, 13,
              IADC0, iadcPosInputPortAPin0, 3350);
 
-lsm6dsv imu(EUSART1,
-            gpioPortC, 4, // MOSI
-            gpioPortC, 3, // MISO
-            gpioPortC, 5, // SCLK
-            gpioPortC, 6, // CS
-            1000000);
+lsm6dsv imu;
 
 
 // The advertising set handle allocated from Bluetooth stack.
@@ -70,6 +65,9 @@ extern "C"
   void app_process_action(void)
   {
     //printf("hello world\n");
+    uint16_t data = imu.read_AccX();
+    printf("accX: %d\r\n", data);
+    sl_sleeptimer_delay_millisecond(100);
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////

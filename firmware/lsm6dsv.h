@@ -10,7 +10,9 @@
 
 #include "em_cmu.h"
 #include "em_gpio.h"
-#include "em_eusart.h"
+#include "em_usart.h"
+#include "spidrv.h"
+#include "sl_spidrv_instances.h"
 
 #ifndef LSM6DSV_LSM6DSV_H
 #define LSM6DSV_LSM6DSV_H
@@ -29,20 +31,7 @@
 class lsm6dsv
 {
     public:
-        lsm6dsv(EUSART_TypeDef *spi_inst,
-
-                GPIO_Port_TypeDef gpio_MOSI_port, uint8_t gpio_MOSI_pin,
-                GPIO_Port_TypeDef gpio_MISO_port, uint8_t gpio_MISO_pin,
-                GPIO_Port_TypeDef gpio_SCLK_port, uint8_t gpio_SCLK_pin,
-                GPIO_Port_TypeDef gpio_CS_port,   uint8_t gpio_CS_pin,
-
-                uint32_t baudrate) : spi_inst(spi_inst),
-                                     gpio_MOSI_port(gpio_MOSI_port), gpio_MOSI_pin(gpio_MOSI_pin),
-                                     gpio_MISO_port(gpio_MISO_port), gpio_MISO_pin(gpio_MISO_pin),
-                                     gpio_SCLK_port(gpio_SCLK_port), gpio_SCLK_pin(gpio_SCLK_pin),
-                                     gpio_CS_port(gpio_CS_port),   gpio_CS_pin(gpio_CS_pin),
-
-                                     baudrate(baudrate) {};
+        lsm6dsv(){};
         //~lsm6dsv();
 
         void init(void);
@@ -57,31 +46,14 @@ class lsm6dsv
         uint16_t read_GyroZ(void);
         
     private:
-        // variables
-        EUSART_TypeDef *spi_inst;
-
-        GPIO_Port_TypeDef gpio_MOSI_port;
-        uint8_t gpio_MOSI_pin;
-
-        GPIO_Port_TypeDef gpio_MISO_port;
-        uint8_t gpio_MISO_pin;
-
-        GPIO_Port_TypeDef gpio_SCLK_port;
-        uint8_t gpio_SCLK_pin;
-
-        GPIO_Port_TypeDef gpio_CS_port;
-        uint8_t gpio_CS_pin;
-
-        uint32_t baudrate;
-
         // helpers
         void spi_init(void);
         void spi_cs_assert(void); 
         void spi_cs_deassert(void); 
-        uint16_t spi_transfer(uint8_t data);
+        uint8_t spi_transfer(uint8_t data);
 
         void write_reg(uint8_t reg, uint8_t data);
-        uint16_t read_reg(uint8_t reg);
+        uint8_t read_reg(uint8_t reg);
         
 };
 
