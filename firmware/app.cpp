@@ -33,6 +33,7 @@
 #include "app.h"
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
+#include "battery.h"
 
 lmp91000 lmp(I2C0,
              gpioPortB, 12,
@@ -59,10 +60,7 @@ extern "C"
   // Application Process Action.
   void app_process_action(void)
   {
-    IADC_command(IADC0, iadcCmdStartScan);
-    IADC_Result_t sample = IADC_pullScanFifoResult(IADC0);
-    float bat_voltage = sample.data * 3.3 / 0xFFF;
-    //printf("scan result: %lu\n", sample.data);
+    float bat_voltage = battery_get_voltage();
     printf("battery voltage: %f\n", bat_voltage);
     if (app_is_process_required())
     {
