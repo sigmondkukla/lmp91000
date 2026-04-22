@@ -59,6 +59,11 @@ extern "C"
   // Application Process Action.
   void app_process_action(void)
   {
+    IADC_command(IADC0, iadcCmdStartScan);
+    IADC_Result_t sample = IADC_pullScanFifoResult(IADC0);
+    float bat_voltage = sample.data * 3.3 / 0xFFF;
+    //printf("scan result: %lu\n", sample.data);
+    printf("battery voltage: %f\n", bat_voltage);
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
@@ -66,8 +71,8 @@ extern "C"
       // This is will run each time app_proceed() is called.                     //
       // Do not call blocking functions from here!                               //
       /////////////////////////////////////////////////////////////////////////////
-      notify_experiment_results();
-      notify_experiment_status();
+      //notify_experiment_results();
+      //notify_experiment_status();
     }
   }
 

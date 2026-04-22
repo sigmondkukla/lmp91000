@@ -34,7 +34,8 @@ void lmp91000::init()
   initADC();
   initDAC();
 
-  unlock();
+  //TODO: fix the unlock function so that it doesn't cause a hard fault
+  //unlock();
 }
 
 void lmp91000::initCMU(void)
@@ -42,6 +43,7 @@ void lmp91000::initCMU(void)
   CMU_ClockEnable(cmuClock_GPIO, true);
   CMU_ClockEnable(cmuClock_I2C0, true);
   CMU_ClockEnable(cmuClock_IADC0, true);
+  CMU_ClockEnable(cmuClock_VDAC0, true);
 }
 
 void lmp91000::initI2C(void)
