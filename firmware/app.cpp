@@ -60,8 +60,8 @@ extern "C"
   // Application Process Action.
   void app_process_action(void)
   {
-    float bat_voltage = battery_get_voltage();
-    printf("battery voltage: %f\n", bat_voltage);
+    
+    printf("battery voltage: %f\n", battery_get_voltage());
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
