@@ -547,7 +547,7 @@
       "plot": "production/nextpcb/gerber",
       "pos_files": "production/nextpcb/",
       "specctra_dsn": "",
-      "step": "",
+      "step": "lmp91000-pcb.step",
       "svg": "",
       "vrml": ""
     },
