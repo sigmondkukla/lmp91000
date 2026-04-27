@@ -157,20 +157,12 @@
 // [LETIMER0]$
 
 // $[IADC0]
-// IADC0 SCAN0POS on PA00
-#ifndef IADC0_SCAN0POS_PORT                     
-#define IADC0_SCAN0POS_PORT                      SL_GPIO_PORT_A
+// IADC0 POS on PA00
+#ifndef IADC0_POS_PORT                          
+#define IADC0_POS_PORT                           SL_GPIO_PORT_A
 #endif
-#ifndef IADC0_SCAN0POS_PIN                      
-#define IADC0_SCAN0POS_PIN                       0
-#endif
-
-// IADC0 SCAN1POS on PD00
-#ifndef IADC0_SCAN1POS_PORT                     
-#define IADC0_SCAN1POS_PORT                      SL_GPIO_PORT_D
-#endif
-#ifndef IADC0_SCAN1POS_PIN                      
-#define IADC0_SCAN1POS_PIN                       0
+#ifndef IADC0_POS_PIN                           
+#define IADC0_POS_PIN                            0
 #endif
 
 // [IADC0]$
@@ -249,13 +241,6 @@
 #endif
 #ifndef LMP_SCL_PIN                             
 #define LMP_SCL_PIN                              5
-#endif
-
-#ifndef LMP_MENB_PORT                           
-#define LMP_MENB_PORT                            SL_GPIO_PORT_A
-#endif
-#ifndef LMP_MENB_PIN                            
-#define LMP_MENB_PIN                             6
 #endif
 
 #ifndef LED_PORT                                
