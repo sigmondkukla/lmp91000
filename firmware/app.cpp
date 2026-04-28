@@ -34,10 +34,6 @@
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
 
-// for printing floats (I can't get linker flags working)
-#include <string>
-#include <cstdio>
-#include <cmath>
 
 lmp91000 lmp(I2C0,
              gpioPortB, 12,
