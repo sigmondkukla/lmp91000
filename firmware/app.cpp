@@ -53,24 +53,6 @@ static uint8_t advertising_set_handle = 0xff;
 
 extern "C"
 {
-  void printFloat(float f, int precision = 2) {
-    std::string result = (f < 0) ? "-" : "";
-    f = std::abs(f);
-
-    long intPart = (long)f;
-    result += std::to_string(intPart) + ".";
-
-    float fraction = f - (float)intPart;
-    for (int i = 0; i < precision; i++) {
-        fraction *= 10;
-        int digit = (int)fraction;
-        result += std::to_string(digit);
-        fraction -= digit;
-    }
-
-    printf("%s\n", result.c_str());
-  }
-
   // Application Init.
   void app_init(void)
   {
@@ -78,38 +60,13 @@ extern "C"
     // Put your additional application init code here!                         //
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
-    // lmp.init();
+    lmp.init();
     imu.init();
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
-    float accX = imu.read_AccX();
-    float accY = imu.read_AccY();
-    float accZ = imu.read_AccZ();
-
-    float gyroX = imu.read_GyroX();
-    float gyroY = imu.read_GyroY();
-    float gyroZ = imu.read_GyroZ();
-
-    printf("------------------------\n");
-    printf("accX: ");
-    printFloat(accX, 2);
-    printf("accY: ");
-    printFloat(accY, 2);
-    printf("accZ: ");
-    printFloat(accZ, 2);
-
-    printf("gyroX: ");
-    printFloat(gyroX, 2);
-    printf("gyroY: ");
-    printFloat(gyroY, 2);
-    printf("gyroZ: ");
-    printFloat(gyroZ, 2);
-
-    sl_sleeptimer_delay_millisecond(1000);
-
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
@@ -117,8 +74,8 @@ extern "C"
       // This is will run each time app_proceed() is called.                     //
       // Do not call blocking functions from here!                               //
       /////////////////////////////////////////////////////////////////////////////
-      // notify_experiment_results();
-      // notify_experiment_status();
+      notify_experiment_results();
+      notify_experiment_status();
     }
   }
 
