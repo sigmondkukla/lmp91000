@@ -7,8 +7,6 @@
 
 #include "lsm6dsv.h"
 
-/*TODO: TRY CHANGING TO USART0 SEE https://docs.silabs.com/gecko-platform/4.0/emlib/api/efr32xg24/group-usart */
-
 #include <cstddef>
 #include <stdio.h>
 
@@ -28,7 +26,7 @@ void lsm6dsv::init(void){
    uint8_t out = read_reg(0x1e);
    printf("%d\r\n", out);
 
-   // Enable BDU and Address Auto-Increment (CRITICAL)
+   // Enable BDU and Address Auto-Increment
    // 0x44 = 0b01000100 (BDU=1, IF_INC=1)
    write_reg(CTRL3, 0x44);
 
@@ -49,7 +47,7 @@ void lsm6dsv::init(void){
    write_reg(CTRL5, 0x00);
    write_reg(CTRL9, 0x00); // CTRL9: Ensure all power-down overrides are 0
    
-   // Update your sensitivity constants using FLOATS
+   // Update sensitivity constants
    accel_mg = accel_sensitivity();
    gyro_dps = gyro_sensitivity();
 
@@ -68,14 +66,9 @@ float lsm6dsv::read_AccX(void){
    Ecode_t status = SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buf, rx_buf, 3);
 
    if (status != ECODE_EMDRV_SPIDRV_OK) {
-      return 0; // Or handle error appropriately
+      return 0; 
    }
 
-   // rx_buf[0] is garbage (received during address phase)
-   // rx_buf[1] is OUTX_L_A
-   // rx_buf[2] is OUTX_H_A
-   
-   // Combine into a signed 16-bit integer
    int16_t acc_x = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
 
    return acc_x * accel_mg;
@@ -88,13 +81,8 @@ float lsm6dsv::read_AccY(void){
    Ecode_t status = SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buf, rx_buf, 3);
 
    if (status != ECODE_EMDRV_SPIDRV_OK) {
-      return 0; // Or handle error appropriately
+      return 0;
    }
-
-   // rx_buf[0] is garbage (received during address phase)
-   // rx_buf[1] is OUTX_L_A
-   // rx_buf[2] is OUTX_H_A
-   
    // Combine into a signed 16-bit integer
    int16_t acc_y = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
 
@@ -108,12 +96,8 @@ float lsm6dsv::read_AccZ(void){
    Ecode_t status = SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buf, rx_buf, 3);
 
    if (status != ECODE_EMDRV_SPIDRV_OK) {
-      return 0; // Or handle error appropriately
+      return 0;
    }
-
-   // rx_buf[0] is garbage (received during address phase)
-   // rx_buf[1] is OUTX_L_A
-   // rx_buf[2] is OUTX_H_A
    
    // Combine into a signed 16-bit integer
    int16_t acc_z = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
@@ -129,14 +113,8 @@ float lsm6dsv::read_GyroX(void){
    Ecode_t status = SPIDRV_MTransferB(sl_spidrv_imu_handle, tx_buf, rx_buf, 3);
 
    if (status != ECODE_EMDRV_SPIDRV_OK) {
-      return 0; // Or handle error appropriately
+      return 0;
    }
-
-   // rx_buf[0] is garbage (received during address phase)
-   // rx_buf[1] is OUTX_L_A
-   // rx_buf[2] is OUTX_H_A
-   
-   // Combine into a signed 16-bit integer
    int16_t gyro_x = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
 
    return gyro_x * gyro_dps;
@@ -152,10 +130,6 @@ float lsm6dsv::read_GyroY(void){
    if (status != ECODE_EMDRV_SPIDRV_OK) {
       return 0; // Or handle error appropriately
    }
-
-   // rx_buf[0] is garbage (received during address phase)
-   // rx_buf[1] is OUTX_L_A
-   // rx_buf[2] is OUTX_H_A
    
    // Combine into a signed 16-bit integer
    int16_t gyro_y = (int16_t)((rx_buf[2] << 8) | rx_buf[1]);
