@@ -36,9 +36,9 @@
 #include "battery.h"
 
 lmp91000 lmp(I2C0,
-             gpioPortB, 12,
-             gpioPortB, 11,
-             gpioPortB, 13,
+             gpioPortA, 5,
+             gpioPortA, 4,
+             gpioPortA, 6,
              IADC0, iadcPosInputPortAPin0, 3350);
 
 // The advertising set handle allocated from Bluetooth stack.
@@ -55,6 +55,7 @@ extern "C"
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
     lmp.init();
+    
   }
 
   // Application Process Action.

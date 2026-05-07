@@ -34,8 +34,7 @@ void lmp91000::init()
   initADC();
   initDAC();
 
-  //TODO: fix the unlock function so that it doesn't cause a hard fault
-  //unlock();
+  unlock();
 }
 
 void lmp91000::initCMU(void)
@@ -51,6 +50,9 @@ void lmp91000::initI2C(void)
   // Use default settings
   I2C_Init_TypeDef i2cInit = I2C_INIT_DEFAULT;
   i2cInit.freq = I2C_FREQ_STANDARD_MAX;
+
+  // Configure GPIO pin for i2c enable (active low)
+  GPIO_PinModeSet(menb_port, menb_pin, gpioModePushPull, 1);
 
   // Using PC4 (SDA) and PC5 (SCL)
   GPIO_PinModeSet(i2c_sda_port, i2c_sda_pin, gpioModeWiredAndPullUpFilter, 1);
@@ -129,9 +131,9 @@ void lmp91000::initDAC(void)
 void lmp91000::enable(bool enabled)
 {
   if (enabled)
-    GPIO_PinOutSet(menb_port, menb_pin);
-  else
     GPIO_PinOutClear(menb_port, menb_pin);
+  else 
+    GPIO_PinOutSet(menb_port, menb_pin);
 }
 
 void lmp91000::DAC_write(const uint16_t value)
@@ -142,7 +144,7 @@ void lmp91000::DAC_write(const uint16_t value)
 
 void lmp91000::write(uint8_t reg, uint8_t value)
 {
-  //    printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
+  printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
   I2C_TransferSeq_TypeDef i2cTransfer;
   I2C_TransferReturn_TypeDef result;
   uint8_t i2c_write_data[2];
@@ -161,7 +163,7 @@ void lmp91000::write(uint8_t reg, uint8_t value)
   result = I2C_TransferInit(I2C0, &i2cTransfer);
   while (result == i2cTransferInProgress)
   {
-    // printf("transfer in progress...\n");
+    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
   // return result;
@@ -193,6 +195,7 @@ uint8_t lmp91000::read(uint8_t reg)
   // Read data
   while (result == i2cTransferInProgress)
   {
+    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
 
