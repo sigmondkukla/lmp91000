@@ -60,7 +60,7 @@
 // <SL_CLOCK_MANAGER_HFXO_EN_DISABLE=> DISABLE
 // <d> SL_CLOCK_MANAGER_HFXO_EN_AUTO
 #ifndef SL_CLOCK_MANAGER_HFXO_EN
-#define SL_CLOCK_MANAGER_HFXO_EN    SL_CLOCK_MANAGER_HFXO_EN_AUTO
+#define SL_CLOCK_MANAGER_HFXO_EN    SL_CLOCK_MANAGER_HFXO_EN_ENABLE
 #endif
 
 // <o SL_CLOCK_MANAGER_HFXO_MODE> Mode
@@ -385,7 +385,7 @@
 // <cmuPrecisionHigh=> High precision
 // <d> cmuPrecisionDefault
 #ifndef SL_CLOCK_MANAGER_LFRCO_PRECISION
-#define SL_CLOCK_MANAGER_LFRCO_PRECISION    cmuPrecisionDefault
+#define SL_CLOCK_MANAGER_LFRCO_PRECISION    cmuPrecisionHigh
 #endif
 // </h>
 
@@ -405,7 +405,6 @@
 
 // <cmu signal=CLKIN0 optional=true> SL_CLOCK_MANAGER_CLKIN0
 // $[CMU_SL_CLOCK_MANAGER_CLKIN0]
-
 // [CMU_SL_CLOCK_MANAGER_CLKIN0]$
 
 // <<< sl:end pin_tool >>>
