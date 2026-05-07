@@ -71,8 +71,8 @@ extern "C"
       // This is will run each time app_proceed() is called.                     //
       // Do not call blocking functions from here!                               //
       /////////////////////////////////////////////////////////////////////////////
-      //notify_experiment_results();
-      //notify_experiment_status();
+      notify_experiment_results();
+      notify_experiment_status();
     }
   }
 
