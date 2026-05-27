@@ -33,12 +33,13 @@
 #include "app.h"
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
+#include "battery.h"
 
 
 lmp91000 lmp(I2C0,
-             gpioPortB, 12,
-             gpioPortB, 11,
-             gpioPortB, 13,
+             gpioPortA, 5,
+             gpioPortA, 4,
+             gpioPortA, 6,
              IADC0, iadcPosInputPortAPin0, 3350);
 
 lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
@@ -56,13 +57,17 @@ extern "C"
     // Put your additional application init code here!                         //
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
+    // GPIO_PinModeSet()
     lmp.init();
     imu.init();
+    
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
+    
+    printf("battery voltage: %f\n", battery_get_voltage());
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
@@ -117,11 +122,14 @@ extern "C"
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
+      handle_ble_connection_status(evt);
       break;
 
     // -------------------------------
     // This event indicates that a connection was closed.
     case sl_bt_evt_connection_closed_id:
+      handle_ble_connection_status(evt);
+
       // Generate data for advertising
       sc = sl_bt_legacy_advertiser_generate_data(advertising_set_handle,
                                                  sl_bt_advertiser_general_discoverable);
@@ -133,9 +141,19 @@ extern "C"
       app_assert_status(sc);
       break;
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Add additional event handlers here as your application requires!      //
-    ///////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////
+      // Add additional event handlers here as your application requires!      //
+      ///////////////////////////////////////////////////////////////////////////
+
+    case sl_bt_evt_gatt_server_characteristic_status_id:
+      // checks when phone enables notify
+      handle_ble_connection_status(evt);
+      break;
+
+    case sl_bt_evt_gatt_server_attribute_value_id:
+      // handles config and start/stop
+      handle_ble_connection_status(evt);
+      break;
 
     // -------------------------------
     // Default event handler.
