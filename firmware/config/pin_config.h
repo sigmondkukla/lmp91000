@@ -110,6 +110,38 @@
 // [TIMER4]$
 
 // $[USART0]
+// USART0 CLK on PC05
+#ifndef USART0_CLK_PORT                         
+#define USART0_CLK_PORT                          SL_GPIO_PORT_C
+#endif
+#ifndef USART0_CLK_PIN                          
+#define USART0_CLK_PIN                           5
+#endif
+
+// USART0 CS on PC06
+#ifndef USART0_CS_PORT                          
+#define USART0_CS_PORT                           SL_GPIO_PORT_C
+#endif
+#ifndef USART0_CS_PIN                           
+#define USART0_CS_PIN                            6
+#endif
+
+// USART0 RX on PC03
+#ifndef USART0_RX_PORT                          
+#define USART0_RX_PORT                           SL_GPIO_PORT_C
+#endif
+#ifndef USART0_RX_PIN                           
+#define USART0_RX_PIN                            3
+#endif
+
+// USART0 TX on PC04
+#ifndef USART0_TX_PORT                          
+#define USART0_TX_PORT                           SL_GPIO_PORT_C
+#endif
+#ifndef USART0_TX_PIN                           
+#define USART0_TX_PIN                            4
+#endif
+
 // [USART0]$
 
 // $[I2C1]
@@ -125,20 +157,12 @@
 // [LETIMER0]$
 
 // $[IADC0]
-// IADC0 SCAN0POS on PA00
-#ifndef IADC0_SCAN0POS_PORT                     
-#define IADC0_SCAN0POS_PORT                      SL_GPIO_PORT_A
+// IADC0 POS on PA00
+#ifndef IADC0_POS_PORT                          
+#define IADC0_POS_PORT                           SL_GPIO_PORT_A
 #endif
-#ifndef IADC0_SCAN0POS_PIN                      
-#define IADC0_SCAN0POS_PIN                       0
-#endif
-
-// IADC0 SCAN1POS on PD00
-#ifndef IADC0_SCAN1POS_PORT                     
-#define IADC0_SCAN1POS_PORT                      SL_GPIO_PORT_D
-#endif
-#ifndef IADC0_SCAN1POS_PIN                      
-#define IADC0_SCAN1POS_PIN                       0
+#ifndef IADC0_POS_PIN                           
+#define IADC0_POS_PIN                            0
 #endif
 
 // [IADC0]$
@@ -217,13 +241,6 @@
 #endif
 #ifndef LMP_SCL_PIN                             
 #define LMP_SCL_PIN                              5
-#endif
-
-#ifndef LMP_MENB_PORT                           
-#define LMP_MENB_PORT                            SL_GPIO_PORT_A
-#endif
-#ifndef LMP_MENB_PIN                            
-#define LMP_MENB_PIN                             6
 #endif
 
 #ifndef LED_PORT                                
