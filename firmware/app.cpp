@@ -54,12 +54,20 @@ extern "C"
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
     // GPIO_PinModeSet()
-    lmp.init();
+    //lmp.init();
+    sl_sleeptimer_init();
+    CMU_ClockEnable(cmuClock_GPIO, 1);
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); 
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
+    GPIO_PinOutToggle(gpioPortA, 8);
+    sl_sleeptimer_delay_millisecond(1000);
+    //GPIO_PinOutToggle(gpioPortA, 8);
+    //sl_sleeptimer_delay_millisecond(1000);
+
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
