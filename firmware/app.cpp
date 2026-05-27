@@ -65,8 +65,6 @@ extern "C"
   {
     GPIO_PinOutToggle(gpioPortA, 8);
     sl_sleeptimer_delay_millisecond(1000);
-    //GPIO_PinOutToggle(gpioPortA, 8);
-    //sl_sleeptimer_delay_millisecond(1000);
 
     if (app_is_process_required())
     {
