@@ -36,7 +36,10 @@
 #ifdef __cplusplus
 
 #include "lmp91000.h"
+#include "lsm6dsv.h"
 extern lmp91000 lmp;
+extern lsm6dsv imu;
+
 
 extern "C" {
 #endif

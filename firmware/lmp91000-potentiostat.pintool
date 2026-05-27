@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="pin_tool.EFR32BG24L210F768IM40" partId="mcu.arm.efr32.bg24.efr32bg24l210f768im40" contextId="com.silabs.sdk.stack.sisdk:2025.12.2._187631892563987570">
   <mode name="DefaultMode">
-    <property object="CMU" propertyId="ABPeripheral.included" value="true"/>
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_DEBUG%T%sl_debug_swo_config.h"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
@@ -10,6 +9,8 @@
     <property object="PA02" propertyId="pin.name" value=""/>
     <property object="PA04" propertyId="pin.name" value="LMP_SDA"/>
     <property object="PA05" propertyId="pin.name" value="LMP_SCL"/>
+    <property object="PA06" propertyId="pin.name" value="LMP_MENB"/>
+    <property object="PA06" propertyId="pin.reserve" value="Reserved"/>
     <property object="PA08" propertyId="pin.name" value="LED"/>
     <property object="PA08" propertyId="pin.reserve" value="Reserved"/>
     <property object="PB00" propertyId="pin.name" value="LMP_VREF"/>
@@ -24,7 +25,6 @@
     <property object="PC07" propertyId="pin.name" value="IMU_INT2"/>
     <property object="PC07" propertyId="pin.reserve" value="Reserved"/>
     <property object="PD00" propertyId="pin.name" value="BATT_MEAS"/>
-    <property object="PD00" propertyId="pin.reserve" value="Reserved"/>
     <property object="PORTIO" propertyId="portio.gpio.enable.swclk" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.gpio.enable.swdio" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.gpio.enable.swv" value="Enabled"/>
@@ -32,7 +32,9 @@
     <property object="PORTIO" propertyId="portio.i2c0.enable.sda" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.i2c0.location.scl" value="5"/>
     <property object="PORTIO" propertyId="portio.i2c0.location.sda" value="4"/>
-    <property object="PORTIO" propertyId="portio.iadc0.enable.pos" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.iadc0.enable.scan0pos" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.iadc0.enable.scan1pos" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.iadc0.location.scan1pos" value="176"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.clk" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.cs" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
@@ -44,6 +46,8 @@
     <property object="PORTIO" propertyId="portio.vdac0.enable.ch0_main_out" value="Enabled"/>
     <property object="PTI" propertyId="ABModule.selectedRequirement" value="pti%T%SL_RAIL_UTIL_PTI%T%sl_rail_util_pti_config.h"/>
     <property object="PTI" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART0" propertyId="ABModule.selectedRequirement" value="usart%T%SL_SPIDRV_IMU%T%sl_spidrv_imu_config.h"/>
+    <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

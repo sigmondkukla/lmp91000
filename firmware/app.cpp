@@ -33,19 +33,23 @@
 #include "app.h"
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
+#include "battery.h"
+
 
 lmp91000 lmp(I2C0,
-             gpioPortB, 12,
-             gpioPortB, 11,
-             gpioPortB, 13,
+             gpioPortA, 5,
+             gpioPortA, 4,
+             gpioPortA, 6,
              IADC0, iadcPosInputPortAPin0, 3350);
+
+lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
+
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
 extern "C"
 {
-
   // Application Init.
   void app_init(void)
   {
@@ -55,11 +59,15 @@ extern "C"
     /////////////////////////////////////////////////////////////////////////////
     // GPIO_PinModeSet()
     lmp.init();
+    imu.init();
+    
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
+    
+    printf("battery voltage: %f\n", battery_get_voltage());
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
