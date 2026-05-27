@@ -30,6 +30,7 @@ target_compile_options(potentiostat PUBLIC
 
 target_link_options(potentiostat PUBLIC
     # Set additional linker flags here
+    -u _printf_float
 )
 
 # Link with the content defined in the SLC project

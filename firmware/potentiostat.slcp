@@ -30,7 +30,7 @@ include:
 sdk:
   vendor: silabs
   id: simplicity_sdk
-  version: 2025.12.2
+  version: 2025.12.3
 toolchain_settings: [
   ]
 component:
@@ -109,6 +109,11 @@ component:
 - package: simplicity_sdk
   vendor: silabs
   id: sl_main
+- package: simplicity_sdk
+  instance:
+  - imu
+  vendor: silabs
+  id: spidrv
 other_file:
 - path: image/readme_img0.png
 - path: image/readme_img1.png
