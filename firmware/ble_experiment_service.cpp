@@ -11,8 +11,18 @@
 #include "gatt_db.h"
 #include "app.h" // For access to lmp1 / lmp2
 #include "experiment_status.h"
+#include <cstdio>
 
 #define TIMESTEP 10 // [ms] let's keep it at 100 Hz for now
+
+// Helper function to print data in hex format
+static void print_hex_data(const char* label, const uint8_t* data, size_t len) {
+    printf("%s [%zu bytes]: ", label, len);
+    for (size_t i = 0; i < len; i++) {
+        printf("%02X ", data[i]);
+    }
+    printf("\n");
+}
 
 // bring in global instances
 Experiment* currentExperiment = nullptr;
@@ -40,6 +50,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
 
     if (len < 4) return; // must be able to read at least 4 bytes to get the ID
     uint32_t type_id = *reinterpret_cast<const uint32_t*>(data); // assume its little endian and peek at those first four bytes
+    printf("Received config for experiment type ID: %lu\n", type_id);
 
     switch (type_id) {
         case CV: {
@@ -80,6 +91,9 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
         case CA: {
             if (len != sizeof(CAConfig)) return;
             const CAConfig* cfg = reinterpret_cast<const CAConfig*>(data);
+            printf("Creating CA with: init_e=%ld, quiet_time=%ld, e1=%ld, duration1=%ld, e2=%ld, duration2=%ld, e3=%ld, duration3=%ld, final_e=%ld\n",
+                cfg->init_e, cfg->quiet_time, cfg->e_1, cfg->duration_1, cfg->e_2, cfg->duration_2, cfg->e_3, cfg->duration_3, cfg->final_e
+            );
 
             currentExperiment = new Chronoamperometry(
                 &lmp, TIMESTEP, set_status_flag,
@@ -134,6 +148,8 @@ void handle_ble_connection_status(sl_bt_msg_t *evt) {
 }
 
 void handle_ble_write(sl_bt_evt_gatt_server_user_write_request_t *req) {
+    print_hex_data("BLE RX", req->value.data, req->value.len);
+    
     if (req->characteristic == gattdb_experiment_config) {
         create_new_experiment(req->value.data, req->value.len);
         sl_bt_gatt_server_send_user_write_response(req->connection, gattdb_experiment_config, 0);

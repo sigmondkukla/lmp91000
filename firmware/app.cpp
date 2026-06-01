@@ -67,7 +67,7 @@ extern "C"
   void app_process_action(void)
   {
     
-    printf("battery voltage: %f\n", battery_get_voltage());
+    //printf("battery voltage: %f\n", battery_get_voltage());
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
@@ -75,8 +75,8 @@ extern "C"
       // This is will run each time app_proceed() is called.                     //
       // Do not call blocking functions from here!                               //
       /////////////////////////////////////////////////////////////////////////////
-      notify_experiment_results();
       notify_experiment_status();
+      notify_experiment_results();
     }
   }
 
@@ -122,6 +122,7 @@ extern "C"
     // -------------------------------
     // This event indicates that a new connection was opened.
     case sl_bt_evt_connection_opened_id:
+      printf("BLE Connection opened\n");
       handle_ble_connection_status(evt);
       break;
 
@@ -147,17 +148,38 @@ extern "C"
 
     case sl_bt_evt_gatt_server_characteristic_status_id:
       // checks when phone enables notify
+      printf("GATT Characteristic status event\n");
       handle_ble_connection_status(evt);
       break;
 
-    case sl_bt_evt_gatt_server_attribute_value_id:
+    case sl_bt_evt_gatt_server_attribute_value_id: {
       // handles config and start/stop
+      sl_bt_evt_gatt_server_attribute_value_t *attr_val = &evt->data.evt_gatt_server_attribute_value;
+      printf("GATT Attribute Value - Characteristic: %u, Data length: %u, Data: ", attr_val->attribute, attr_val->value.len);
+      for (uint32_t i = 0; i < attr_val->value.len; i++) {
+        printf("%02X ", attr_val->value.data[i]);
+      }
+      printf("\n");
       handle_ble_connection_status(evt);
       break;
+    }
+
+    case sl_bt_evt_gatt_server_user_write_request_id: {
+      // handles write requests with hex logging
+      sl_bt_evt_gatt_server_user_write_request_t *write_req = &evt->data.evt_gatt_server_user_write_request;
+      printf("GATT Write Request - Characteristic: %u, Data length: %u, Data: ", write_req->characteristic, write_req->value.len);
+      for (uint32_t i = 0; i < write_req->value.len; i++) {
+        printf("%02X ", write_req->value.data[i]);
+      }
+      printf("\n");
+      handle_ble_write(write_req);
+      break;
+    }
 
     // -------------------------------
     // Default event handler.
     default:
+      printf("BLE Event ID: 0x%x\n", SL_BT_MSG_ID(evt->header));
       break;
     }
   }
