@@ -153,6 +153,9 @@ extern "C"
       break;
 
     case sl_bt_evt_gatt_server_attribute_value_id: {
+
+      sl_bt_evt_gatt_server_user_write_request_t *write_req = &evt->data.evt_gatt_server_user_write_request;
+
       // handles config and start/stop
       sl_bt_evt_gatt_server_attribute_value_t *attr_val = &evt->data.evt_gatt_server_attribute_value;
       printf("GATT Attribute Value - Characteristic: %u, Data length: %u, Data: ", attr_val->attribute, attr_val->value.len);
@@ -160,18 +163,7 @@ extern "C"
         printf("%02X ", attr_val->value.data[i]);
       }
       printf("\n");
-      handle_ble_connection_status(evt);
-      break;
-    }
-
-    case sl_bt_evt_gatt_server_user_write_request_id: {
-      // handles write requests with hex logging
-      sl_bt_evt_gatt_server_user_write_request_t *write_req = &evt->data.evt_gatt_server_user_write_request;
-      printf("GATT Write Request - Characteristic: %u, Data length: %u, Data: ", write_req->characteristic, write_req->value.len);
-      for (uint32_t i = 0; i < write_req->value.len; i++) {
-        printf("%02X ", write_req->value.data[i]);
-      }
-      printf("\n");
+      //handle_ble_connection_status(evt);
       handle_ble_write(write_req);
       break;
     }

@@ -41,12 +41,14 @@ void set_status_flag(uint8_t flag, uint8_t value) {
 }
 
 static void create_new_experiment(const uint8_t* data, size_t len) {
+    printf("Creating new experiment with len: %d\n", (int)len);
     // cleanup prior experiment if exists
     if (currentExperiment != nullptr) {
         currentExperiment->end();
         delete currentExperiment;
         currentExperiment = nullptr;
     }
+
 
     if (len < 4) return; // must be able to read at least 4 bytes to get the ID
     uint32_t type_id = *reinterpret_cast<const uint32_t*>(data); // assume its little endian and peek at those first four bytes
@@ -113,13 +115,16 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
 }
 
 void handle_ble_connection_status(sl_bt_msg_t *evt) {
+    printf("Handling BLE connection status event with ID: %x\n", SL_BT_MSG_ID(evt->header));
     switch (SL_BT_MSG_ID(evt->header)) {
         case sl_bt_evt_connection_opened_id:
+        printf("sl_bt_evt_connection_opened_id\n");
             active_connection_handle = evt->data.evt_connection_opened.connection;
             sl_bt_gatt_server_set_max_mtu(247, NULL); // request max MTU of 247 bytes. maybe we can go higher in future?
             break;
 
         case sl_bt_evt_connection_closed_id:
+        printf("sl_bt_evt_connection_closed_id\n");
             active_connection_handle = 0xFF;
             results_notification_enabled = false;
             status_notification_enabled = false;
@@ -129,6 +134,7 @@ void handle_ble_connection_status(sl_bt_msg_t *evt) {
             break;
 
         case sl_bt_evt_gatt_server_characteristic_status_id:
+        printf("sl_bt_evt_gatt_server_characteristic_status_id char is %u\n", evt->data.evt_gatt_server_characteristic_status.characteristic);
             if (evt->data.evt_gatt_server_characteristic_status.characteristic == gattdb_experiment_results) {
                  if (evt->data.evt_gatt_server_characteristic_status.status_flags == sl_bt_gatt_server_client_config) {
 
@@ -150,9 +156,25 @@ void handle_ble_connection_status(sl_bt_msg_t *evt) {
 void handle_ble_write(sl_bt_evt_gatt_server_user_write_request_t *req) {
     print_hex_data("BLE RX", req->value.data, req->value.len);
     
+    printf("Write request for characteristic handle: %u\n", req->characteristic);
+    // If the incoming write is for characteristic 27, reply with a configured status byte
+    if (req->characteristic == 27) {
+        uint8_t cfg_status = (1 << STATUS_CONFIGURED);
+        // update GATT db so reads see the status
+        sl_bt_gatt_server_write_attribute_value(gattdb_experiment_status, 0, 1, &cfg_status);
+        // send notification if enabled and connected
+        if (active_connection_handle != 0xFF && status_notification_enabled) {
+            sl_bt_gatt_server_send_notification(active_connection_handle, gattdb_experiment_status, 1, &cfg_status);
+            printf("Sent CONFIGURED status notification (0x%02X)\n", cfg_status);
+        } else {
+            printf("CONFIGURED status prepared but not notified: conn=0x%02X notif=%d\n", active_connection_handle, status_notification_enabled);
+        }
+    }
     if (req->characteristic == gattdb_experiment_config) {
+        printf("Received write to experiment config characteristic\n");
         create_new_experiment(req->value.data, req->value.len);
         sl_bt_gatt_server_send_user_write_response(req->connection, gattdb_experiment_config, 0);
+        printf("request connection: %d", req->connection);
     }
     else if (req->characteristic == gattdb_experiment_status) {
         if (req->value.len == 1) {
