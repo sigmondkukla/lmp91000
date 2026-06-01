@@ -110,38 +110,6 @@
 // [TIMER4]$
 
 // $[USART0]
-// USART0 CLK on PC05
-#ifndef USART0_CLK_PORT                         
-#define USART0_CLK_PORT                          SL_GPIO_PORT_C
-#endif
-#ifndef USART0_CLK_PIN                          
-#define USART0_CLK_PIN                           5
-#endif
-
-// USART0 CS on PC06
-#ifndef USART0_CS_PORT                          
-#define USART0_CS_PORT                           SL_GPIO_PORT_C
-#endif
-#ifndef USART0_CS_PIN                           
-#define USART0_CS_PIN                            6
-#endif
-
-// USART0 RX on PC03
-#ifndef USART0_RX_PORT                          
-#define USART0_RX_PORT                           SL_GPIO_PORT_C
-#endif
-#ifndef USART0_RX_PIN                           
-#define USART0_RX_PIN                            3
-#endif
-
-// USART0 TX on PC04
-#ifndef USART0_TX_PORT                          
-#define USART0_TX_PORT                           SL_GPIO_PORT_C
-#endif
-#ifndef USART0_TX_PIN                           
-#define USART0_TX_PIN                            4
-#endif
-
 // [USART0]$
 
 // $[I2C1]
