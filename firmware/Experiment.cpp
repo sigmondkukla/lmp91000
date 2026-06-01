@@ -23,7 +23,7 @@ void Experiment::init(void)
 //  CMU_ClockSelectSet(cmuClock_LFE, cmuSelect_LFRCO);
 //  CMU_ClockEnable(cmuClock_RTCC, true);
 //
-//  sl_sleeptimer_init();
+// sl_sleeptimer_init();
 
   lmp->set_mode(0x3); // three lead amperometric cell
   lmp->set_fet_enable(false); // disable FET
@@ -32,18 +32,22 @@ void Experiment::init(void)
   lmp->set_ref_source(1); // external
   lmp->set_internal_zero(1); // internal zero 50%
   lmp->set_outputs_to_zero();
+  printf("intialized experiment\n");
   //LMP91000_set_bias_magnitude(0x5); // TODO see if we can delete this
 }
 
 void Experiment::begin(void)
 {
   iteration = 0;
+  printf("[TIMER] Starting periodic timer with timestep=%u ms\n", timestep);
   sl_sleeptimer_start_periodic_timer_ms(&experiment_timer, timestep, timerCallback, this, 0, 0);
 
   if(status_flag_callback) // callback if it exists
     {
         status_flag_callback(STATUS_RUNNING, 1);
+        printf("status flag set\n");
     }
+    printf("experiment begun\n");
 }
 
 void Experiment::end(void)
@@ -59,6 +63,9 @@ void Experiment::end(void)
 void Experiment::timerCallback(sl_sleeptimer_timer_handle_t *handle, void *data)
 {
   (void)handle;
+  static uint32_t callback_count = 0;
+  callback_count++;
+  if (callback_count % 100 == 0) printf("[TIMER] Callback fired (count=%lu)\n", callback_count);
 
   Experiment *instance = static_cast<Experiment *>(data); // cast the void back to experiment instance pointer
 
@@ -69,11 +76,14 @@ void Experiment::timerCallback(sl_sleeptimer_timer_handle_t *handle, void *data)
 
 void Experiment::tickHandler(void)
 {
+  if (iteration % 100 == 0) printf("[TICK] Handler called (iteration=%lu)\n", iteration);
+  
   int32_t voltage = 0;
   bool continue_experiment = get_next_voltage(voltage);
 
   if (!continue_experiment) {
       end();
+      printf("[TICK] Experiment ended at iteration=%lu\n", iteration);
       app_log("Ended\n");
       return;
   }

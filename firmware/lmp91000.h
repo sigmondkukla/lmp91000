@@ -30,7 +30,7 @@
 #define LMP91000_REG_REFCN 0x11  // Reference Control Register
 #define LMP91000_REG_MODECN 0x12 // Mode Control Register
 
-#define LMP91000_I2C_ADDR 0x90
+#define LMP91000_I2C_ADDR 0x48
 
 #define LMP91000_MIN_VREF 1500 // min input from DAC
 

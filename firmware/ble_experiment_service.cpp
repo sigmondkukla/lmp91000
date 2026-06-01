@@ -181,11 +181,14 @@ void handle_ble_write(sl_bt_evt_gatt_server_user_write_request_t *req) {
             uint8_t data = req->value.data[0];
 
             if (data & 0x01) { // experiment start
+                printf("experiment starting...\n");
                 if (currentExperiment) {
+                    printf("starting experiment instance at %p\n", (void*)currentExperiment);
                     currentExperiment->init();
                     currentExperiment->begin();
                 }
             } else { // experiment stop
+                printf("experiment stopping...\n");
                 currentExperiment->end();
             }
         }
@@ -197,22 +200,23 @@ void handle_ble_write(sl_bt_evt_gatt_server_user_write_request_t *req) {
 #define PACKET_SIZE (SAMPLES_PER_PACKET * BYTES_PER_SAMPLE)
 
 void notify_experiment_results(void) {
+    //printf("current Experiment: %p, active connection: 0x%02X, results notif enabled: %d\n", (void*)currentExperiment, active_connection_handle, results_notification_enabled);
     if (!currentExperiment || active_connection_handle == 0xFF || !results_notification_enabled) {
         return;
     }
 
     if (currentExperiment->results_buffer.count() >= SAMPLES_PER_PACKET) { // if the buffer has filled enough for a whole packet
-
+        printf("packet filled...\n");
         uint8_t packet[PACKET_SIZE];
         int offset = 0;
 
         for (int i = 0; i < SAMPLES_PER_PACKET; i++) {
             DataPoint dp;
-
             if (currentExperiment->results_buffer.pop(dp)) { // pop from ring buffer into dp
                 memcpy(&packet[offset], &dp, BYTES_PER_SAMPLE); // DataPoint is {uint32_t, int32_t, float} which is 12 bytes packed and little endian so I think we can copy it
                 offset += BYTES_PER_SAMPLE;
             }
+            printf("Popped DataPoint %d: timestamp=%u, voltage=%d, current=%f\n", i, dp.timestamp, dp.voltage, dp.current);
         }
 
         sl_bt_gatt_server_send_notification(

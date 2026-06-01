@@ -17,6 +17,7 @@
 #include "sl_spidrv_instances.h"
 
 void lsm6dsv::init(void){
+   printf("Initializing LSM6DSV...\n");
    spi_init();
    
    // Reset

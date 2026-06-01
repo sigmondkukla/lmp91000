@@ -59,7 +59,7 @@ extern "C"
     /////////////////////////////////////////////////////////////////////////////
     // GPIO_PinModeSet()
     lmp.init();
-    imu.init();
+    //imu.init();
     
   }
 
@@ -68,16 +68,20 @@ extern "C"
   {
     
     //printf("battery voltage: %f\n", battery_get_voltage());
-    if (app_is_process_required())
-    {
-      /////////////////////////////////////////////////////////////////////////////
-      // Put your additional application code here!                              //
-      // This is will run each time app_proceed() is called.                     //
-      // Do not call blocking functions from here!                               //
-      /////////////////////////////////////////////////////////////////////////////
-      notify_experiment_status();
-      notify_experiment_results();
-    }
+    //printf("app process required: %d\n", app_is_process_required());
+    // if (app_is_process_required())
+    // {
+    //   /////////////////////////////////////////////////////////////////////////////
+    //   // Put your additional application code here!                              //
+    //   // This is will run each time app_proceed() is called.                     //
+    //   // Do not call blocking functions from here!                               //
+    //   /////////////////////////////////////////////////////////////////////////////
+    //   printf("app process action running...\n");
+    //   notify_experiment_status();
+    //   notify_experiment_results();
+    // }
+    notify_experiment_results();
+    notify_experiment_status();
   }
 
   /**************************************************************************
