@@ -57,17 +57,20 @@ extern "C"
     // Put your additional application init code here!                         //
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
-    // GPIO_PinModeSet()
-    lmp.init();
-    imu.init();
-    
+    //lmp.init();
+    //imu.init();
+    sl_sleeptimer_init();
+    CMU_ClockEnable(cmuClock_GPIO, 1);
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); 
   }
 
   // Application Process Action.
   void app_process_action(void)
   {
-    
-    printf("battery voltage: %f\n", battery_get_voltage());
+    GPIO_PinOutToggle(gpioPortA, 8);
+    sl_sleeptimer_delay_millisecond(500);
+
+    //printf("battery voltage: %f\n", battery_get_voltage());
     if (app_is_process_required())
     {
       /////////////////////////////////////////////////////////////////////////////
