@@ -140,6 +140,9 @@ void lmp91000::DAC_write(const uint16_t value)
 {
   VDAC_ChannelOutputSet(VDAC0, 0, value); // write to channel 0 DATA register the value to output
   //  printf("DAC write %u\n", value);
+  // Allow a small settling time for the DAC output to stabilise
+  for (volatile uint32_t i = 0; i < 1000; ++i)
+    ;
 }
 
 void lmp91000::write(uint8_t reg, uint8_t value)
@@ -199,9 +202,15 @@ uint8_t lmp91000::read(uint8_t reg)
     result = I2C_Transfer(I2C0);
   }
 
-  return i2c_rxBuffer[0];
+  // Disable the device regardless of transfer outcome, and return 0 on error
+  if (result != i2cTransferDone)
+  {
+    enable(false);
+    return 0;
+  }
 
   enable(false);
+  return i2c_rxBuffer[0];
 }
 
 void lmp91000::set_fet_enable(bool enabled)
@@ -313,8 +322,14 @@ void lmp91000::output_voltage(int32_t voltage)
   // voltage cannot be set to less than 15mV because the LMP91000
   // accepts a minium of 1.5V at its VREF pin and has 1% as its
   // lowest bias option 1.5V*1% = 15mV
-  if (abs(voltage) < 15)
-    voltage = 15 * (voltage / abs(voltage)); // clamp voltage to 15mV min
+  if (voltage == 0)
+  {
+    voltage = 15; // clamp 0 to minimum 15mV
+  }
+  else if (abs(voltage) < 15)
+  {
+    voltage = 15 * (voltage / abs(voltage)); // clamp voltage to 15mV min preserving sign
+  }
 
   // Allows setting voltage above 792mV
   if (abs(voltage) > 3300 * 0.24)
