@@ -144,7 +144,7 @@ void lmp91000::DAC_write(const uint16_t value)
 
 void lmp91000::write(uint8_t reg, uint8_t value)
 {
-  printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
+  //printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
   I2C_TransferSeq_TypeDef i2cTransfer;
   I2C_TransferReturn_TypeDef result;
   uint8_t i2c_write_data[2];
