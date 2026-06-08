@@ -139,9 +139,9 @@ void lmp91000::initDAC(void)
 void lmp91000::enable(bool enabled)
 {
   if (enabled)
-    GPIO_PinOutClear(menb_port, menb_pin);
-  else 
     GPIO_PinOutSet(menb_port, menb_pin);
+  else 
+    GPIO_PinOutClear(menb_port, menb_pin);
 }
 
 void lmp91000::DAC_write(const uint16_t value)
