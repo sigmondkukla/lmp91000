@@ -59,17 +59,34 @@ extern "C"
 
     //Initiate GPIO mode for LED and button
     //LED closet to USB indicates power over USB
-    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Sets Button Mode
+    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches power on
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //On when system is on (LED closer to sensor)
     lmp.init();
+
+    //Board blinks 3 times on startup and then turns off until button is pressed again
+    sl_sleeptimer_delay_millisecond(1000); //Light on 1
+
+    GPIO_PinOutToggle(gpioPortA, 8); //Light off
+    sl_sleeptimer_delay_millisecond(1000);
+
+    GPIO_PinOutToggle(gpioPortA, 8); //Light on 2
+    sl_sleeptimer_delay_millisecond(1000);
+
+    GPIO_PinOutToggle(gpioPortA, 8); //Light off
+    sl_sleeptimer_delay_millisecond(1000);
+
+    GPIO_PinOutToggle(gpioPortA, 8); //Light on 3
+    sl_sleeptimer_delay_millisecond(1000);
+
+    GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
   }
 
   // Application Process Action
   void app_process_action(void)
   {
-    //Toggles LED
-    //GPIO_PinOutToggle(gpioPortA, 8);
-    //sl_sleeptimer_delay_millisecond(1000);
+    //Toggles LED -- Only works if powered by programmer board in this commit 
+    GPIO_PinOutToggle(gpioPortA, 8);
+    sl_sleeptimer_delay_millisecond(1000);
 
     //Print Battery Voltage
     printf("Bat V: %f\n", battery_get_voltage());
