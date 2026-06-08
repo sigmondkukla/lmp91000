@@ -58,6 +58,8 @@ extern "C"
     // This is called once during start-up.                                    //
     /////////////////////////////////////////////////////////////////////////////
     // GPIO_PinModeSet()
+    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
     lmp.init();
     //imu.init();
     
