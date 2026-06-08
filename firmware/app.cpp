@@ -50,37 +50,30 @@ static uint8_t advertising_set_handle = 0xff;
 
 extern "C"
 {
-  // Application Init.
+  // Application Init
   void app_init(void)
   {
-    /////////////////////////////////////////////////////////////////////////////
-    // Put your additional application init code here!                         //
-    // This is called once during start-up.                                    //
-    /////////////////////////////////////////////////////////////////////////////
-    // GPIO_PinModeSet()
-    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
+    //Initiate sleeptimer and enable GPIO clock
+    sl_sleeptimer_init();
+    CMU_ClockEnable(cmuClock_GPIO, 1);
+
+    //Initiate GPIO mode for LED and button
+    //LED closet to USB indicates power over USB
+    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Sets Button Mode
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //On when system is on (LED closer to sensor)
     lmp.init();
-    //imu.init();
   }
 
-  // Application Process Action.
+  // Application Process Action
   void app_process_action(void)
   {
-    
-    //printf("battery voltage: %f\n", battery_get_voltage());
-    //printf("app process required: %d\n", app_is_process_required());
-    // if (app_is_process_required())
-    // {
-    //   /////////////////////////////////////////////////////////////////////////////
-    //   // Put your additional application code here!                              //
-    //   // This is will run each time app_proceed() is called.                     //
-    //   // Do not call blocking functions from here!                               //
-    //   /////////////////////////////////////////////////////////////////////////////
-    //   printf("app process action running...\n");
-    //   notify_experiment_status();
-    //   notify_experiment_results();
-    // }
+    //Toggles LED
+    //GPIO_PinOutToggle(gpioPortA, 8);
+    //sl_sleeptimer_delay_millisecond(1000);
+
+    //Print Battery Voltage
+    printf("Bat V: %f\n", battery_get_voltage());
+
     notify_experiment_results();
     notify_experiment_status();
   }
