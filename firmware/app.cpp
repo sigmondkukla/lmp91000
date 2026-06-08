@@ -53,46 +53,44 @@ extern "C"
   // Application Init
   void app_init(void)
   {
-    //Initiate sleeptimer and enable GPIO clock
+    //Initiate sleeptimer and enable GPIO clock -- need for delay function
     sl_sleeptimer_init();
     CMU_ClockEnable(cmuClock_GPIO, 1);
 
-    //Initiate GPIO mode for LED and button
-    //LED closet to USB indicates power over USB
+    //Initiate GPIO mode for LED
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches power on
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //On when system is on (LED closer to sensor)
+    //GPIO_PinOutSet(gpioPortC, 0); //Latches power on -- I don't think I need
+    GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); // PC1 = PWR_BTN, input with pull-up
+
+    //Initiate GPIO mode for LED
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //Sets mode of LED (LED closer to sensor)
+
+    //Initiate IMU
     lmp.init();
-
-    //Board blinks 3 times on startup and then turns off until button is pressed again
-    sl_sleeptimer_delay_millisecond(1000); //Light on 1
-
-    GPIO_PinOutToggle(gpioPortA, 8); //Light off
-    sl_sleeptimer_delay_millisecond(1000);
-
-    GPIO_PinOutToggle(gpioPortA, 8); //Light on 2
-    sl_sleeptimer_delay_millisecond(1000);
-
-    GPIO_PinOutToggle(gpioPortA, 8); //Light off
-    sl_sleeptimer_delay_millisecond(1000);
-
-    GPIO_PinOutToggle(gpioPortA, 8); //Light on 3
-    sl_sleeptimer_delay_millisecond(1000);
-
-    GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
   }
 
   // Application Process Action
   void app_process_action(void)
   {
-    //Toggles LED -- Only works if powered by programmer board in this commit 
-    GPIO_PinOutToggle(gpioPortA, 8);
-    sl_sleeptimer_delay_millisecond(1000);
+    //Toggles LED
+    //GPIO_PinOutToggle(gpioPortA, 8);
+    //sl_sleeptimer_delay_millisecond(1000);
 
     //Print Battery Voltage
-    printf("Bat V: %f\n", battery_get_voltage());
+    //printf("Bat V: %f\n", battery_get_voltage());
 
+    //Actual Experiemnt
     notify_experiment_results();
     notify_experiment_status();
+
+    //Checks button state to turn off the system
+    //GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
+
+    //Check Button State
+    if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
+      printf("Button Pressed");
+      GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
+    }
   }
 
   /**************************************************************************

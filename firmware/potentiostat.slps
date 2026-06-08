@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
   <descriptors name="potentiostat">
-    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.sisdk:2025.12.3._-1173060523563987571"/>
+    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.sisdk:2025.12.3._-1352026046563987571"/>
     <properties key="universalConfig.relativeWorkspacePath" value="..\potentiostat.slcw"/>
     <properties key="universalConfig.generationDirectory" value=""/>
     <properties key="universalConfig.toolchainCompatibility" value="iar llvm gcc"/>
