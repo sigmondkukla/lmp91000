@@ -96,6 +96,8 @@ void Experiment::tickHandler(void)
   dp.voltage = voltage; // [mV] applied voltage
   dp.current = current; // [A] resulting current
 
+  printf("[DATA] Time: %lu ms, Voltage: %d mV, Current: %f A\n", dp.timestamp, dp.voltage, dp.current);
+
   if (!results_buffer.push(dp)) {
       // error
   }
