@@ -77,7 +77,7 @@ extern "C"
     //sl_sleeptimer_delay_millisecond(1000);
 
     //Print Battery Voltage
-    //printf("Bat V: %f\n", battery_get_voltage());
+    printf("Bat V: %f\n", battery_get_voltage());
 
     //Actual Experiemnt
     notify_experiment_results();
