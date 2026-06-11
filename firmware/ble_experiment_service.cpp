@@ -45,6 +45,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
     // cleanup prior experiment if exists
     if (currentExperiment != nullptr) {
         currentExperiment->end();
+        printf("Deleted prior experiment\n");
         delete currentExperiment;
         currentExperiment = nullptr;
     }
@@ -206,7 +207,7 @@ void notify_experiment_results(void) {
     }
 
     if (currentExperiment->results_buffer.count() >= SAMPLES_PER_PACKET) { // if the buffer has filled enough for a whole packet
-        printf("packet filled...\n");
+        // printf("packet filled...\n");
         uint8_t packet[PACKET_SIZE];
         int offset = 0;
 
@@ -216,15 +217,23 @@ void notify_experiment_results(void) {
                 memcpy(&packet[offset], &dp, BYTES_PER_SAMPLE); // DataPoint is {uint32_t, int32_t, float} which is 12 bytes packed and little endian so I think we can copy it
                 offset += BYTES_PER_SAMPLE;
             }
-            printf("Popped DataPoint %d: timestamp=%u, voltage=%d, current=%f\n", i, dp.timestamp, dp.voltage, dp.current);
+            //printf("Popped DataPoint %d: timestamp=%u, voltage=%d, current=%f\n", i, dp.timestamp, dp.voltage, dp.current);
         }
 
-        sl_bt_gatt_server_send_notification(
+        sl_status_t sc = sl_bt_gatt_server_send_notification(
             active_connection_handle,
             gattdb_experiment_results,
             sizeof(packet),
             packet
         );
+
+        if(sc == SL_STATUS_NO_MORE_RESOURCE) {
+            printf("Failed to send notification: No more resources. Consider increasing the buffer size or reducing the notification frequency.\n");
+        } else if (sc != SL_STATUS_OK) {
+            printf("Failed to send notification: Error code %d\n", sc);
+        } else {
+            printf("Sent experiment results notification with %d bytes\n", (int)sizeof(packet));
+        }
     }
 }
 

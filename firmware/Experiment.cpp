@@ -65,7 +65,7 @@ void Experiment::timerCallback(sl_sleeptimer_timer_handle_t *handle, void *data)
   (void)handle;
   static uint32_t callback_count = 0;
   callback_count++;
-  if (callback_count % 100 == 0) printf("[TIMER] Callback fired (count=%lu)\n", callback_count);
+  // if (callback_count % 100 == 0) printf("[TIMER] Callback fired (count=%lu)\n", callback_count);
 
   Experiment *instance = static_cast<Experiment *>(data); // cast the void back to experiment instance pointer
 
@@ -76,7 +76,7 @@ void Experiment::timerCallback(sl_sleeptimer_timer_handle_t *handle, void *data)
 
 void Experiment::tickHandler(void)
 {
-  if (iteration % 100 == 0) printf("[TICK] Handler called (iteration=%lu)\n", iteration);
+  // if (iteration % 100 == 0) printf("[TICK] Handler called (iteration=%lu)\n", iteration);
   
   int32_t voltage = 0;
   bool continue_experiment = get_next_voltage(voltage);

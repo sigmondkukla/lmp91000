@@ -34,6 +34,8 @@ void lmp91000::init()
   initADC();
   initDAC();
 
+  printf("rebooted\n");
+
   unlock();
 }
 
@@ -198,10 +200,10 @@ uint8_t lmp91000::read(uint8_t reg)
     //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
-
+  
+  enable(false);
   return i2c_rxBuffer[0];
 
-  enable(false);
 }
 
 void lmp91000::set_fet_enable(bool enabled)
@@ -354,10 +356,30 @@ void lmp91000::output_voltage(int32_t voltage)
 
   //    printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
 
-  set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
-  set_bias_magnitude(bias_setting);
+  if(previousVoltage == 0 && original_voltage != 0) {
+    // if we're starting from 0, we need to set the bias sign based on the original voltage before we start changing the bias magnitude
+    set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
+  }
+  else if(previousVoltage < 0 && original_voltage >= 0) {
+    // if we're going from negative to positive, we need to change the bias sign before changing the magnitude
+    set_bias_sign(1); // set positive bias sign
+  }
+  else if(previousVoltage > 0 && original_voltage <= 0) {
+    // if we're going from positive to negative, we need to change the bias sign before changing the magnitude
+    set_bias_sign(0); // set negative bias sign
+  }
+
+  if(previousBias != bias_setting) {
+    set_bias_magnitude(bias_setting);
+    previousBias = bias_setting;
+  }
+
+  // set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
+  // set_bias_magnitude(bias_setting);
   //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
   DAC_write(get_vdac_value(dacVout));
+
+  previousVoltage = voltage;
 }
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)

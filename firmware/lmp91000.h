@@ -124,6 +124,10 @@ private:
   IADC_PosInput_t pos_input;
 
   uint32_t vref; // [mV]
+
+  //prevent i2c flooding by only changing bias settings when necessary
+  uint16_t previousVoltage = 0;
+  uint8_t previousBias = 0;
 };
 
 #endif /* LMP91000_LMP91000_H_ */
