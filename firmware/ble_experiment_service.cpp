@@ -227,13 +227,13 @@ void notify_experiment_results(void) {
             packet
         );
 
-        if(sc == SL_STATUS_NO_MORE_RESOURCE) {
-            printf("Failed to send notification: No more resources. Consider increasing the buffer size or reducing the notification frequency.\n");
-        } else if (sc != SL_STATUS_OK) {
-            printf("Failed to send notification: Error code %d\n", sc);
-        } else {
-            printf("Sent experiment results notification with %d bytes\n", (int)sizeof(packet));
-        }
+        // if(sc == SL_STATUS_NO_MORE_RESOURCE) {
+        //     printf("Failed to send notification: No more resources. Consider increasing the buffer size or reducing the notification frequency.\n");
+        // } else if (sc != SL_STATUS_OK) {
+        //     printf("Failed to send notification: Error code %d\n", sc);
+        // } else {
+        //     printf("Sent experiment results notification with %d bytes\n", (int)sizeof(packet));
+        // }
     }
 }
 

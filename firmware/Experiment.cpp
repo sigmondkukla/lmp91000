@@ -24,7 +24,6 @@ void Experiment::init(void)
 //  CMU_ClockEnable(cmuClock_RTCC, true);
 //
 // sl_sleeptimer_init();
-
   lmp->set_mode(0x3); // three lead amperometric cell
   lmp->set_fet_enable(false); // disable FET
   lmp->set_gain(3);
@@ -54,6 +53,7 @@ void Experiment::end(void)
 {
   sl_sleeptimer_stop_timer(&experiment_timer);
   lmp->set_outputs_to_zero(); // set outputs to zero for safety
+  //lmp->set_mode(0);
 
   if(status_flag_callback) // callback if it exists
   {

@@ -356,17 +356,20 @@ void lmp91000::output_voltage(int32_t voltage)
 
   //    printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
 
-  if(previousVoltage == 0 && original_voltage != 0) {
-    // if we're starting from 0, we need to set the bias sign based on the original voltage before we start changing the bias magnitude
+  // if(previousVoltage == 0 && original_voltage != 0) {
+  //   // if we're starting from 0, we need to set the bias sign based on the original voltage before we start changing the bias magnitude
+  //   set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
+  // }
+  // else if(previousVoltage < 0 && original_voltage >= 0) {
+  //   // if we're going from negative to positive, we need to change the bias sign before changing the magnitude
+  //   set_bias_sign(1); // set positive bias sign
+  // }
+  // else if(previousVoltage > 0 && original_voltage <= 0) {
+  //   // if we're going from positive to negative, we need to change the bias sign before changing the magnitude
+  //   set_bias_sign(0); // set negative bias sign
+  // }
+  if(previousVoltage != original_voltage) {
     set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
-  }
-  else if(previousVoltage < 0 && original_voltage >= 0) {
-    // if we're going from negative to positive, we need to change the bias sign before changing the magnitude
-    set_bias_sign(1); // set positive bias sign
-  }
-  else if(previousVoltage > 0 && original_voltage <= 0) {
-    // if we're going from positive to negative, we need to change the bias sign before changing the magnitude
-    set_bias_sign(0); // set negative bias sign
   }
 
   if(previousBias != bias_setting) {
@@ -379,7 +382,9 @@ void lmp91000::output_voltage(int32_t voltage)
   //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
   DAC_write(get_vdac_value(dacVout));
 
-  previousVoltage = voltage;
+  previousVoltage = original_voltage;
+
+  printf("bias sign: %u, bias setting (idx): %u,bias magnitude: %f\n", original_voltage >= 0 ? 1 : 0, bias_setting, TIA_BIAS[bias_setting]);
 }
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)

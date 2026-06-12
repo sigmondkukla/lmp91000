@@ -87,6 +87,8 @@ public:
   void set_outputs_to_zero(void);
   float get_current();
 
+  void unlock(bool lock = false);
+
 private:
   // init
   void initCMU();
@@ -98,7 +100,7 @@ private:
   void write(uint8_t reg, uint8_t value);
   uint8_t read(uint8_t reg);
 
-  void unlock(bool lock = false);
+  // void unlock(bool lock = false);
 
   void DAC_write(const uint16_t value);
 
