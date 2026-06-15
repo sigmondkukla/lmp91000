@@ -34,6 +34,8 @@
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
 #include "battery.h"
+#include "sl_power_manager.h"
+#include "em_burtc.h"
 
 
 lmp91000 lmp(I2C0,
@@ -48,49 +50,87 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
+// 1 kHz ULFRCO x 10 seconds = 10000 ticks
+#define BURTC_IRQ_PERIOD  5000
+
+/**************************************************************************//**
+ * @brief  BURTC Interrupt Handler
+ *****************************************************************************/
+void BURTC_IRQHandler(void)
+{
+  BURTC_IntClear(BURTC_IF_COMP); // Clear compare match interrupt
+}
+
+/**************************************************************************//**
+ * @brief  Configure BURTC for 10 second EM4 wakeup
+ *****************************************************************************/
+static void initBURTC(void)
+{
+  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
+  CMU_ClockEnable(cmuClock_BURTC, true);
+  CMU_ClockEnable(cmuClock_BURAM, true);
+
+  BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
+  burtcInit.compare0Top = true;
+  burtcInit.em4comp = true;     // Allow BURTC compare to wake from EM4
+  BURTC_Init(&burtcInit);
+
+  BURTC_CounterReset();
+  BURTC_CompareSet(0, BURTC_IRQ_PERIOD);
+
+  BURTC_IntEnable(BURTC_IEN_COMP);
+  NVIC_EnableIRQ(BURTC_IRQn);
+  BURTC_Enable(true);
+}
+
+
 extern "C"
 {
   // Application Init
   void app_init(void)
   {
-    //Initiate sleeptimer and enable GPIO clock -- need for delay function
-    sl_sleeptimer_init();
+    //Start GPIO CLock, Initiate GPIO mode for LED and Button
     CMU_ClockEnable(cmuClock_GPIO, 1);
-
-    //Initiate GPIO mode for LED
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches power on
-    //GPIO_PinOutSet(gpioPortC, 0); //Latches power on -- I don't think I need
     GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); // PC1 = PWR_BTN, input with pull-up
-
-    //Initiate GPIO mode for LED
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //Sets mode of LED (LED closer to sensor)
 
-    //Initiate IMU
+    // Unlatch pins retained from EM4
+    EMU_UnlatchPinRetention();
+
+    //Initiate sleeptimer and enable GPIO clock -- need for delay function
+    sl_sleeptimer_init();
+
+    //Initiate Potentiostat
     lmp.init();
+
+    // Initialise BURTC
+    initBURTC();
   }
 
   // Application Process Action
   void app_process_action(void)
   {
-    //Toggles LED
-    //GPIO_PinOutToggle(gpioPortA, 8);
-    //sl_sleeptimer_delay_millisecond(1000);
-
     //Print Battery Voltage
     printf("Bat V: %f\n", battery_get_voltage());
+
+    //sl_sleeptimer_delay_millisecond(5000);
 
     //Actual Experiemnt
     notify_experiment_results();
     notify_experiment_status();
 
-    //Checks button state to turn off the system
-    //GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
+    //Check Button State -- TODO: Need to Add a Timer
+    //if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
+    //  printf("Button Pressed");
+    //  GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
+    //}
 
-    //Check Button State
-    if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
-      printf("Button Pressed");
-      GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
-    }
+    //Enter EM4
+    GPIO_PinOutClear(gpioPortA, 8);
+    BURTC_CounterReset();
+    BURTC_SyncWait();
+    sl_power_manager_enter_em4();
   }
 
   /**************************************************************************
