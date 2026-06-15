@@ -1,0 +1,22 @@
+#ifndef BURTC_H
+#define BURTC_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "em_burtc.h"
+#include "em_cmu.h"
+
+// 1 kHz ULFRCO x 10 seconds = 10000 ticks
+#define BURTC_IRQ_PERIOD  10000
+
+void BURTC_IRQHandler(void);
+
+void initBURTC(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

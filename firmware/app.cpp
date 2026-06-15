@@ -36,6 +36,7 @@
 #include "battery.h"
 #include "sl_power_manager.h"
 #include "em_burtc.h"
+#include "burtc.h"
 
 
 lmp91000 lmp(I2C0,
@@ -50,43 +51,8 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
-// 1 kHz ULFRCO x 10 seconds = 10000 ticks
-#define BURTC_IRQ_PERIOD  5000
-
-/**************************************************************************//**
- * @brief  BURTC Interrupt Handler
- *****************************************************************************/
-void BURTC_IRQHandler(void)
-{
-  BURTC_IntClear(BURTC_IF_COMP); // Clear compare match interrupt
-}
-
-/**************************************************************************//**
- * @brief  Configure BURTC for 10 second EM4 wakeup
- *****************************************************************************/
-static void initBURTC(void)
-{
-  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
-  CMU_ClockEnable(cmuClock_BURTC, true);
-  CMU_ClockEnable(cmuClock_BURAM, true);
-
-  BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
-  burtcInit.compare0Top = true;
-  burtcInit.em4comp = true;     // Allow BURTC compare to wake from EM4
-  BURTC_Init(&burtcInit);
-
-  BURTC_CounterReset();
-  BURTC_CompareSet(0, BURTC_IRQ_PERIOD);
-
-  BURTC_IntEnable(BURTC_IEN_COMP);
-  NVIC_EnableIRQ(BURTC_IRQn);
-  BURTC_Enable(true);
-}
-
-
 extern "C"
 {
-  // Application Init
   void app_init(void)
   {
     //Start GPIO CLock, Initiate GPIO mode for LED and Button
@@ -98,23 +64,18 @@ extern "C"
     // Unlatch pins retained from EM4
     EMU_UnlatchPinRetention();
 
-    //Initiate sleeptimer and enable GPIO clock -- need for delay function
-    sl_sleeptimer_init();
-
     //Initiate Potentiostat
     lmp.init();
 
-    // Initialise BURTC
+    // Initialise EM4 Wakeup Timer
     initBURTC();
   }
 
-  // Application Process Action
   void app_process_action(void)
   {
     //Print Battery Voltage
-    printf("Bat V: %f\n", battery_get_voltage());
-
-    //sl_sleeptimer_delay_millisecond(5000);
+    battery_get_voltage(); //First time return 0V
+    printf("Bat V: %f\n", battery_get_voltage()); //Buggy with EM4 Mode
 
     //Actual Experiemnt
     notify_experiment_results();
@@ -128,6 +89,7 @@ extern "C"
 
     //Enter EM4
     GPIO_PinOutClear(gpioPortA, 8);
+    sl_bt_advertiser_stop(advertising_set_handle);
     BURTC_CounterReset();
     BURTC_SyncWait();
     sl_power_manager_enter_em4();
@@ -229,4 +191,4 @@ extern "C"
     }
   }
 
-} // end extern "C"
+}
