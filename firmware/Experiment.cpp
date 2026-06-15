@@ -54,7 +54,7 @@ void Experiment::end(void)
   sl_sleeptimer_stop_timer(&experiment_timer);
   lmp->Reset_Previous_Values();
   lmp->set_outputs_to_zero(); // set outputs to zero for safety
-  //lmp->set_mode(0);
+  lmp->set_mode(0);
 
   if(status_flag_callback) // callback if it exists
   {
