@@ -304,92 +304,66 @@ void lmp91000::unlock(bool lock)
 
 void lmp91000::output_voltage(int32_t voltage)
 {
-  //    printf("Requested %ld mV\n", voltage);
-  // Minimum DAC voltage that can be set
-  // The LMP91000 accepts a minium value of 1.5V, adding the
-  // additional 20 mV for the sake of a bit of a buffer
-  //    const uint32_t minDACVoltage = 1500;
-
-  uint32_t dacVout = LMP91000_MIN_VREF;
-  uint8_t bias_setting = 0;
-
-  // voltage cannot be set to less than 15mV because the LMP91000
-  // accepts a minium of 1.5V at its VREF pin and has 1% as its
-  // lowest bias option 1.5V*1% = 15mV
-  if (abs(voltage) < 15)
-    voltage = 15 * (voltage / abs(voltage)); // clamp voltage to 15mV min
-
-  // Allows setting voltage above 792mV
-  if (abs(voltage) > 3300 * 0.24)
-  {
-    set_bias_sign(voltage >= 0); // will write 0 for neg and 1 for pos
-    set_bias_magnitude(0);
-    //        VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
-    DAC_write(get_vdac_value(dacVout));
-    return;
-  }
-
-  int32_t setV = dacVout * TIA_BIAS[bias_setting];
   int32_t original_voltage = voltage;
-  voltage = abs(voltage);
+  uint32_t target_magnitude = abs(voltage);
 
-  //    printf("setV: %ld\n", setV);
+  // Clamp minimum physical capability (1.5V VREF * 1% lowest bias = 15mV)
+  if (target_magnitude < 15) {
+    target_magnitude = 15;
+  }
 
-  while (setV > voltage * (1 + v_tolerance) || setV < voltage * (1 - v_tolerance)) // while setV is out of tolerance
-  {
-    //      printf("setV: %ld\n", setV);
-    if (bias_setting == 0)
-      bias_setting = 1;
+  uint32_t best_dacVout = LMP91000_MIN_VREF;
+  uint8_t best_bias_setting = 1; // Avoid 0% bias if it causes division by zero
+  int32_t best_error = 999999;
 
-    dacVout = voltage / TIA_BIAS[bias_setting];
+  // Scan through available hardware bias settings deterministically 
+  // Replacing the dangerous 'while' loop
+  for (uint8_t b = 1; b < NUM_TIA_BIAS; b++) {
+    if (TIA_BIAS[b] <= 0) continue; 
 
-    if (dacVout > 3300)
-    {
-      bias_setting++;
-      dacVout = LMP91000_MIN_VREF;
+    // Calculate required DAC VREF for this hardware step percentage
+    uint32_t calculated_dac = target_magnitude / TIA_BIAS[b];
 
-      if (bias_setting > NUM_TIA_BIAS)
-        bias_setting = 0;
+    // If it fits within your DAC physical limits (e.g., 1.5V to 3.3V)
+    if (calculated_dac >= LMP91000_MIN_VREF && calculated_dac <= 3300) {
+      int32_t actual_achieved = calculated_dac * TIA_BIAS[b];
+      int32_t error = abs((int32_t)target_magnitude - actual_achieved);
+
+      // Keep the setting that gets closest to target voltage
+      if (error < best_error) {
+        best_error = error;
+        best_dacVout = calculated_dac;
+        best_bias_setting = b;
+      }
     }
-
-    setV = dacVout * TIA_BIAS[bias_setting];
   }
 
-  //    printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
-
-  // if(previousVoltage == 0 && original_voltage != 0) {
-  //   // if we're starting from 0, we need to set the bias sign based on the original voltage before we start changing the bias magnitude
-  //   set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
-  // }
-  // else if(previousVoltage < 0 && original_voltage >= 0) {
-  //   // if we're going from negative to positive, we need to change the bias sign before changing the magnitude
-  //   set_bias_sign(1); // set positive bias sign
-  // }
-  // else if(previousVoltage > 0 && original_voltage <= 0) {
-  //   // if we're going from positive to negative, we need to change the bias sign before changing the magnitude
-  //   set_bias_sign(0); // set negative bias sign
-  // }
-  printf("DEBUG: curV=%d, prevV=%d | curB=%u, prevB=%u\n", 
-       original_voltage, previousVoltage, bias_setting, previousBias);
-  if(previousVoltage != original_voltage) {
-    printf("Changing bias sign to %u\n", original_voltage >= 0 ? 1 : 0);
-    set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
+  // Handle your escape hatch scenario safely if voltage is completely out of normal range
+  if (target_magnitude > (3300 * 0.24)) {
+    best_bias_setting = 0; 
+    best_dacVout = LMP91000_MIN_VREF;
   }
 
-  if(previousBias != bias_setting) {
-    printf("Changing bias magnitude to %u (%.2f%%)\n", bias_setting, TIA_BIAS[bias_setting]*100);
-    set_bias_magnitude(bias_setting);
+  // FORCE write registers if the target changes, ensuring guards never lock up
+  bool current_sign = (original_voltage >= 0);
+  static bool previous_sign = false; // Add tracking for sign state explicitly
+
+  if (previousVoltage == 9999 || previousVoltage != original_voltage) {
+    printf("Changing bias sign to %u\n", current_sign ? 1 : 0);
+    set_bias_sign(current_sign);
   }
 
-  // set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
-  // set_bias_magnitude(bias_setting);
-  //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
-  DAC_write(get_vdac_value(dacVout));
+  if (previousBias == 9999 || previousBias != best_bias_setting) {
+    printf("Changing bias magnitude to %u\n", best_bias_setting);
+    set_bias_magnitude(best_bias_setting);
+  }
 
+  // Write out to the actual DAC hardware
+  DAC_write(get_vdac_value(best_dacVout));
+
+  // Save the state cleanly
   previousVoltage = original_voltage;
-  previousBias = bias_setting;
-
-  //printf("bias sign: %u, bias setting (idx): %u,bias magnitude: %f\n", original_voltage >= 0 ? 1 : 0, bias_setting, TIA_BIAS[bias_setting]);
+  previousBias = best_bias_setting;
 }
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)

@@ -26,7 +26,7 @@ void Experiment::init(void)
 // sl_sleeptimer_init();
   lmp->set_mode(0x3); // three lead amperometric cell
   lmp->set_fet_enable(false); // disable FET
-  lmp->set_gain(4); // initially had it at 3 for 7k ohms
+  lmp->set_gain(3); // initially had it at 3 for 7k ohms
   lmp->set_rload(0); // 10 ohms
   lmp->set_ref_source(1); // external
   lmp->set_internal_zero(1); // internal zero 50%
