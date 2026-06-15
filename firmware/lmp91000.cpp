@@ -226,6 +226,7 @@ void lmp91000::set_gain(uint8_t gain)
   tiacn |= (gain << 2); // set gain bits 4:2 with new gain
   write(LMP91000_REG_TIACN, tiacn);
   current_tia_gain = gain;
+  printf("set gain to %f\n", TIA_GAIN[gain]);
 }
 
 void lmp91000::set_rload(uint8_t load)
@@ -368,13 +369,16 @@ void lmp91000::output_voltage(int32_t voltage)
   //   // if we're going from positive to negative, we need to change the bias sign before changing the magnitude
   //   set_bias_sign(0); // set negative bias sign
   // }
+  printf("DEBUG: curV=%d, prevV=%d | curB=%u, prevB=%u\n", 
+       original_voltage, previousVoltage, bias_setting, previousBias);
   if(previousVoltage != original_voltage) {
+    printf("Changing bias sign to %u\n", original_voltage >= 0 ? 1 : 0);
     set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
   }
 
   if(previousBias != bias_setting) {
+    printf("Changing bias magnitude to %u (%.2f%%)\n", bias_setting, TIA_BIAS[bias_setting]*100);
     set_bias_magnitude(bias_setting);
-    previousBias = bias_setting;
   }
 
   // set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
@@ -383,8 +387,9 @@ void lmp91000::output_voltage(int32_t voltage)
   DAC_write(get_vdac_value(dacVout));
 
   previousVoltage = original_voltage;
+  previousBias = bias_setting;
 
-  printf("bias sign: %u, bias setting (idx): %u,bias magnitude: %f\n", original_voltage >= 0 ? 1 : 0, bias_setting, TIA_BIAS[bias_setting]);
+  //printf("bias sign: %u, bias setting (idx): %u,bias magnitude: %f\n", original_voltage >= 0 ? 1 : 0, bias_setting, TIA_BIAS[bias_setting]);
 }
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
@@ -420,4 +425,9 @@ void lmp91000::set_outputs_to_zero(void)
   set_bias_magnitude(0); // return bias to 100% of vref
   set_bias_sign(1);      // positive bias sign
   DAC_write(0);
+}
+
+void lmp91000::Reset_Previous_Values(void) {
+  previousVoltage = 9999;
+  previousBias = 9999;
 }
