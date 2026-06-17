@@ -77,10 +77,8 @@ extern "C"
 
   void app_process_action(void)
   {
-    //Print Battery Voltage- Buggy with EM4 Mode
-    //battery_get_voltage(); //First time return 0V
-    float voltage = battery_get_voltage(); //Second time return correct voltage
-    printf("Bat V: %f\n", voltage);
+    //Print Battery Voltage
+    printf("Bat V: %f\n", battery_get_voltage());
 
     //Actual Experiemnt
     notify_experiment_results();
