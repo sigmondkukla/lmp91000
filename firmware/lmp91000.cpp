@@ -345,12 +345,18 @@ void lmp91000::output_voltage(int32_t voltage)
   }
 
   // FORCE write registers if the target changes, ensuring guards never lock up
-  bool current_sign = (original_voltage >= 0);
-  static bool previous_sign = false; // Add tracking for sign state explicitly
+  bool current_bias_sign = (original_voltage >= 0);
 
-  if (previousVoltage == 9999 || previousVoltage != original_voltage) {
-    printf("Changing bias sign to %u\n", current_sign ? 1 : 0);
-    set_bias_sign(current_sign);
+  // the following commeted code logic worked perfectly for CA, it doesn't work for CV because the voltage is always changing
+  // if (previousVoltage == 9999 || previousVoltage != original_voltage) {
+  //   printf("Changing bias sign to %u\n", current_sign ? 1 : 0);
+  //   set_bias_sign(current_sign);
+  // }
+
+  if (previous_bias_sign == -1 || previous_bias_sign != current_bias_sign) {
+    printf("Changing bias sign to %u\n", current_bias_sign ? 1 : 0);
+    set_bias_sign(current_bias_sign);
+    previous_bias_sign = current_bias_sign;
   }
 
   if (previousBias == 9999 || previousBias != best_bias_setting) {
@@ -362,6 +368,7 @@ void lmp91000::output_voltage(int32_t voltage)
   DAC_write(get_vdac_value(best_dacVout));
 
   // Save the state cleanly
+  previous_bias_sign = current_bias_sign;
   previousVoltage = original_voltage;
   previousBias = best_bias_setting;
 }

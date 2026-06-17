@@ -133,6 +133,9 @@ private:
   // must be signed integers
   int16_t previousVoltage = 9999;
   int8_t previousBias = 9999;
+
+  // this one might be the only one we need?
+  int8_t previous_bias_sign = -1;
 };
 
 #endif /* LMP91000_LMP91000_H_ */
