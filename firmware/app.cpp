@@ -61,6 +61,10 @@ extern "C"
     GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); // PC1 = PWR_BTN, input with pull-up
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //Sets mode of LED (LED closer to sensor)
 
+    //Initiate sleeptimer and enable GPIO clock
+    sl_sleeptimer_init();
+    CMU_ClockEnable(cmuClock_GPIO, 1);
+
     // Unlatch pins retained from EM4
     EMU_UnlatchPinRetention();
 
@@ -73,9 +77,10 @@ extern "C"
 
   void app_process_action(void)
   {
-    //Print Battery Voltage
-    battery_get_voltage(); //First time return 0V
-    printf("Bat V: %f\n", battery_get_voltage()); //Buggy with EM4 Mode
+    //Print Battery Voltage- Buggy with EM4 Mode
+    //battery_get_voltage(); //First time return 0V
+    float voltage = battery_get_voltage(); //Second time return correct voltage
+    printf("Bat V: %f\n", voltage);
 
     //Actual Experiemnt
     notify_experiment_results();
