@@ -57,21 +57,15 @@ extern "C"
   {
     //Start GPIO CLock, Initiate GPIO mode for LED and Button
     CMU_ClockEnable(cmuClock_GPIO, 1);
-    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches power on
-    GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); // PC1 = PWR_BTN, input with pull-up
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //Sets mode of LED (LED closer to sensor)
-
-    //Initiate sleeptimer and enable GPIO clock
-    sl_sleeptimer_init();
-    CMU_ClockEnable(cmuClock_GPIO, 1);
+    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches Power On
+    GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); //Button
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //LED
 
     // Unlatch pins retained from EM4
     EMU_UnlatchPinRetention();
 
-    //Initiate Potentiostat
+    //Initiations
     lmp.init();
-
-    // Initialise EM4 Wakeup Timer
     initBURTC();
   }
 

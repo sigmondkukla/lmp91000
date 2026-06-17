@@ -5,7 +5,6 @@
  *      Author: Matt Whispell
  */
 #include "battery.h"
-//#include "sl_power_manager.h"
 
 float battery_get_voltage()
 {
