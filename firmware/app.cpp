@@ -78,15 +78,17 @@ extern "C"
     notify_experiment_results();
     notify_experiment_status();
 
-    //Check Button State -- TODO: Need to Add a Timer
+    //Check Button State to Completely Turn off Device -- TODO: Need to Add a Timer or counter
     //if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
     //  printf("Button Pressed");
-    //  GPIO_PinOutClear(gpioPortC, 0); // releases the latch → board powers off
+    //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    //Enter EM4
-    GPIO_PinOutClear(gpioPortA, 8);
-    sl_bt_advertiser_stop(advertising_set_handle);
+    //Enter EM4 and Other Low Power Modes
+    GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
+    sl_bt_advertiser_stop(advertising_set_handle); //Stop Bluetooth
+    //Low Power IMU- future update?
+    //Low Power LMP- future update?
     BURTC_CounterReset();
     BURTC_SyncWait();
     sl_power_manager_enter_em4();
