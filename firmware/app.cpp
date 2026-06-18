@@ -35,6 +35,7 @@
 #include "em_iadc.h"
 #include "battery.h"
 
+// TODO: make vref the current DAC output instead of a constant. I think that would fix the calculation?
 
 lmp91000 lmp(I2C0,
              gpioPortA, 5,

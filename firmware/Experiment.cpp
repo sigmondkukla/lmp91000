@@ -26,10 +26,10 @@ void Experiment::init(void)
 // sl_sleeptimer_init();
   lmp->set_mode(0x3); // three lead amperometric cell
   lmp->set_fet_enable(false); // disable FET
-  lmp->set_gain(3); // initially had it at 3 for 7k ohms
+  lmp->set_gain(1); // initially had it at 3 for 7k ohms
   lmp->set_rload(0); // 10 ohms
   lmp->set_ref_source(1); // external
-  lmp->set_internal_zero(1); // internal zero 50%
+  lmp->set_internal_zero(1); // internal zero 20% (used to have it on 50%)
   lmp->set_outputs_to_zero();
   printf("intialized experiment\n");
   //LMP91000_set_bias_magnitude(0x5); // TODO see if we can delete this
@@ -52,6 +52,7 @@ void Experiment::begin(void)
 void Experiment::end(void)
 {
   sl_sleeptimer_stop_timer(&experiment_timer);
+  printf("experiment timer stopped - ending experiment...\n");
   lmp->Reset_Previous_Values();
   lmp->set_outputs_to_zero(); // set outputs to zero for safety
   lmp->set_mode(0);
@@ -90,7 +91,15 @@ void Experiment::tickHandler(void)
       return;
   }
 
-  lmp->output_voltage(voltage);
+  // if true use the output voltage function (for CA), if false use the output voltage with static bias function (for CV, DPV, SWV)
+  if (output_voltage) {
+      lmp->output_voltage(voltage);
+  } else {
+      lmp->output_voltage_static_bias(voltage, user_max_voltage_mag);
+      //printf("static function, max target voltage: %d\n", user_max_voltage_mag);
+  }
+
+  // lmp->output_voltage(voltage);
   float current = lmp->get_current();
 
   DataPoint dp;

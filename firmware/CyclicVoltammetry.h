@@ -17,6 +17,8 @@ public:
         lmp91000* lmp,
         uint32_t timestep,
         SetStatusFlagCallback status_flag_callback,
+        bool output_voltage,
+        int32_t user_max_voltage_mag,
 
         int32_t init_e,
         int32_t vertex_1,
@@ -28,7 +30,7 @@ public:
         int32_t quiet_time,
         int32_t scan_delay):
 
-        Experiment(lmp, timestep, status_flag_callback),
+        Experiment(lmp, timestep, status_flag_callback, output_voltage, user_max_voltage_mag),
 
         init_e(init_e),
         vertex_1(vertex_1),

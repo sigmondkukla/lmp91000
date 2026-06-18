@@ -84,7 +84,8 @@ public:
   void set_mode(uint8_t mode);
   void set_bias_sign(uint8_t sign);
   void set_bias_magnitude(uint8_t magnitude);
-  void output_voltage(int32_t voltage);
+  void output_voltage(int32_t voltage); // use this function for static experiments such as CA
+  void output_voltage_static_bias(int32_t voltage, int32_t user_max_target_voltage); // use this function during constinuously changing experiments such as CV
   void set_outputs_to_zero(void);
   void Reset_Previous_Values(void);
   float get_current();
@@ -132,7 +133,7 @@ private:
   // prevent i2c flooding by only changing bias settings when necessary
   // must be signed integers
   int16_t previousVoltage = 9999;
-  int8_t previousBias = 9999;
+  int8_t previousBias = 127;
 
   // this one might be the only one we need?
   int8_t previous_bias_sign = -1;

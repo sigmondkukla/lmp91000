@@ -34,6 +34,16 @@ static uint8_t status_register = 0;
 volatile uint8_t new_status_register = 0;
 volatile bool status_pending = false;
 
+// helper function for finding max user voltage
+int32_t max(int32_t a, int32_t b, int32_t c) {
+    // want to get this largest magnitdue
+    a = abs(a);
+    b = abs(b);
+    c = abs(c);
+    int32_t max_ab = (a > b) ? a : b;
+    return (max_ab > c) ? max_ab : c;
+}
+
 void set_status_flag(uint8_t flag, uint8_t value) {
   new_status_register &= ~(1 << flag);
   new_status_register |= (value & 1) << flag;
@@ -59,9 +69,10 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
         case CV: {
             if (len != sizeof(CVConfig)) return; // check for size mismatch
             const CVConfig* cfg = reinterpret_cast<const CVConfig*>(data); // if all's well convert it
-
+            
+            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->vertex_1, cfg->vertex_2)); // find the largest magnitude voltage for safety checks in output function
             currentExperiment = new CyclicVoltammetry(
-                &lmp, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
                 cfg->init_e, cfg->vertex_1, cfg->vertex_2,
                 cfg->scan_rate, cfg->scans,
                 cfg->quiet_time, cfg->scan_delay
@@ -72,8 +83,9 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             if (len != sizeof(SWVConfig)) return;
             const SWVConfig* cfg = reinterpret_cast<const SWVConfig*>(data);
 
+            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->final_e, cfg->init_e + (int32_t)cfg->amplitude)); // find the largest magnitude voltage for safety checks in output function. for SWV the pulse can go above final voltage by amplitude amount so we need to check that too
             currentExperiment = new SquareWaveVoltammetry(
-                &lmp, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency, cfg->quiet_time
             );
@@ -83,8 +95,9 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             if (len != sizeof(DPVConfig)) return;
             const DPVConfig* cfg = reinterpret_cast<const DPVConfig*>(data);
 
+            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->final_e, cfg->init_e + (int32_t)cfg->amplitude)); // find the largest magnitude voltage for safety checks in output function
             currentExperiment = new DifferentialPulseVoltammetry(
-                &lmp, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency,
                 cfg->quiet_time, cfg->duty_cycle
@@ -94,12 +107,13 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
         case CA: {
             if (len != sizeof(CAConfig)) return;
             const CAConfig* cfg = reinterpret_cast<const CAConfig*>(data);
-            printf("Creating CA with: init_e=%ld, quiet_time=%ld, e1=%ld, duration1=%ld, e2=%ld, duration2=%ld, e3=%ld, duration3=%ld, final_e=%ld\n",
-                cfg->init_e, cfg->quiet_time, cfg->e_1, cfg->duration_1, cfg->e_2, cfg->duration_2, cfg->e_3, cfg->duration_3, cfg->final_e
-            );
+            // printf("Creating CA with: init_e=%ld, quiet_time=%ld, e1=%ld, duration1=%ld, e2=%ld, duration2=%ld, e3=%ld, duration3=%ld, final_e=%ld\n",
+            //     cfg->init_e, cfg->quiet_time, cfg->e_1, cfg->duration_1, cfg->e_2, cfg->duration_2, cfg->e_3, cfg->duration_3, cfg->final_e
+            // );
 
+            // no need for a max voltage calculation for CA
             currentExperiment = new Chronoamperometry(
-                &lmp, TIMESTEP, set_status_flag,
+                &lmp, TIMESTEP, set_status_flag, USE_DYNAMIC_BIAS_OUTPUT, 0,
                 cfg->init_e, cfg->quiet_time,
                 cfg->e_1, cfg->duration_1,
                 cfg->e_2, cfg->duration_2,
