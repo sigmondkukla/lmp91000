@@ -141,7 +141,6 @@ void lmp91000::enable(bool enabled)
 void lmp91000::DAC_write(const uint16_t value)
 {
   VDAC_ChannelOutputSet(VDAC0, 0, value); // write to channel 0 DATA register the value to output
-  //  printf("DAC write %u\n", value);
 }
 
 void lmp91000::write(uint8_t reg, uint8_t value)
@@ -202,7 +201,7 @@ uint8_t lmp91000::read(uint8_t reg)
   }
   
   enable(false);
-  printf("LMP91000_read from reg 0x%x value 0x%x\n", reg, i2c_rxBuffer[0]);
+  //printf("LMP91000_read from reg 0x%x value 0x%x\n", reg, i2c_rxBuffer[0]);
   return i2c_rxBuffer[0];
 
 }
@@ -361,7 +360,7 @@ void lmp91000::output_voltage(int32_t voltage)
     previous_bias_sign = current_bias_sign;
   }
 
-  if (previousBias == 9999 || previousBias != best_bias_setting) {
+  if (previousBias == 127 || previousBias != best_bias_setting) {
     printf("Changing bias magnitude to %u\n", best_bias_setting);
     set_bias_magnitude(best_bias_setting);
   }
@@ -470,6 +469,8 @@ void lmp91000::output_voltage_static_bias(int32_t voltage, int32_t user_max_targ
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
 {
+  //printf("DAC output: %lu mV\n", mv);
+  current_DAC_output_mv = mv; // Store the current DAC output in millivolts for later retrieval
   return mv * 0xFFF / vref; // 12-bit instead of 16-bit DAC, and vref is in mV so it cancels out factor of 1000
 }
 
@@ -494,16 +495,17 @@ float lmp91000::get_current(void)
   
   // 1. Convert millivolt numbers strictly into Volts (float)
   float v_adc = (float)adc_voltage_mv / 1000.0f;
-  float v_ref_volts = (float)vref / 1000.0f;
-  
+
+  //float v_ref_volts = (float)vref / 1000.0f;
+  float v_ref_volts = (float)current_DAC_output_mv / 1000.0f; // use the current DAC output as the reference voltage for more accurate current calculation
+
   // 2. Compute the precise zero-current offset baseline in Volts
   float v_zero = v_ref_volts * TIA_ZERO[current_tia_zero];
   
   // 3. (Volts - Volts) / Ohms = Amperes
   float current_amperes = (v_adc - v_zero) / (TIA_GAIN[current_tia_gain]);
   
-  // return current_amperes;
-  return adc_voltage_mv; // for debugging
+  return current_amperes;
 }
 
 
@@ -518,4 +520,8 @@ void lmp91000::Reset_Previous_Values(void) {
   previousVoltage = 9999;
   previousBias = 127;
   previous_bias_sign = -1;
+}
+
+int32_t lmp91000::get_current_DAC_output_mv() {
+  return current_DAC_output_mv;
 }

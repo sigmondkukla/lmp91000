@@ -89,6 +89,7 @@ public:
   void set_outputs_to_zero(void);
   void Reset_Previous_Values(void);
   float get_current();
+  int32_t get_current_DAC_output_mv();
 
   void unlock(bool lock = false);
 
@@ -137,6 +138,9 @@ private:
 
   // this one might be the only one we need?
   int8_t previous_bias_sign = -1;
+
+  // for dynamic Vref calcuation
+  int32_t current_DAC_output_mv = 0;
 };
 
 #endif /* LMP91000_LMP91000_H_ */

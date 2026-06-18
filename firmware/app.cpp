@@ -35,7 +35,16 @@
 #include "em_iadc.h"
 #include "battery.h"
 
-// TODO: make vref the current DAC output instead of a constant. I think that would fix the calculation?
+// EVERYTHING THAT I DID
+// - added logic for choosing correct output voltage function in Experiment.cpp
+// - added get_current_DAC_output_mv function to lmp91000.h and lmp91000.cpp for reporting the actual voltage being output by the DAC (for debugging and for user information in future iterations)
+// - added logic to lmp91000.cpp output_voltage_static_bias function to prevent unnecessary writes to the DAC and bias registers which was causing issues with stability and reliability. Now it only changes the bias settings when necessary, and it always allows changes to the output voltage, even if the bias settings are the same as before (this is important for CV where the voltage is always changing).
+// - reset previous values and set outputs to zero at the end of each experiment for safety and stability
+// - added more debug prints in the output_voltage_static_bias function to report the internal calculations
+
+// THINGS TO WORK ON
+// - figure out the weird behaviour with CV (always getting same general shape even without electrode)
+// - make the current_DAC_output_mv value that actuall DAC out not the requested DAC out
 
 lmp91000 lmp(I2C0,
              gpioPortA, 5,
