@@ -55,8 +55,10 @@ extern "C"
 {
   void app_init(void)
   {
-    initBURTC();
-
+    printf("---------Startup!\n");
+    fflush(stdout);
+    //printf("Startup!\n");
+    
     //Start GPIO CLock, Initiate GPIO mode for LED and Button
     CMU_ClockEnable(cmuClock_GPIO, 1);
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches Power On
@@ -68,7 +70,7 @@ extern "C"
 
     //Initiations
     lmp.init();
-    
+    initBURTC();
   }
 
   void app_process_action(void)
@@ -92,6 +94,7 @@ extern "C"
     //Low Power IMU- future update?
     //Low Power LMP- future update?
     BURTC_CounterReset();
+    printf("\n");
     BURTC_SyncWait();
     sl_power_manager_enter_em4();
   }
