@@ -9,11 +9,13 @@ extern "C" {
 #include "em_cmu.h"
 
 // 1 kHz ULFRCO x 10 seconds = 10000 ticks
-#define BURTC_IRQ_PERIOD  10000
+#define BURTC_IRQ_PERIOD  2000
 
 void BURTC_IRQHandler(void);
 
 void initBURTC(void);
+void initBURTC_cold(void);
+void initBURTC_em4wake(void);
 
 #ifdef __cplusplus
 }

@@ -55,6 +55,8 @@ extern "C"
 {
   void app_init(void)
   {
+    initBURTC();
+
     //Start GPIO CLock, Initiate GPIO mode for LED and Button
     CMU_ClockEnable(cmuClock_GPIO, 1);
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches Power On
@@ -66,7 +68,7 @@ extern "C"
 
     //Initiations
     lmp.init();
-    initBURTC();
+    
   }
 
   void app_process_action(void)
