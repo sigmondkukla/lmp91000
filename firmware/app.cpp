@@ -83,8 +83,9 @@ extern "C"
     //uint32_t counter = BURTC_CounterGet();
     //printf("BURTC counter: %lu\n", (unsigned long)counter);
     // Use BURAM-accumulated ticks for a monotonic elapsed time
-    uint32_t elapsed = BURAM->RET[0].REG + BURTC_CounterGet();
-    printf("Elapsed ticks: %lu\n", (unsigned long)elapsed);
+    //uint32_t elapsed = BURAM->RET[0].REG + BURTC_CounterGet();
+    //printf("Elapsed ticks: %lu\n", (unsigned long)elapsed);
+    printf("Seconds: %lu\n", (unsigned long)BURAM->RET[0].REG / 1000);
 
     //Actual Experiemnt
     notify_experiment_results();
