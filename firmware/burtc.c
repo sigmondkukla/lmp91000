@@ -9,23 +9,23 @@ void initBURTC(void)
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
   printf("Reset cause: 0x%08lX | ", (unsigned long)rstCause);
   
-  //Keep Counting Wakeup
+  //Reset Cause Conditions
   if (rstCause & EMU_RSTCAUSE_EM4) {
     printf("EM4 wakeup\n");
     initBURTC_em4wake();
+    //initBURTC_cold();
   }
   else if (rstCause & EMU_RSTCAUSE_SYSREQ) {
     printf("System Reset\n");
     initBURTC_em4wake();
+    //initBURTC_cold();
   }
-
-  //Reset Timer Wakup
   else if (rstCause & EMU_RSTCAUSE_PIN) {
     printf("Pin Reset\n");
     initBURTC_cold();
   }
   else {
-    printf("Cold Start or Other Reset\n");
+    printf("Other Reset\n");
     initBURTC_cold();
   }
 }
