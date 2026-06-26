@@ -48,24 +48,24 @@ lmp91000 lmp(I2C0,
 lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 
 
-// The advertising set handle allocated from Bluetooth stack.
+//The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
 extern "C"
 {
   void app_init(void)
   {
+    //Prints So Know When Device Restarts
     printf("---------Startup!\n");
     fflush(stdout);
-    //printf("Startup!\n");
     
-    //Start GPIO CLock, Initiate GPIO mode for LED and Button
+    //Start GPIO CLock, Initiate GPIO modes
     CMU_ClockEnable(cmuClock_GPIO, 1);
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches Power On
     GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); //Button
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //LED
 
-    // Unlatch pins retained from EM4
+    //Unlatch pins retained from EM4
     EMU_UnlatchPinRetention();
 
     //Initiations
@@ -90,7 +90,6 @@ extern "C"
 
     //Enter EM4 and Other Low Power Modes
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
-    sl_bt_advertiser_stop(advertising_set_handle); //Stop Bluetooth
     //Low Power IMU- future update?
     //Low Power LMP- future update?
     BURTC_CounterReset();

@@ -8,7 +8,7 @@ extern "C" {
 #include "em_burtc.h"
 #include "em_cmu.h"
 
-// 1 kHz ULFRCO x 10 seconds = 10000 ticks
+//2 Seconds
 #define BURTC_IRQ_PERIOD  2000
 
 void BURTC_IRQHandler(void);
