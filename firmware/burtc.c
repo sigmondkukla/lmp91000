@@ -13,6 +13,11 @@ void initBURTC(void)
     printf("EM4 wakeup\n");
     initBURTC_em4wake();
   }
+  //Pin Reset
+  else if (rstCause & EMU_RSTCAUSE_PIN) {
+    printf("Pin Reset");
+    initBURTC_cold();
+  }
   //Startup or Other
   else {
     printf("Cold Start or Other Reset\n");
@@ -49,28 +54,13 @@ void initBURTC_em4wake(void)
   CMU_ClockEnable(cmuClock_BURTC, true);
   CMU_ClockEnable(cmuClock_BURAM, true);
 
-  //BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
-  //burtcInit.compare0Top = false;
-  //burtcInit.em4comp = true;     //Allow BURTC compare to wake from EM4
-  //BURTC_Init(&burtcInit);
-  //BURTC_IntClear(BURTC_IF_COMP);
-  //BURTC_Enable(false);
-
-  //BURTC_CounterReset();
   BURAM->RET[0].REG += BURTC_IRQ_PERIOD;
-  
-  //BURTC_CompareSet(0, BURTC_IRQ_PERIOD);
-  // Schedule next wakeup relative to current counter value
   uint32_t next = BURTC_CounterGet() + BURTC_IRQ_PERIOD;
   BURTC_CompareSet(0, next);
-
 
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
   NVIC_EnableIRQ(BURTC_IRQn);
-  //BURTC_Enable(true);
-
-  //printf("Finished this function\n\n");
 }
 
 //if (rstCause & EMU_RSTCAUSE_POR) {

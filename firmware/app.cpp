@@ -76,16 +76,9 @@ extern "C"
 
   void app_process_action(void)
   {
-    //Print Battery Voltage
+    //Printouts
     printf("Bat V: %f\n", battery_get_voltage());
-
-    //Print BURTC Counter
-    //uint32_t counter = BURTC_CounterGet();
-    //printf("BURTC counter: %lu\n", (unsigned long)counter);
-    // Use BURAM-accumulated ticks for a monotonic elapsed time
-    //uint32_t elapsed = BURAM->RET[0].REG + BURTC_CounterGet();
-    //printf("Elapsed ticks: %lu\n", (unsigned long)elapsed);
-    printf("Seconds: %lu\n", (unsigned long)BURAM->RET[0].REG / 1000);
+    printf("Seconds: %lu\n\n", (unsigned long)BURAM->RET[0].REG / 1000);
 
     //Actual Experiemnt
     notify_experiment_results();
@@ -97,15 +90,9 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    //Enter EM4 and Other Low Power Modes
+    //EM4 Time
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
-    //Low Power IMU- future update?
-    //Low Power LMP- future update?
-    //BURTC_CounterReset();
-    printf("\n");
-    fflush(stdout);
-    sl_sleeptimer_delay_millisecond(10); // give SWO time to drain
-    //BURTC_SyncWait();
+    sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
     sl_power_manager_enter_em4();
   }
 
