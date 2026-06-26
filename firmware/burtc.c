@@ -1,4 +1,5 @@
 #include "burtc.h"
+#include "efr32bg24_emu.h"
 #include "em_burtc.h"
 
 void initBURTC(void)
@@ -7,18 +8,22 @@ void initBURTC(void)
   uint32_t rstCause = EMU->RSTCAUSE;
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
   printf("Reset cause: 0x%08lX | ", (unsigned long)rstCause);
-
-  //EM4 Wakeup
+  
+  //Keep Counting Wakeup
   if (rstCause & EMU_RSTCAUSE_EM4) {
     printf("EM4 wakeup\n");
     initBURTC_em4wake();
   }
-  //Pin Reset
+  else if (rstCause & EMU_RSTCAUSE_SYSREQ) {
+    printf("System Reset\n");
+    initBURTC_em4wake();
+  }
+
+  //Reset Timer Wakup
   else if (rstCause & EMU_RSTCAUSE_PIN) {
-    printf("Pin Reset");
+    printf("Pin Reset\n");
     initBURTC_cold();
   }
-  //Startup or Other
   else {
     printf("Cold Start or Other Reset\n");
     initBURTC_cold();
