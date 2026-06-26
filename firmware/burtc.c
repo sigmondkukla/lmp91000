@@ -70,7 +70,7 @@ void initBURTC_em4wake(void)
   NVIC_EnableIRQ(BURTC_IRQn);
   //BURTC_Enable(true);
 
-  printf("Finished this function\n");
+  //printf("Finished this function\n\n");
 }
 
 //if (rstCause & EMU_RSTCAUSE_POR) {

@@ -37,6 +37,7 @@
 #include "sl_power_manager.h"
 #include "em_burtc.h"
 #include "burtc.h"
+#include <cstdio>
 
 
 lmp91000 lmp(I2C0,
@@ -101,7 +102,9 @@ extern "C"
     //Low Power LMP- future update?
     //BURTC_CounterReset();
     printf("\n");
-    BURTC_SyncWait();
+    fflush(stdout);
+    sl_sleeptimer_delay_millisecond(10); // give SWO time to drain
+    //BURTC_SyncWait();
     sl_power_manager_enter_em4();
   }
 
