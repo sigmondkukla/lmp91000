@@ -78,6 +78,10 @@ extern "C"
     //Print Battery Voltage
     printf("Bat V: %f\n", battery_get_voltage());
 
+    //Print BURTC Counter
+    uint32_t counter = BURTC_CounterGet();
+    printf("BURTC counter: %lu\n", (unsigned long)counter);
+
     //Actual Experiemnt
     notify_experiment_results();
     notify_experiment_status();

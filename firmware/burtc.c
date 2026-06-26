@@ -29,7 +29,7 @@ void initBURTC_cold(void)
   CMU_ClockEnable(cmuClock_BURAM, true);
 
   BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
-  burtcInit.compare0Top = true;
+  burtcInit.compare0Top = false;
   burtcInit.em4comp = true;     //Allow BURTC compare to wake from EM4
   BURTC_Init(&burtcInit);
 
@@ -49,11 +49,11 @@ void initBURTC_em4wake(void)
   CMU_ClockEnable(cmuClock_BURAM, true);
 
   BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
-  burtcInit.compare0Top = true;
+  //burtcInit.compare0Top = false;
   burtcInit.em4comp = true;     //Allow BURTC compare to wake from EM4
-  BURTC_Init(&burtcInit);
+  //BURTC_Init(&burtcInit);
 
-  BURTC_CounterReset();
+  //BURTC_CounterReset();
   BURTC_CompareSet(0, BURTC_IRQ_PERIOD);
 
   BURTC_IntClear(BURTC_IF_COMP);
