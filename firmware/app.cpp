@@ -72,15 +72,13 @@ extern "C"
     //Initiations
     lmp.init();
     initBURTC();
-
   }
 
   void app_process_action(void)
   {
     //Printouts
     printf("Bat V: %f\n", battery_get_voltage());
-    //printf("Seconds: %lu\n\n", (unsigned long)BURAM->RET[0].REG / 1000);
-    printf("Seconds: %lu\n", (unsigned long)BURTC_CounterGet() / 1000);
+    printf("Seconds: %lu\n\n", (unsigned long)BURTC_CounterGet());
 
     //Actual Experiemnt
     notify_experiment_results();
@@ -92,15 +90,12 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    sl_sleeptimer_delay_millisecond(3000);
+    //sl_sleeptimer_delay_millisecond(5000);
 
     //EM4 Time
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
     sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
-
-    //scheduleBURTC_em4();
     scheduleBURTC_em4();
-    //BURTC_CompareSet(0, 2000);
     sl_power_manager_enter_em4();
   }
 

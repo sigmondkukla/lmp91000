@@ -11,14 +11,13 @@ void initBURTC(void)
   printf("Reset cause: 0x%08lX | ", (unsigned long)rstCause);
   
   //Reset Cause Conditions
+  //EMU_RSTCAUSE_POR condition in future?
   if (rstCause & EMU_RSTCAUSE_EM4) {
     printf("EM4 wakeup\n");
     initBURTC_em4wake();
-    //initBURTC_cold();
   }
   else if (rstCause & EMU_RSTCAUSE_SYSREQ) { //When Freshly Flashed
     printf("System Reset\n");
-    //initBURTC_em4wake();
     initBURTC_cold();
   }
   else if (rstCause & EMU_RSTCAUSE_PIN) {
@@ -34,7 +33,6 @@ void initBURTC(void)
 void initBURTC_cold(void)
 {
   CMU_ClockEnable(cmuClock_BURAM, true);
-  BURAM->RET[0].REG = 0;
 
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
   CMU_ClockEnable(cmuClock_BURTC, true);
@@ -62,10 +60,6 @@ void initBURTC_em4wake(void)
   CMU_ClockEnable(cmuClock_BURTC, true);
   CMU_ClockEnable(cmuClock_BURAM, true);
 
-  //BURAM->RET[0].REG += BURTC_IRQ_PERIOD;
-  //uint32_t next = BURTC_CounterGet() + BURTC_IRQ_PERIOD;
-  //BURTC_CompareSet(0, next);
-
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
   NVIC_EnableIRQ(BURTC_IRQn);
@@ -74,8 +68,4 @@ void initBURTC_em4wake(void)
 void scheduleBURTC_em4(void) {
   uint32_t next = BURTC_CounterGet() + BURTC_IRQ_PERIOD;
   BURTC_CompareSet(0, next);
-
-  BURAM->RET[0].REG += BURTC_IRQ_PERIOD;
 }
-
-//if (rstCause & EMU_RSTCAUSE_POR) {
