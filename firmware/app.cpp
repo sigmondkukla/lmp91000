@@ -37,6 +37,7 @@
 #include "sl_power_manager.h"
 #include "em_burtc.h"
 #include "burtc.h"
+#include <cstdint>
 #include <cstdio>
 
 
@@ -77,8 +78,13 @@ extern "C"
   void app_process_action(void)
   {
     //Printouts
-    printf("Bat V: %f\n", battery_get_voltage());
-    printf("Seconds: %lu\n\n", (unsigned long)BURTC_CounterGet());
+    uint32_t now = BURTC_CounterGet() / 1000;
+    uint32_t minutes = now / 60;
+    uint32_t seconds = now % 60;
+    
+    printf("Minutes: %lu: ", (unsigned long)minutes);
+    printf("Seconds: %lu\n", (unsigned long)seconds);
+    //printf("Bat V: %f\n", battery_get_voltage());
 
     //Actual Experiemnt
     notify_experiment_results();
