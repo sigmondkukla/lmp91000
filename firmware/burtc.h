@@ -17,6 +17,8 @@ void initBURTC(void);
 void initBURTC_cold(void);
 void initBURTC_em4wake(void);
 
+void scheduleBURTC_em4(void);
+
 #ifdef __cplusplus
 }
 #endif
