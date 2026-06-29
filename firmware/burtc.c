@@ -15,10 +15,10 @@ void initBURTC(void)
     initBURTC_em4wake();
     //initBURTC_cold();
   }
-  else if (rstCause & EMU_RSTCAUSE_SYSREQ) {
+  else if (rstCause & EMU_RSTCAUSE_SYSREQ) { //When Freshly Flashed
     printf("System Reset\n");
-    initBURTC_em4wake();
-    //initBURTC_cold();
+    //initBURTC_em4wake();
+    initBURTC_cold();
   }
   else if (rstCause & EMU_RSTCAUSE_PIN) {
     printf("Pin Reset\n");
