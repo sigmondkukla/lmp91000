@@ -56,9 +56,16 @@ void initBURTC_cold(void)
 
 void initBURTC_em4wake(void)
 {
-  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
-  CMU_ClockEnable(cmuClock_BURTC, true);
   CMU_ClockEnable(cmuClock_BURAM, true);
+  CMU_ClockEnable(cmuClock_BURTC, true);
+
+  BURTC_Stop();
+  //77 - 3 seconds too slow
+  BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD + 80;
+  BURTC_Start();
+
+  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
+  
 
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
