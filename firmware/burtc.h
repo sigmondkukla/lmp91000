@@ -9,7 +9,7 @@ extern "C" {
 #include "em_cmu.h"
 
 //2 Seconds
-#define BURTC_IRQ_PERIOD  2000
+#define BURTC_IRQ_PERIOD  2 * (1000 / 512)
 
 void BURTC_IRQHandler(void);
 
