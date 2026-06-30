@@ -48,6 +48,10 @@ void initBURTC_cold(void)
   BURTC_CounterReset();
   BURTC_CompareSet(0, 0xFFFFFFFF);
 
+  BURTC_Stop();
+  BURTC->CNT = 1782833100; //77 - 3 seconds too slow
+  BURTC_Start();
+
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
   NVIC_EnableIRQ(BURTC_IRQn);
@@ -96,6 +100,7 @@ static int days_in_month(int m, int y)
 void print_time(void)
 {
   uint32_t total_seconds = BURTC_CounterGet() / 1000;
+  //total_seconds = 1782833100;
 
   //if (unix_epoch_offset == 0) {
   //  uart_send_string("Clock not set. Please enter date/time.\r\n");
