@@ -1,6 +1,7 @@
 #include "burtc.h"
 #include "efr32bg24_emu.h"
 #include "em_burtc.h"
+#include "sl_sleeptimer.h"
 #include <stdint.h>
 
 void initBURTC(void)
@@ -59,20 +60,81 @@ void initBURTC_em4wake(void)
   CMU_ClockEnable(cmuClock_BURAM, true);
   CMU_ClockEnable(cmuClock_BURTC, true);
 
+  //Address the Phantom Ticks on EM4 Wakeup
   BURTC_Stop();
-  //77 - 3 seconds too slow
-  BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD + 80;
+  BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD + 80; //77 - 3 seconds too slow
   BURTC_Start();
 
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
   
-
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
   NVIC_EnableIRQ(BURTC_IRQn);
+
+  // printf("hi");
 }
 
 void scheduleBURTC_em4(void) {
   uint32_t next = BURTC_CounterGet() + BURTC_IRQ_PERIOD;
   BURTC_CompareSet(0, next);
+}
+
+static int is_leap(int y)
+{
+  return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+}
+
+static int days_in_month(int m, int y)
+{
+  static const int days[] =
+    {31,28,31,30,31,30,31,31,30,31,30,31};
+
+  if (m == 2) return days[m-1] + is_leap(y);
+  return days[m-1];
+}
+
+void print_time(void)
+{
+  uint32_t total_seconds = BURTC_CounterGet() / 1000;
+
+  //if (unix_epoch_offset == 0) {
+  //  uart_send_string("Clock not set. Please enter date/time.\r\n");
+  //  return;
+  //}
+
+  int year = 1970;
+  int month = 1;
+
+  // 1. Calculate Year
+  while (1) {
+    uint32_t seconds_in_year = (is_leap(year) ? 366 : 365) * 86400UL;
+    if (total_seconds < seconds_in_year) break;
+    total_seconds -= seconds_in_year;
+    year++;
+  }
+
+  // 2. Calculate Month
+  for (month = 1; month <= 12; month++) {
+    uint32_t seconds_in_month = days_in_month(month, year) * 86400UL;
+    if (total_seconds < seconds_in_month) break;
+    total_seconds -= seconds_in_month;
+  }
+
+  // 3. Calculate Days, Hours, Mins, Secs
+  int day = (total_seconds / 86400UL) + 1;
+  uint32_t remaining = total_seconds % 86400UL;
+
+  uint32_t hour = remaining / 3600UL;
+  uint32_t min  = (remaining % 3600UL) / 60UL;
+  uint32_t sec  = remaining % 60UL;
+
+  char buffer[64]; // Make sure buffer is large enough
+
+  sprintf(buffer, "Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n",
+          year, month, day, hour, min, sec);
+
+  //uart_send_string(buffer);
+  printf(buffer, sizeof(buffer),
+         "Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n",
+         year, month, day, hour, min, sec);
 }

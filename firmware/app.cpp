@@ -86,6 +86,8 @@ extern "C"
     printf("Seconds: %lu\n", (unsigned long)seconds);
     //printf("Bat V: %f\n", battery_get_voltage());
 
+    print_time();
+
     //Actual Experiemnt
     notify_experiment_results();
     notify_experiment_status();
@@ -96,7 +98,7 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    sl_sleeptimer_delay_millisecond(5000);
+    //sl_sleeptimer_delay_millisecond(5000);
 
     //EM4 Time
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
