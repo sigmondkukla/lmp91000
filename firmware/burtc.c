@@ -48,7 +48,7 @@ void initBURTC_cold(void)
   burtcInit.start = false;  
   burtcInit.compare0Top = false;
   burtcInit.em4comp = true;     //Allow BURTC compare to wake from EM4
-  //burtcInit.clkDiv = 512;
+  burtcInit.clkDiv = 32768;
   BURTC_Init(&burtcInit);
 
   BURTC_CounterReset();
@@ -56,7 +56,8 @@ void initBURTC_cold(void)
 
   BURTC_Stop();
   //BURTC->CNT = 1782833100 * (1000/512);
-  BURTC->CNT = (uint32_t)(((uint64_t)1782849300 * 1000) / 512);
+  //BURTC->CNT = (uint32_t)(((uint64_t)1782849300 * 1000) / 512);
+  BURTC->CNT = 1782849300;
   BURTC_Start();
 
   BURTC_IntClear(BURTC_IF_COMP);
@@ -72,9 +73,9 @@ void initBURTC_em4wake(void)
   CMU_ClockEnable(cmuClock_BURTC, true);
 
   //Address the Phantom Ticks on EM4 Wakeup
-  BURTC_Stop();
-  BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD; // + 80; //77 - 3 seconds too slow
-  BURTC_Start();
+  //BURTC_Stop();
+  //BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD; // + 80; //77 - 3 seconds too slow
+  //BURTC_Start();
 
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   
@@ -108,7 +109,7 @@ void print_time(void)
 {
   //uint32_t total_seconds = BURTC_CounterGet() / 1000;
   //uint32_t total_seconds = BURTC_CounterGet() * 512 / 1000;
-  uint32_t total_seconds = ((uint64_t)BURTC_CounterGet() * 512) / 1000;
+  uint32_t total_seconds = BURTC_CounterGet();
   //total_seconds = 1782833100;
 
   //if (unix_epoch_offset == 0) {
