@@ -58,8 +58,8 @@ extern "C"
   void app_init(void)
   {
     //Prints So Know When Device Restarts
-    printf("---------Startup!\n");
-    fflush(stdout);
+    //printf("---------Startup!\n");
+    //fflush(stdout);
     
     //Start GPIO CLock, Initiate GPIO modes
     CMU_ClockEnable(cmuClock_GPIO, 1);
@@ -77,16 +77,8 @@ extern "C"
 
   void app_process_action(void)
   {
-    //Printouts
-    uint32_t now = BURTC_CounterGet() / 1000;
-    uint32_t minutes = now / 60;
-    uint32_t seconds = now % 60;
-    
-    printf("Minutes: %lu: ", (unsigned long)minutes);
-    printf("Seconds: %lu\n", (unsigned long)seconds);
-    //printf("Bat V: %f\n", battery_get_voltage());
-
     print_time();
+    printf("Bat V: %f\n\n", battery_get_voltage());
 
     //Actual Experiemnt
     notify_experiment_results();
@@ -98,15 +90,11 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    //sl_sleeptimer_delay_millisecond(5000);
-
     //EM4 Time
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
     sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
     scheduleBURTC_em4();
-    //BURAM->RET[0].REG = BURTC_CounterGet();
-    //sl_power_manager_enter_em4();
-    EMU_EnterEM4();
+    sl_power_manager_enter_em4();
   }
 
   /**************************************************************************
