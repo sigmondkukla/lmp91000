@@ -4,6 +4,7 @@
 #include "sl_sleeptimer.h"
 #include <stdint.h>
 #include "em_emu.h"
+#include "em_cmu.h"
 
 void initBURTC(void)
 {
@@ -108,6 +109,6 @@ void print_time(void)
   uint32_t hour = remaining / 3600UL;
   uint32_t min  = (remaining % 3600UL) / 60UL;
   uint32_t sec  = remaining % 60UL;
-  
+
   printf("Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n", year, month, day, hour, min, sec);
 }
