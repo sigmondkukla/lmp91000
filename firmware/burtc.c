@@ -57,7 +57,7 @@ void initBURTC_cold(void)
   BURTC_Stop();
   //BURTC->CNT = 1782833100 * (1000/512);
   //BURTC->CNT = (uint32_t)(((uint64_t)1782849300 * 1000) / 512);
-  BURTC->CNT = 1782849300;
+  BURTC->CNT = 1782931620;
   BURTC_Start();
 
   BURTC_IntClear(BURTC_IF_COMP);

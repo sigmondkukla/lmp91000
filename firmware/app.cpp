@@ -104,7 +104,7 @@ extern "C"
     GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
     sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
     scheduleBURTC_em4();
-    BURAM->RET[0].REG = BURTC_CounterGet();
+    //BURAM->RET[0].REG = BURTC_CounterGet();
     //sl_power_manager_enter_em4();
     EMU_EnterEM4();
   }
