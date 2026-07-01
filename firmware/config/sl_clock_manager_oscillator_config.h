@@ -385,7 +385,7 @@
 // <cmuPrecisionHigh=> High precision
 // <d> cmuPrecisionDefault
 #ifndef SL_CLOCK_MANAGER_LFRCO_PRECISION
-#define SL_CLOCK_MANAGER_LFRCO_PRECISION    cmuPrecisionHigh
+#define SL_CLOCK_MANAGER_LFRCO_PRECISION    cmuPrecisionDefault
 #endif
 // </h>
 

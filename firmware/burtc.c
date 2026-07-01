@@ -3,6 +3,7 @@
 #include "em_burtc.h"
 #include "sl_sleeptimer.h"
 #include <stdint.h>
+#include "em_emu.h"
 
 void initBURTC(void)
 {
@@ -35,7 +36,11 @@ void initBURTC_cold(void)
 {
   CMU_ClockEnable(cmuClock_BURAM, true);
 
-  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
+  EMU_EM4Init_TypeDef em4Init = EMU_EM4INIT_DEFAULT;
+  em4Init.em4State = emuEM4Shutoff;  // <-- Do NOT disable LFRCO on EM4 entry!
+  EMU_EM4Init(&em4Init);
+
+  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   CMU_ClockEnable(cmuClock_BURTC, true);
   CMU_ClockEnable(cmuClock_BURAM, true);
 
@@ -43,7 +48,7 @@ void initBURTC_cold(void)
   burtcInit.start = false;  
   burtcInit.compare0Top = false;
   burtcInit.em4comp = true;     //Allow BURTC compare to wake from EM4
-  burtcInit.clkDiv = 512;
+  //burtcInit.clkDiv = 512;
   BURTC_Init(&burtcInit);
 
   BURTC_CounterReset();
@@ -71,7 +76,7 @@ void initBURTC_em4wake(void)
   BURTC->CNT = BURAM->RET[0].REG + BURTC_IRQ_PERIOD; // + 80; //77 - 3 seconds too slow
   BURTC_Start();
 
-  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_ULFRCO);
+  CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
