@@ -57,11 +57,6 @@ extern "C"
 {
   void app_init(void)
   {
-    //CMU_ClockEnable(cmuClock_BURAM, true);
-    //BURAM->RET[0].REG = EMU->RSTCAUSE;
-    //uint32_t myRstCause = EMU->RSTCAUSE;
-    //printf("My Reset Cause: 0x%08lX\n", (unsigned long)myRstCause);
-
     //Prints So Know When Device Restarts
     //printf("---------Startup!\n");
     //fflush(stdout);
@@ -82,11 +77,7 @@ extern "C"
 
   void app_process_action(void)
   {
-    //uint32_t myRstCause = BURAM->RET[0].REG;
-    //printf("My Reset Cause: 0x%08lX\n", (unsigned long)myRstCause);
-    //uint32_t myRstCause = EMU->RSTCAUSE;
-    //printf("My Reset Cause: 0x%08lX\n", (unsigned long)myRstCause);
-
+    //Prints
     print_time();
     printf("Bat V: %f\n\n", battery_get_voltage());
 

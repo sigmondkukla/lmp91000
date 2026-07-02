@@ -6,8 +6,7 @@
 #include "em_emu.h"
 #include "em_cmu.h"
 
-void initBURTC(void)
-{
+void initBURTC(void) {
   //Detect Reset Cause
   uint32_t rstCause = EMU->RSTCAUSE;
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
@@ -39,27 +38,9 @@ void initBURTC(void)
     printf("Reconfiguring BURTC...\n");
     initBURTC_cold(rstCause);
   }
-
-  /*if (rstCause & EMU_RSTCAUSE_EM4) {
-    printf("EM4 wakeup\n");
-    initBURTC_em4wake();
-  }
-  else if (rstCause & EMU_RSTCAUSE_SYSREQ) { //After Flash New Firmware
-    printf("System Reset\n");
-    initBURTC_cold();
-  }
-  else if (rstCause & EMU_RSTCAUSE_POR) { //Power On Reset
-    printf("Power On Reset\n");
-    initBURTC_cold();
-  }
-  else {
-    printf("Other Reset\n");
-    initBURTC_em4wake();
-  }*/
 }
 
-void initBURTC_cold(uint32_t rstCause)
-{
+void initBURTC_cold(uint32_t rstCause) {
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   CMU_ClockEnable(cmuClock_BURTC, true);
 
@@ -69,11 +50,6 @@ void initBURTC_cold(uint32_t rstCause)
   burtcInit.clkDiv = 32768;
   BURTC_Init(&burtcInit);
 
-  //If initBURTC_cold gets called during a power on reset, set the BURTC counter to the current UNIX timestamp
-  //uint32_t rstCause = EMU->RSTCAUSE;
-  //if (rstCause & EMU_RSTCAUSE_POR) {
-  //  BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
-  //}
   BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
 
   BURTC_IntClear(BURTC_IF_COMP);
@@ -83,8 +59,7 @@ void initBURTC_cold(uint32_t rstCause)
   BURTC_Start();
 }
 
-void initBURTC_em4wake(void)
-{
+void initBURTC_em4wake(void) {
   CMU_ClockEnable(cmuClock_BURTC, true);
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   
@@ -98,13 +73,11 @@ void scheduleBURTC_em4(void) {
   BURTC_CompareSet(0, next);
 }
 
-static int is_leap(int y)
-{
+static int is_leap(int y) {
   return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
 }
 
-static int days_in_month(int m, int y)
-{
+static int days_in_month(int m, int y) {
   static const int days[] =
     {31,28,31,30,31,30,31,31,30,31,30,31};
 
@@ -112,8 +85,7 @@ static int days_in_month(int m, int y)
   return days[m-1];
 }
 
-void print_time(void)
-{
+void print_time(void) {
   int year = 1970;
   int month = 1;
   uint32_t total_seconds = BURTC_CounterGet();
