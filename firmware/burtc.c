@@ -43,7 +43,7 @@ void initBURTC_cold(void)
   burtcInit.em4comp = true;
   burtcInit.clkDiv = 32768;
   BURTC_Init(&burtcInit);
-  BURTC->CNT = 1782931620;
+  BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
 
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
