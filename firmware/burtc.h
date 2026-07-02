@@ -8,10 +8,10 @@ extern "C" {
 #include "em_cmu.h"
 
 #define BURTC_IRQ_PERIOD 1
-#define CURRENT_UNIX_TIMESTAMP 1783001580
+#define CURRENT_UNIX_TIMESTAMP 1783032840
 
 void initBURTC(void);
-void initBURTC_cold(void);
+void initBURTC_cold(uint32_t rstCause);
 void initBURTC_em4wake(void);
 void scheduleBURTC_em4(void);
 void print_time(void);

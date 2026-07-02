@@ -11,29 +11,54 @@ void initBURTC(void)
   //Detect Reset Cause
   uint32_t rstCause = EMU->RSTCAUSE;
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
-  printf("Reset cause: 0x%08lX | ", (unsigned long)rstCause);
-  
-  //Reset Cause Conditions
-  //EMU_RSTCAUSE_POR condition in future?
-  if (rstCause & EMU_RSTCAUSE_EM4) {
+  //printf("Reset cause: ");
+
+  if (rstCause == EMU_RSTCAUSE_POR) {
+    //Power On Reset
+    printf("Power On\n");
+    initBURTC_cold(rstCause);
+  }
+  else if (rstCause == EMU_RSTCAUSE_EM4) {
+    //EM4 Reset
+    printf("EM4 Wakeup\n");
+    initBURTC_em4wake();
+  }
+  else if (rstCause == EMU_RSTCAUSE_SYSREQ) {
+    //System Reset - not tested
+    printf("System Reset\n");
+    initBURTC_em4wake();
+  }
+  else if (rstCause == 0x00000042) {
+    //Fresh Flash
+    printf("Fresh Flash\n");
+    initBURTC_cold(rstCause);
+  }
+  else {
+    //Opening the SWO terminal without the --noreset options causes a pin reset which clears the BURTC counter
+    printf("Reset cause: 0x%08lX\n", (unsigned long)rstCause);
+    printf("Reconfiguring BURTC...\n");
+    initBURTC_cold(rstCause);
+  }
+
+  /*if (rstCause & EMU_RSTCAUSE_EM4) {
     printf("EM4 wakeup\n");
     initBURTC_em4wake();
   }
-  else if (rstCause & EMU_RSTCAUSE_SYSREQ) {
+  else if (rstCause & EMU_RSTCAUSE_SYSREQ) { //After Flash New Firmware
     printf("System Reset\n");
     initBURTC_cold();
   }
-  else if (rstCause & EMU_RSTCAUSE_PIN) {
-    printf("Pin Reset\n");
+  else if (rstCause & EMU_RSTCAUSE_POR) { //Power On Reset
+    printf("Power On Reset\n");
     initBURTC_cold();
   }
   else {
     printf("Other Reset\n");
-    initBURTC_cold();
-  }
+    initBURTC_em4wake();
+  }*/
 }
 
-void initBURTC_cold(void)
+void initBURTC_cold(uint32_t rstCause)
 {
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   CMU_ClockEnable(cmuClock_BURTC, true);
@@ -43,6 +68,12 @@ void initBURTC_cold(void)
   burtcInit.em4comp = true;
   burtcInit.clkDiv = 32768;
   BURTC_Init(&burtcInit);
+
+  //If initBURTC_cold gets called during a power on reset, set the BURTC counter to the current UNIX timestamp
+  //uint32_t rstCause = EMU->RSTCAUSE;
+  //if (rstCause & EMU_RSTCAUSE_POR) {
+  //  BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
+  //}
   BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
 
   BURTC_IntClear(BURTC_IF_COMP);
