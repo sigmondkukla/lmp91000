@@ -71,6 +71,7 @@ public:
                             pos_input(pos_input),
 
                             vref(vref) {};
+  
 
   void init();
 
@@ -90,7 +91,7 @@ public:
   void set_outputs_to_zero(void);
   void Reset_Previous_Values(void);
   float get_current();
-  int32_t get_current_DAC_output_mv();
+  int32_t get_current_DAC_output_mv(uint32_t);
   uint8_t read(uint8_t reg);
 
   void unlock(bool lock = false);

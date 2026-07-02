@@ -364,7 +364,7 @@ void lmp91000::output_voltage(int32_t voltage)
   set_bias_magnitude(bias_setting);
   //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
   DAC_write(get_vdac_value(dacVout));
-  this->current_DAC_output_mv = dacVout;
+  this->current_DAC_output_mv = get_current_DAC_output_mv(get_vdac_value(dacVout));
 }
 
 void lmp91000::output_voltage_static_bias(int32_t voltage, int32_t user_max_target_voltage)
@@ -566,6 +566,6 @@ void lmp91000::Reset_Previous_Values(void) {
   previous_bias_sign = -1;
 }
 
-int32_t lmp91000::get_current_DAC_output_mv() {
-  return current_DAC_output_mv;
+int32_t lmp91000::get_current_DAC_output_mv(uint32_t value) {
+  return (int32_t) (vref * (value / (1 << 12) ));
 }
