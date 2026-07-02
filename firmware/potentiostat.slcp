@@ -105,6 +105,9 @@ component:
   id: mpu
 - package: simplicity_sdk
   vendor: silabs
+  id: printf
+- package: simplicity_sdk
+  vendor: silabs
   id: rail_util_pti
 - package: simplicity_sdk
   vendor: silabs
