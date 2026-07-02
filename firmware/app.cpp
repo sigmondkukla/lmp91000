@@ -69,7 +69,30 @@ extern "C"
     /////////////////////////////////////////////////////////////////////////////
     // GPIO_PinModeSet()
     lmp.init();
+
+    // lmp.set_mode(0x03); // three lead amperometric cell
+    // lmp.set_fet_enable(false); // disable FET
+    // lmp.set_gain(3); // initially had it at 3 for 7k ohms
+    // lmp.set_rload(0); // 10 ohms
+    // lmp.set_ref_source(1); // external
+    // lmp.set_internal_zero(1); // internal zero 20% (used to have it on 50%)
+    // lmp.set_bias_magnitude(3);
+
+    // printf("LOCK: %02x\n", lmp.read(LMP91000_REG_LOCK));
+    // printf("REFCN: %02x\n", lmp.read(LMP91000_REG_REFCN));
+    // printf("MODECN: %02x\n", lmp.read(LMP91000_REG_MODECN));
+    // printf("STATUS: %02x\n", lmp.read(LMP91000_REG_STATUS));
+
+    // lmp.set_outputs_to_zero();
+
+    // sl_sleeptimer_delay_millisecond(100);
+    // lmp.output_voltage_test();
+    // lmp.set_bias_magnitude(0);
+    // lmp.DAC_write(0xfff);
+    // sl_sleeptimer_delay_millisecond(1000);
     //imu.init();
+    GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
     
   }
 

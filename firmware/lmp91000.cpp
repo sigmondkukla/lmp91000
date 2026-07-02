@@ -37,6 +37,7 @@ void lmp91000::init()
   printf("rebooted\n");
 
   unlock();
+
 }
 
 void lmp91000::initCMU(void)
@@ -116,11 +117,14 @@ void lmp91000::initADC(void)
 
 void lmp91000::initDAC(void)
 {
+  GPIO_PinModeSet(gpioPortB, 0, gpioModeDisabled, 0);
   VDAC_Init_TypeDef init = VDAC_INIT_DEFAULT;
   VDAC_InitChannel_TypeDef initChannel = VDAC_INITCHANNEL_DEFAULT;
 
   init.prescaler = VDAC_PrescaleCalc(VDAC0, 1000000); // get prescaler for 1 MHz VDAC clock
   init.reference = vdacRefAvdd;
+  initChannel.powerMode        = vdacPowerModeHighPower;
+  initChannel.mainOutEnable    = true;
 
   VDAC_Init(VDAC0, &init);
   VDAC_InitChannel(VDAC0, &initChannel, 0); // Using channel 0
@@ -145,45 +149,46 @@ void lmp91000::DAC_write(const uint16_t value)
 
 void lmp91000::write(uint8_t reg, uint8_t value)
 {
-  printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
-  I2C_TransferSeq_TypeDef i2cTransfer;
+  // 1. ALWAYS zero-initialize stack structures to wipe out garbage data
+  I2C_TransferSeq_TypeDef i2cTransfer = {0}; 
   I2C_TransferReturn_TypeDef result;
   uint8_t i2c_write_data[2];
 
-  i2cTransfer.addr = LMP91000_I2C_ADDR; // not bit shifted because done already
-  i2cTransfer.flags = I2C_FLAG_WRITE_WRITE;
-
   i2c_write_data[0] = reg;
   i2c_write_data[1] = value;
+
+  i2cTransfer.addr = LMP91000_I2C_ADDR;
+  
+  // 2. Changed to I2C_FLAG_WRITE because this is a single, continuous 2-byte write
+  i2cTransfer.flags = I2C_FLAG_WRITE; 
+
   i2cTransfer.buf[0].data = i2c_write_data;
   i2cTransfer.buf[0].len = 2;
 
-  // enable this lmp
+  // Enable the LMP91000 chip select/enable pin
   enable(true);
 
   result = I2C_TransferInit(I2C0, &i2cTransfer);
   while (result == i2cTransferInProgress)
   {
-    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
-  // return result;
 
+  // Disable the chip select pin
   enable(false);
 }
 
 uint8_t lmp91000::read(uint8_t reg)
 {
-  // Transfer structure
-  I2C_TransferSeq_TypeDef i2cTransfer;
+  // FIX: Zero-initialize the structure to wipe out stack garbage
+  I2C_TransferSeq_TypeDef i2cTransfer = {0};
   I2C_TransferReturn_TypeDef result;
 
-  // I2C Buffers
-  uint8_t i2c_rxBuffer[10]; // maybe it can be smaller
+  uint8_t i2c_rxBuffer[1]; // Reduced size since we only read 1 byte
 
   // Initialize I2C transfer
   i2cTransfer.addr = LMP91000_I2C_ADDR;
-  i2cTransfer.flags = I2C_FLAG_WRITE_READ; // must write target address before reading
+  i2cTransfer.flags = I2C_FLAG_WRITE_READ; 
   i2cTransfer.buf[0].data = &reg;
   i2cTransfer.buf[0].len = 1;
   i2cTransfer.buf[1].data = i2c_rxBuffer;
@@ -193,17 +198,13 @@ uint8_t lmp91000::read(uint8_t reg)
 
   result = I2C_TransferInit(I2C0, &i2cTransfer);
 
-  // Read data
   while (result == i2cTransferInProgress)
   {
-    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
   
   enable(false);
-  //printf("LMP91000_read from reg 0x%x value 0x%x\n", reg, i2c_rxBuffer[0]);
   return i2c_rxBuffer[0];
-
 }
 
 void lmp91000::set_fet_enable(bool enabled)
@@ -305,73 +306,65 @@ void lmp91000::unlock(bool lock)
 
 void lmp91000::output_voltage(int32_t voltage)
 {
+  //    printf("Requested %ld mV\n", voltage);
+  // Minimum DAC voltage that can be set
+  // The LMP91000 accepts a minium value of 1.5V, adding the
+  // additional 20 mV for the sake of a bit of a buffer
+  //    const uint32_t minDACVoltage = 1500;
+
+  uint32_t dacVout = LMP91000_MIN_VREF;
+  uint8_t bias_setting = 0;
+
+  // voltage cannot be set to less than 15mV because the LMP91000
+  // accepts a minium of 1.5V at its VREF pin and has 1% as its
+  // lowest bias option 1.5V*1% = 15mV
+  if (abs(voltage) < 15)
+    voltage = 15 * (voltage / abs(voltage)); // clamp voltage to 15mV min
+
+  // Allows setting voltage above 792mV
+  if (abs(voltage) > 3300 * 0.24)
+  {
+    set_bias_sign(voltage >= 0); // will write 0 for neg and 1 for pos
+    set_bias_magnitude(0);
+    //        VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
+    printf("DAC ERRONEOUSLY WRITTEN");
+    DAC_write(get_vdac_value(dacVout));
+    return;
+  }
+
+  int32_t setV = dacVout * TIA_BIAS[bias_setting];
   int32_t original_voltage = voltage;
-  uint32_t target_magnitude = abs(voltage);
+  voltage = abs(voltage);
 
-  // Clamp minimum physical capability (1.5V VREF * 1% lowest bias = 15mV)
-  if (target_magnitude < 15) {
-    target_magnitude = 15;
-  }
+  //    printf("setV: %ld\n", setV);
 
-  uint32_t best_dacVout = LMP91000_MIN_VREF;
-  uint8_t best_bias_setting = 1; // Avoid 0% bias if it causes division by zero
-  int32_t best_error = 999999;
+  while (setV > voltage * (1 + v_tolerance) || setV < voltage * (1 - v_tolerance)) // while setV is out of tolerance
+  {
+    //      printf("setV: %ld\n", setV);
+    if (bias_setting == 0)
+      bias_setting = 1;
 
-  // Scan through available hardware bias settings deterministically 
-  // Replacing the dangerous 'while' loop
-  for (uint8_t b = 1; b < NUM_TIA_BIAS; b++) {
-    if (TIA_BIAS[b] <= 0) continue; 
+    dacVout = voltage / TIA_BIAS[bias_setting];
 
-    // Calculate required DAC VREF for this hardware step percentage
-    uint32_t calculated_dac = target_magnitude / TIA_BIAS[b];
+    if (dacVout > 3300)
+    {
+      bias_setting++;
+      dacVout = LMP91000_MIN_VREF;
 
-    // If it fits within your DAC physical limits (e.g., 1.5V to 3.3V)
-    if (calculated_dac >= LMP91000_MIN_VREF && calculated_dac <= 3300) {
-      int32_t actual_achieved = calculated_dac * TIA_BIAS[b];
-      int32_t error = abs((int32_t)target_magnitude - actual_achieved);
-
-      // Keep the setting that gets closest to target voltage
-      if (error < best_error) {
-        best_error = error;
-        best_dacVout = calculated_dac;
-        best_bias_setting = b;
-      }
+      if (bias_setting > NUM_TIA_BIAS)
+        bias_setting = 0;
     }
+
+    setV = dacVout * TIA_BIAS[bias_setting];
   }
 
-  // Handle your escape hatch scenario safely if voltage is completely out of normal range
-  if (target_magnitude > (3300 * 0.24)) {
-    best_bias_setting = 0; 
-    best_dacVout = LMP91000_MIN_VREF;
-  }
+  // printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
 
-  // FORCE write registers if the target changes, ensuring guards never lock up
-  bool current_bias_sign = (original_voltage >= 0);
-
-  // the following commeted code logic worked perfectly for CA, it doesn't work for CV because the voltage is always changing
-  // if (previousVoltage == 9999 || previousVoltage != original_voltage) {
-  //   printf("Changing bias sign to %u\n", current_sign ? 1 : 0);
-  //   set_bias_sign(current_sign);
-  // }
-
-  if (previous_bias_sign == -1 || previous_bias_sign != current_bias_sign) {
-    printf("Changing bias sign to %u\n", current_bias_sign ? 1 : 0);
-    set_bias_sign(current_bias_sign);
-    previous_bias_sign = current_bias_sign;
-  }
-
-  if (previousBias == 127 || previousBias != best_bias_setting) {
-    printf("Changing bias magnitude to %u\n", best_bias_setting);
-    set_bias_magnitude(best_bias_setting);
-  }
-
-  // Write out to the actual DAC hardware
-  DAC_write(get_vdac_value(best_dacVout));
-
-  // Save the state cleanly
-  previous_bias_sign = current_bias_sign;
-  previousVoltage = original_voltage;
-  previousBias = best_bias_setting;
+  set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
+  set_bias_magnitude(bias_setting);
+  //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
+  DAC_write(get_vdac_value(dacVout));
+  this->current_DAC_output_mv = dacVout;
 }
 
 void lmp91000::output_voltage_static_bias(int32_t voltage, int32_t user_max_target_voltage)
@@ -467,10 +460,61 @@ void lmp91000::output_voltage_static_bias(int32_t voltage, int32_t user_max_targ
   previousVoltage = original_voltage;
 }
 
+void lmp91000::output_voltage_test(void){
+  int settling_time = 50, rate = 200;
+  DAC_write(0xFFF);
+  for (int j = 0; j < 3; j++)
+  {
+    set_bias_sign(0);
+    for (int i = 1; i < 11; i++)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*-1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    for (int i = 10; i >= 0; i--)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*-1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    set_bias_sign(1);
+    for (int i = 1; i < 11; i++)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    for (int i = 10; i >= 0; i--)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+  }
+  
+  set_bias_magnitude(0);
+}
+
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
 {
   //printf("DAC output: %lu mV\n", mv);
-  current_DAC_output_mv = mv; // Store the current DAC output in millivolts for later retrieval
   return mv * 0xFFF / vref; // 12-bit instead of 16-bit DAC, and vref is in mV so it cancels out factor of 1000
 }
 
@@ -491,10 +535,10 @@ uint32_t lmp91000::sample_adc(void)
 
 float lmp91000::get_current(void)
 {
-  uint32_t adc_voltage_mv = sample_adc();
+  uint32_t vout = sample_adc();
   
   // 1. Convert millivolt numbers strictly into Volts (float)
-  float v_adc = (float)adc_voltage_mv / 1000.0f;
+  float vout_volts = (float)vout / 1000.0f;
 
   //float v_ref_volts = (float)vref / 1000.0f;
   float v_ref_volts = (float)current_DAC_output_mv / 1000.0f; // use the current DAC output as the reference voltage for more accurate current calculation
@@ -503,7 +547,7 @@ float lmp91000::get_current(void)
   float v_zero = v_ref_volts * TIA_ZERO[current_tia_zero];
   
   // 3. (Volts - Volts) / Ohms = Amperes
-  float current_amperes = (v_adc - v_zero) / (TIA_GAIN[current_tia_gain]);
+  float current_amperes = (vout_volts - v_zero) / (TIA_GAIN[current_tia_gain]);
   
   return current_amperes;
 }
