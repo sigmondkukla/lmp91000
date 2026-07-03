@@ -23,7 +23,7 @@ void initBURTC(void) {
     initBURTC_em4wake();
   }
   else if (rstCause == EMU_RSTCAUSE_SYSREQ) {
-    //System Reset - not tested
+    //System Reset - not tested (Shouldn't happen but may with bluetooth)
     printf("System Reset\n");
     initBURTC_em4wake();
   }
