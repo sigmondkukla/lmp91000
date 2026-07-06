@@ -14,6 +14,6 @@ float battery_get_voltage()
   while ((IADC0->STATUS & IADC_STATUS_SCANFIFODV) == 0);
 
   IADC_Result_t sample = IADC_pullScanFifoResult(IADC0);
-  float bat_voltage = sample.data * 3.3 / 0xFFF * 2; // multiply by 2 because of voltage divider
+  float bat_voltage = sample.data * 3.3 / 0xFFF * 2.180f; // multiply by 2 because of voltage divider
   return bat_voltage;
 }

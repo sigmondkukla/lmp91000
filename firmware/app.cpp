@@ -92,10 +92,10 @@ extern "C"
     //}
 
     //EM4 Time
-    GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
-    sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
-    scheduleBURTC_em4();
-    sl_power_manager_enter_em4();
+    //GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
+    //sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
+    //scheduleBURTC_em4();
+    //sl_power_manager_enter_em4();
   }
 
   /**************************************************************************
