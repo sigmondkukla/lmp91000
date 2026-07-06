@@ -96,7 +96,7 @@ component:
   id: gatt_service_device_information_override
 - package: simplicity_sdk
   vendor: silabs
-  id: iostream_swo
+  id: iostream_rtt
 - package: simplicity_sdk
   vendor: silabs
   id: memory_manager_cpp
@@ -205,9 +205,6 @@ autoselected_components:
 - package: simplicity_sdk
   vendor: silabs
   id: cpp_support
-- package: simplicity_sdk
-  vendor: silabs
-  id: debug_swo
 - package: simplicity_sdk
   vendor: silabs
   id: device_clock
@@ -487,6 +484,9 @@ autoselected_components:
 - package: simplicity_sdk
   vendor: silabs
   id: se_manager_mailbox
+- package: simplicity_sdk
+  vendor: silabs
+  id: segger_rtt
 - package: simplicity_sdk
   vendor: silabs
   id: sl_assert

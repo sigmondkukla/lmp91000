@@ -39,6 +39,7 @@
 #include "burtc.h"
 #include <cstdint>
 #include <cstdio>
+#include "sl_iostream_rtt.h"
 
 
 lmp91000 lmp(I2C0,
@@ -60,6 +61,8 @@ extern "C"
     //Prints So Know When Device Restarts
     //printf("---------Startup!\n");
     //fflush(stdout);
+
+    sl_iostream_rtt_init();
     
     //Start GPIO CLock, Initiate GPIO modes
     CMU_ClockEnable(cmuClock_GPIO, 1);
