@@ -91,6 +91,8 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
+    //if (current_voltage < 3.4f) //Shut down device if battery is low
+
     //EM4 Time
     //GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
     //sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
