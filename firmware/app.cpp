@@ -76,6 +76,8 @@ extern "C"
     //Initiations
     lmp.init();
     initBURTC();
+
+    update_time(1783368011);
   }
 
   void app_process_action(void)

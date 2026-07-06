@@ -40,6 +40,12 @@ void initBURTC(void) {
   }
 }
 
+void update_time(uint32_t new_time) {
+  BURTC_Stop();
+  BURTC->CNT = new_time;
+  BURTC_Start();
+}
+
 void initBURTC_cold(uint32_t rstCause) {
   CMU_ClockSelectSet(cmuClock_EM4GRPACLK, cmuSelect_LFRCO);
   CMU_ClockEnable(cmuClock_BURTC, true);
