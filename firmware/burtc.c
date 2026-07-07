@@ -58,11 +58,7 @@ void initBURTC_cold(uint32_t rstCause) {
   BURTC_Init(&burtcInit);
 
   BURTC_Stop();
-  //BURTC->CNT = 946684800;
-  //BURTC->CNT = 31536000;
-  //BURTC->CNT = 86400;
   BURTC->CNT = 1;
-  //BURTC->CNT = 0;
 
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);
@@ -127,8 +123,6 @@ void print_time(void) {
 
   printf("Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n", year, month, day, hour, min, sec);
 }
-
-
 
 void check_time_sync_input(void)
 {
