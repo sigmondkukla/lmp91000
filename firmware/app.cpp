@@ -87,10 +87,20 @@ extern "C"
     notify_experiment_status();
 
     //Check Button State to Completely Turn off Device -- TODO: Need to Add a Timer or counter
-    //if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
-    //  printf("Button Pressed");
-    //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
-    //}
+    static uint32_t power_off_counter = 0;
+    if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
+      printf("Button Pressed\n");
+      power_off_counter++;
+      printf("Power Off Counter: %u\n", power_off_counter);
+      if (power_off_counter >= 10) { // button held for 1 second
+        printf("TURNING ME OFF\n");
+        GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+      }
+      //GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+    }
+    else {
+      power_off_counter = 0;
+    }
 
     //Fully Shutdown Device if Battery Voltage is too Low
     float current_voltage = battery_get_voltage();
@@ -98,7 +108,7 @@ extern "C"
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     }
 
-    sl_sleeptimer_delay_millisecond(1000);
+    sl_sleeptimer_delay_millisecond(10);
 
     //EM4 Configuration and Entrance
     //em4_time();
