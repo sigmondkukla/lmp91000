@@ -86,19 +86,14 @@ extern "C"
     notify_experiment_results();
     notify_experiment_status();
 
-    //Check Button State to Completely Turn off Device -- TODO: Need to Add a Timer or counter
+    //Check Button State to Completely Turn off Device
     static uint32_t power_off_counter = 0;
     if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
-      printf("Button Pressed\n");
       power_off_counter++;
-      printf("Power Off Counter: %u\n", power_off_counter);
       if (power_off_counter >= 10) { // button held for 1 second
-        printf("TURNING ME OFF\n");
         GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
       }
-      //GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
-    }
-    else {
+    } else {
       power_off_counter = 0;
     }
 
