@@ -58,12 +58,6 @@ extern "C"
 {
   void app_init(void)
   {
-    //Prints So Know When Device Restarts
-    //printf("---------Startup!\n");
-    //fflush(stdout);
-
-    sl_iostream_rtt_init();
-    
     //Start GPIO CLock, Initiate GPIO modes
     CMU_ClockEnable(cmuClock_GPIO, 1);
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1); //Latches Power On
@@ -74,28 +68,15 @@ extern "C"
     EMU_UnlatchPinRetention();
 
     //Initiations
+    sl_iostream_rtt_init();
     lmp.init();
     initBURTC();
-
-    //update_time(1783368011);
   }
 
   void app_process_action(void)
   {
+    //Allows RTT to Update Time
     check_time_sync_input();
-
-    // Check for keyboard input from the RTT terminal
-    int input_char = getchar(); 
-    if (input_char == 't' || input_char == 'T') {
-      uint32_t manual_unix_time = 0;
-      if (scanf("%lu", (unsigned long *)&manual_unix_time) == 1) {
-        if (manual_unix_time > 0) {
-          update_time(manual_unix_time);
-        }
-      }
-      while (getchar() != '\n' && getchar() != EOF); // Clear buffer
-    }
-
 
     //Prints
     print_time();
