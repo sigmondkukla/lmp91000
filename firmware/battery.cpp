@@ -5,6 +5,7 @@
  *      Author: Matt Whispell
  */
 #include "battery.h"
+#include <cstdio>
 
 float battery_get_voltage()
 {
@@ -16,4 +17,9 @@ float battery_get_voltage()
   IADC_Result_t sample = IADC_pullScanFifoResult(IADC0);
   float bat_voltage = sample.data * 3.3 / 0xFFF * 2.180f; // multiply by 2 because of voltage divider
   return bat_voltage;
+}
+
+void print_voltage()
+{
+  printf("Bat V: %f\n\n", battery_get_voltage());
 }

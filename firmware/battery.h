@@ -7,3 +7,4 @@
 #include "em_iadc.h"
 
 float battery_get_voltage();
+void print_voltage(void);

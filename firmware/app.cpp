@@ -80,7 +80,7 @@ extern "C"
 
     //Prints
     print_time();
-    printf("Bat V: %f\n\n", battery_get_voltage());
+    print_voltage();
 
     //Actual Experiemnt
     notify_experiment_results();
