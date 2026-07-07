@@ -96,7 +96,11 @@ extern "C"
     //  GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     //}
 
-    //if (current_voltage < 3.4f) //Shut down device if battery is low
+    //Fully Shutdown Device if Battery Voltage is too Low
+    float current_voltage = battery_get_voltage();
+    if (current_voltage <= 3.35f) {
+      GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+    }
 
     //EM4 Time
     //GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
