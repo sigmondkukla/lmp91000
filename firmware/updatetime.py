@@ -16,7 +16,7 @@ time.sleep(1)  # Wait for RTT to initialize
 timeStamp = int(time.time())
 jlink.rtt_write(0, (str(timeStamp) + '\n').encode())
 
-jlink.rtt_stop()
-jlink.close()
+#jlink.rtt_stop()
+#jlink.close()
 
 print("Value uploaded to RTT successfully.")

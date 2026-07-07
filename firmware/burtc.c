@@ -25,9 +25,9 @@ void initBURTC(void) {
     initBURTC_em4wake();
   }
   else if (rstCause == EMU_RSTCAUSE_SYSREQ) {
-    //System Reset - not tested (Shouldn't happen but may with bluetooth)
+    //System Reset
     printf("System Reset\n");
-    initBURTC_em4wake();
+    initBURTC_cold(rstCause);
   }
   else if (rstCause == 0x00000042) {
     //Fresh Flash
@@ -58,7 +58,12 @@ void initBURTC_cold(uint32_t rstCause) {
   burtcInit.clkDiv = 32768;
   BURTC_Init(&burtcInit);
 
-  BURTC->CNT = CURRENT_UNIX_TIMESTAMP;
+  BURTC_Stop();
+  //BURTC->CNT = 946684800;
+  //BURTC->CNT = 31536000;
+  //BURTC->CNT = 86400;
+  BURTC->CNT = 1;
+  //BURTC->CNT = 0;
 
   BURTC_IntClear(BURTC_IF_COMP);
   BURTC_IntEnable(BURTC_IEN_COMP);

@@ -77,7 +77,7 @@ extern "C"
     lmp.init();
     initBURTC();
 
-    update_time(1783368011);
+    //update_time(1783368011);
   }
 
   void app_process_action(void)
@@ -117,7 +117,7 @@ extern "C"
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     }
 
-    sl_sleeptimer_delay_millisecond(2000);
+    sl_sleeptimer_delay_millisecond(1000);
 
     //EM4 Time
     //GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
