@@ -81,6 +81,13 @@ void scheduleBURTC_em4(void) {
   BURTC_CompareSet(0, next);
 }
 
+void em4_time(void) {
+  GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
+  sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
+  scheduleBURTC_em4();
+  sl_power_manager_enter_em4();
+}
+
 static int is_leap(int y) {
   return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
 }
