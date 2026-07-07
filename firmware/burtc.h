@@ -16,6 +16,7 @@ void initBURTC_em4wake(void);
 void update_time(uint32_t new_time);
 void scheduleBURTC_em4(void);
 void print_time(void);
+void check_time_sync_input(void);
 
 #ifdef __cplusplus
 }

@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include "em_emu.h"
 #include "em_cmu.h"
+#include "SEGGER_RTT.h"
+#include <stdlib.h>
 
 void initBURTC(void) {
   //Detect Reset Cause
@@ -120,4 +122,33 @@ void print_time(void) {
   uint32_t sec  = remaining % 60UL;
 
   printf("Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n", year, month, day, hour, min, sec);
+}
+
+
+
+void check_time_sync_input(void)
+{
+    static char time_buf[16];
+    static size_t time_buf_len = 0;
+
+    char c;
+    // Non-blocking: reads whatever's available, 0 if nothing waiting
+    while (SEGGER_RTT_Read(0, &c, 1) == 1) {
+        if (c == '\n' || c == '\r') {
+            if (time_buf_len > 0) {
+                time_buf[time_buf_len] = '\0';
+                uint32_t new_time = (uint32_t)strtoul(time_buf, NULL, 10);
+                if (new_time > 0) {
+                    update_time(new_time);
+                    printf("Time synced: %lu\n", (unsigned long)new_time);
+                }
+                time_buf_len = 0; // reset for next entry
+            }
+        } else if (time_buf_len < sizeof(time_buf) - 1) {
+            time_buf[time_buf_len++] = c;
+        } else {
+            // overflow guard: input too long, discard and reset
+            time_buf_len = 0;
+        }
+    }
 }

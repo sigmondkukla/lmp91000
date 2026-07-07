@@ -82,6 +82,21 @@ extern "C"
 
   void app_process_action(void)
   {
+    check_time_sync_input();
+
+    // Check for keyboard input from the RTT terminal
+    int input_char = getchar(); 
+    if (input_char == 't' || input_char == 'T') {
+      uint32_t manual_unix_time = 0;
+      if (scanf("%lu", (unsigned long *)&manual_unix_time) == 1) {
+        if (manual_unix_time > 0) {
+          update_time(manual_unix_time);
+        }
+      }
+      while (getchar() != '\n' && getchar() != EOF); // Clear buffer
+    }
+
+
     //Prints
     print_time();
     printf("Bat V: %f\n\n", battery_get_voltage());
@@ -101,6 +116,8 @@ extern "C"
     if (current_voltage <= 3.35f) {
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
     }
+
+    sl_sleeptimer_delay_millisecond(2000);
 
     //EM4 Time
     //GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
