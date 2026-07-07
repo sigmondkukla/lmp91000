@@ -12,32 +12,31 @@ void initBURTC(void) {
   //Detect Reset Cause
   uint32_t rstCause = EMU->RSTCAUSE;
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
-  //printf("Reset cause: ");
 
-  if (rstCause == EMU_RSTCAUSE_POR) {
-    //Power On Reset
-    printf("Power On\n");
-    initBURTC_cold(rstCause);
-  }
-  else if (rstCause == EMU_RSTCAUSE_EM4) {
-    //EM4 Reset
+  //EM4 Reset
+  if (rstCause == EMU_RSTCAUSE_EM4) {
     printf("EM4 Wakeup\n");
     initBURTC_em4wake();
   }
-  else if (rstCause == EMU_RSTCAUSE_SYSREQ) {
-    //System Reset
-    printf("System Reset\n");
-    initBURTC_cold(rstCause);
-  }
-  else if (rstCause == 0x00000042) {
-    //Fresh Flash
-    printf("Fresh Flash\n");
-    initBURTC_cold(rstCause);
-  }
+  //Other Reset Causes
   else {
-    //Opening the SWO terminal without the --noreset options causes a pin reset which clears the BURTC counter
     printf("Reset cause: 0x%08lX\n", (unsigned long)rstCause);
-    printf("Reconfiguring BURTC...\n");
+
+    if (rstCause & EMU_RSTCAUSE_POR)        { printf("Power On Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_PIN)        { printf("Pin Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_EM4)        { printf("EM4 Wakeup Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_WDOG0)      { printf("Watchdog 0 Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_WDOG1)      { printf("Watchdog 1 Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_LOCKUP)     { printf("M33 Core Lockup Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_SYSREQ)     { printf("Software System Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_DVDDBOD)    { printf("DVDD BOD Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_DVDDLEBOD)  { printf("DVDD LE BOD Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_DECBOD)     { printf("DECOUPLE BOD Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_AVDDBOD)    { printf("AVDD BOD Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_IOVDD0BOD)  { printf("IOVDD0 BOD Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_SETAMPER)   { printf("SE Tamper Event Reset\n"); }
+    if (rstCause & EMU_RSTCAUSE_VREGIN)     { printf("DCDC VREGIN Comparator Reset\n"); }
+
     initBURTC_cold(rstCause);
   }
 }
