@@ -157,3 +157,16 @@ void check_time_sync_input(void)
         }
     }
 }
+
+void power_button(void) {
+  //Check Button State to Completely Turn off Device
+  static uint32_t power_off_counter = 0;
+  if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
+    power_off_counter++;
+    if (power_off_counter >= 10) { // button held for 1 second
+      GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+    }
+  } else {
+    power_off_counter = 0;
+  }
+}

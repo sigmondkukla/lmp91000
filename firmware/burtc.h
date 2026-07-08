@@ -17,6 +17,7 @@ void scheduleBURTC_em4(void);
 void em4_time(void);
 void print_time(void);
 void check_time_sync_input(void);
+void power_button(void);
 
 #ifdef __cplusplus
 }

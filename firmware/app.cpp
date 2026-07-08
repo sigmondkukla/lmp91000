@@ -86,29 +86,19 @@ extern "C"
     notify_experiment_results();
     notify_experiment_status();
 
-    //Check Button State to Completely Turn off Device
-    static uint32_t power_off_counter = 0;
-    if (GPIO_PinInGet(gpioPortC, 1) == 0) { // button pressed
-      power_off_counter++;
-      if (power_off_counter >= 10) { // button held for 1 second
-        GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
-      }
-    } else {
-      power_off_counter = 0;
-    }
+    //Power Management
+    power_button();
 
     //Fully Shutdown Device if Battery Voltage is too Low
     float current_voltage = battery_get_voltage();
     if (current_voltage <= 3.35f) {
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
-    } else {
-      GPIO_PinOutSet(gpioPortC, 0); //Latches Power On
     }
 
     sl_sleeptimer_delay_millisecond(10);
 
     //EM4 Configuration and Entrance
-    em4_time();
+    //em4_time();
   }
 
   /**************************************************************************
