@@ -157,3 +157,8 @@ void check_time_sync_input(void) {
         }
     }
 }
+
+uint32_t get_runtime_seconds(void) {
+  uint64_t ticks = sl_sleeptimer_get_tick_count64();
+  return (uint32_t)(ticks / sl_sleeptimer_get_timer_frequency());
+}

@@ -93,8 +93,10 @@ extern "C"
     //Add Delay for Testing
     sl_sleeptimer_delay_millisecond(10);
 
-    //EM4 Configuration and Entrance
-    //em4_time();
+    //EM4 Configuration and Entrance after Wake Time
+    if (get_runtime_seconds() >= 20) {
+      em4_time();
+    }
   }
 
   /**************************************************************************
