@@ -132,8 +132,7 @@ void print_time(void) {
   printf("Current Date: %04d-%02d-%02d | Time: %02lu:%02lu:%02lu UTC\r\n", year, month, day, hour, min, sec);
 }
 
-void check_time_sync_input(void)
-{
+void check_time_sync_input(void) {
     static char time_buf[16];
     static size_t time_buf_len = 0;
 
