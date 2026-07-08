@@ -1,8 +1,10 @@
 /*
- * battery.h
+ * battery.cpp
  *
  *  Created on: Apr 22, 2026
  *      Author: Matt Whispell
+ *  Functions added: July 8, 2026
+ *      Author: Joseph Mire
  */
 #include "em_iadc.h"
 
