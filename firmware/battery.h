@@ -8,3 +8,4 @@
 
 float battery_get_voltage();
 void print_voltage(void);
+void device_shutdown_if_bat_is_low(void);

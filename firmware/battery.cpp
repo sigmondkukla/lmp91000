@@ -23,3 +23,11 @@ void print_voltage()
 {
   printf("Bat V: %f\n\n", battery_get_voltage());
 }
+
+void device_shutdown_if_bat_is_low(void) {
+  //Fully Shutdown Device if Battery Voltage is too Low
+  float current_voltage = battery_get_voltage();
+  if (current_voltage <= 3.35f) {
+    GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+  }
+}

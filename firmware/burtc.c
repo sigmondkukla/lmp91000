@@ -7,6 +7,7 @@
 #include "em_cmu.h"
 #include "SEGGER_RTT.h"
 #include <stdlib.h>
+#include "battery.h"
 
 void initBURTC(void) {
   //Detect Reset Cause

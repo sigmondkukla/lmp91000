@@ -89,11 +89,13 @@ extern "C"
     //Power Management
     power_button();
 
-    //Fully Shutdown Device if Battery Voltage is too Low
+    /* //Fully Shutdown Device if Battery Voltage is too Low
     float current_voltage = battery_get_voltage();
     if (current_voltage <= 3.35f) {
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
-    }
+    } */
+
+    device_shutdown_if_bat_is_low();
 
     sl_sleeptimer_delay_millisecond(10);
 
