@@ -77,15 +77,11 @@ void initBURTC_em4wake(void) {
   NVIC_EnableIRQ(BURTC_IRQn);
 }
 
-void scheduleBURTC_em4(void) {
-  uint32_t next = BURTC_CounterGet() + BURTC_IRQ_PERIOD;
-  BURTC_CompareSet(0, next);
-}
-
-void em4_time(void) {
+void em4_time(uint32_t sleep_time) {
   GPIO_PinOutClear(gpioPortA, 8); //Turn off LED
   sl_sleeptimer_delay_millisecond(10); //Allows Prints to Work
-  scheduleBURTC_em4();
+  uint32_t next = BURTC_CounterGet() + sleep_time;
+  BURTC_CompareSet(0, next);
   sl_power_manager_enter_em4();
 }
 

@@ -54,6 +54,10 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 //The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
 
+//Defines
+#define AWAKE_TIME 2
+#define SLEEP_TIME 5
+
 extern "C"
 {
   void app_init(void)
@@ -94,8 +98,8 @@ extern "C"
     sl_sleeptimer_delay_millisecond(10);
 
     //EM4 Configuration and Entrance after Wake Time
-    if (get_runtime_seconds() >= 20) {
-      em4_time();
+    if (get_runtime_seconds() >= AWAKE_TIME) {
+      em4_time(SLEEP_TIME);
     }
   }
 
