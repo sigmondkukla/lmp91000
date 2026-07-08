@@ -55,8 +55,8 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 static uint8_t advertising_set_handle = 0xff;
 
 //Defines
-#define AWAKE_TIME 2
-#define SLEEP_TIME 5
+#define AWAKE_TIME 10
+#define SLEEP_TIME 10
 
 extern "C"
 {
@@ -97,7 +97,7 @@ extern "C"
     //Add Delay for Testing
     sl_sleeptimer_delay_millisecond(10);
 
-    //EM4 Configuration and Entrance after Wake Time
+    //EM4 and Wake Configuration
     if (get_runtime_seconds() >= AWAKE_TIME) {
       em4_time(SLEEP_TIME);
     }
