@@ -101,12 +101,14 @@ extern "C"
     float current_voltage = battery_get_voltage();
     if (current_voltage <= 3.35f) {
       GPIO_PinOutClear(gpioPortC, 0); //Releases Power Latch
+    } else {
+      GPIO_PinOutSet(gpioPortC, 0); //Latches Power On
     }
 
     sl_sleeptimer_delay_millisecond(10);
 
     //EM4 Configuration and Entrance
-    //em4_time();
+    em4_time();
   }
 
   /**************************************************************************
