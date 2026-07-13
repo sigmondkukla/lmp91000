@@ -58,6 +58,13 @@
 #define GYRO_SENSE_2000DPS 0x04
 #define GYRO_SENSE_4000DPS 0x0c
 
+#define WAKE_UP_SRC       0x45
+#define FUNCTIONS_ENABLE  0x50
+#define TAP_CFG0          0x56
+#define WAKE_UP_THS       0x5b
+#define WAKE_UP_DUR       0x5c
+#define MD2_CFG           0x5f
+
 // #define BAUDRATE 1000000 // 1 Mhz
 
 class lsm6dsv
@@ -75,6 +82,10 @@ class lsm6dsv
         float read_GyroX(void);
         float read_GyroY(void);
         float read_GyroZ(void);
+
+        // public:
+        void enable_wake_on_motion(uint8_t threshold); // 1 LSB = 7.8125 mg
+        uint8_t clear_wake_source(void);
         
     private:
         // variables

@@ -241,3 +241,15 @@ float lsm6dsv::gyro_sensitivity(){
       break;
    }
 }
+
+void lsm6dsv::enable_wake_on_motion(uint8_t threshold){
+   write_reg(TAP_CFG0, 0x01);                 // LIR=1: latch INT2 until WAKE_UP_SRC read
+   write_reg(WAKE_UP_THS, threshold & 0x3F);  // WK_THS[5:0]
+   write_reg(WAKE_UP_DUR, 0x00);              // wake on first sample over threshold
+   write_reg(MD2_CFG, 0x20);                  // INT2_WU: route wake-up event to INT2
+   write_reg(FUNCTIONS_ENABLE, 0x80);         // INTERRUPTS_ENABLE
+}
+
+uint8_t lsm6dsv::clear_wake_source(void){
+   return read_reg(WAKE_UP_SRC);              // read clears the latch, drops INT2 low
+}

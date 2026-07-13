@@ -55,7 +55,7 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 static uint8_t advertising_set_handle = 0xff;
 
 //Defines
-#define AWAKE_TIME 10
+#define AWAKE_TIME 1
 #define SLEEP_TIME 10
 
 extern "C"
@@ -68,12 +68,20 @@ extern "C"
     GPIO_PinModeSet(gpioPortC, 1, gpioModeInputPull, 1); //Button
     GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); //LED
 
+    // PC7 = INT2 from IMU, EM4WU8. Input with glitch filter (DOUT=1 enables filter).
+    GPIO_PinModeSet(gpioPortC, 7, gpioModeInput, 1);
+    // Enable EM4 wake on EM4WU8, active high
+    GPIO_EM4EnablePinWakeup((1u << 8) << _GPIO_EM4WUEN_EM4WUEN_SHIFT,
+                            (1u << 8) << _GPIO_EM4WUEN_EM4WUEN_SHIFT);
+
     //Unlatch pins retained from EM4
     EMU_UnlatchPinRetention();
 
     //Initiations
     sl_iostream_rtt_init();
     lmp.init();
+    imu.init();
+    imu.enable_wake_on_motion(8);
     initBURTC();
   }
 
@@ -99,6 +107,8 @@ extern "C"
 
     //EM4 and Wake Configuration
     if (get_runtime_seconds() >= AWAKE_TIME) {
+      imu.clear_wake_source();              // drop INT2 if a stale event is latched
+      GPIO_IntClear(_GPIO_IF_EM4WU_MASK);   // clear pending EM4WU flags
       em4_time(SLEEP_TIME);
     }
   }
