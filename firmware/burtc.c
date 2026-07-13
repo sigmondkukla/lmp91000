@@ -158,3 +158,8 @@ uint32_t get_runtime_seconds(void) {
   uint64_t ticks = sl_sleeptimer_get_tick_count64();
   return (uint32_t)(ticks / sl_sleeptimer_get_timer_frequency());
 }
+
+void BURTC_IRQHandler(void) {
+  // Clear the pending interrupt so the CPU doesn't get stuck
+  BURTC_IntClear(BURTC_IF_COMP);
+}

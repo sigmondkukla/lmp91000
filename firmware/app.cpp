@@ -55,7 +55,7 @@ lsm6dsv imu(GYRO_SENSE_1000DPS, ACC_SENSE_2G);
 static uint8_t advertising_set_handle = 0xff;
 
 //Defines
-#define AWAKE_TIME 1
+#define AWAKE_TIME 5
 #define SLEEP_TIME 10
 
 extern "C"
