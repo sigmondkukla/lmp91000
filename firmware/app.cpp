@@ -100,7 +100,7 @@ extern "C"
 
     //Power Management
     power_button();
-    //device_shutdown_if_bat_is_low();
+    device_shutdown_if_bat_is_low();
 
     //Add Delay for Testing
     sl_sleeptimer_delay_millisecond(10);
@@ -208,5 +208,4 @@ extern "C"
       break;
     }
   }
-
 }
