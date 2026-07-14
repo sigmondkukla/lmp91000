@@ -27,6 +27,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  ******************************************************************************/
+#include "em_gpio.h"
 #include "sl_bt_api.h"
 #include "sl_main_init.h"
 #include "app_assert.h"
@@ -34,6 +35,7 @@
 #include "ble_experiment_service.h"
 #include "em_iadc.h"
 #include "battery.h"
+#include "sl_sleeptimer.h"
 
 // EVERYTHING THAT I DID
 // - added logic for choosing correct output voltage function in Experiment.cpp
@@ -113,6 +115,7 @@ extern "C"
     //   notify_experiment_status();
     //   notify_experiment_results();
     // }
+    
     notify_experiment_results();
     notify_experiment_status();
   }

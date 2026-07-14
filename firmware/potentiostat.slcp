@@ -48,6 +48,9 @@ component:
   id: app_os_helper
 - package: simplicity_sdk
   vendor: silabs
+  id: app_ota_dfu
+- package: simplicity_sdk
+  vendor: silabs
   id: bluetooth_feature_connection_role_central
 - package: simplicity_sdk
   vendor: silabs
@@ -132,4 +135,6 @@ ui_hints:
   - path: config/btconf/gatt_configuration.btconf
   - path: readme.md
     focus: true
+post_build:
+- path: potentiostat.slpb
 
