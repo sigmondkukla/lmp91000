@@ -1,0 +1,4 @@
+/Users/zacharythornton/SimplicityStudio/v6_workspace/bootloader-storage-internal-single/cmake_gcc/build/CMakeFiles/slc.dir
+/Users/zacharythornton/SimplicityStudio/v6_workspace/bootloader-storage-internal-single/cmake_gcc/build/CMakeFiles/bootloader-storage-internal-single.dir
+/Users/zacharythornton/SimplicityStudio/v6_workspace/bootloader-storage-internal-single/cmake_gcc/build/CMakeFiles/edit_cache.dir
+/Users/zacharythornton/SimplicityStudio/v6_workspace/bootloader-storage-internal-single/cmake_gcc/build/CMakeFiles/rebuild_cache.dir
