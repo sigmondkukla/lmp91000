@@ -92,8 +92,7 @@ extern "C"
     // sl_sleeptimer_delay_millisecond(1000);
     //imu.init();
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
-    
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);    
   }
 
   // Application Process Action.
