@@ -20,6 +20,7 @@
 #include "em_vdac.h"
 
 #include "sl_sleeptimer.h"
+#include "config/pin_config.h"
 
 lmp91000::~lmp91000()
 {
@@ -98,15 +99,19 @@ void lmp91000::initADC(void)
   initAllConfigs.configs[0].vRef = vref; // [mV] TODO: measure actual voltage and update
   initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
 
-  // Analog bus allocation
+  // Configure the analog input pins used by the ADC front-end.
+  GPIO_PinModeSet(IADC0_POS_PORT, IADC0_POS_PIN, gpioModeInput, 0);
+  GPIO_PinModeSet(BATT_MEAS_PORT, BATT_MEAS_PIN, gpioModeInput, 0);
+
+  // Allocate the ADC analog buses for the configured input pins.
   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00
   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
 
-  // LMP_VOUT on PA00
-  singleInput.posInput = iadcPosInputPortAPin0;
+  // LMP_VOUT on the configured ADC input pin.
+  singleInput.posInput = pos_input;
   singleInput.negInput = iadcNegInputGnd;
 
-  // BATT_MEAS on PD00
+  // BATT_MEAS on PD00.
   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
   scanTable.entries[0].negInput = iadcNegInputGnd;
   scanTable.entries[0].includeInScan = true;
@@ -180,9 +185,9 @@ void lmp91000::initDAC(void)
 void lmp91000::enable(bool enabled)
 {
   if (enabled)
-    GPIO_PinOutClear(menb_port, menb_pin);
-  else 
     GPIO_PinOutSet(menb_port, menb_pin);
+  else 
+    GPIO_PinOutClear(menb_port, menb_pin);
 }
 
 void lmp91000::DAC_write(const uint16_t value)
@@ -470,6 +475,12 @@ uint32_t lmp91000::get_vdac_value(uint32_t mv)
 
 uint32_t lmp91000::sample_adc(void)
 {
+  // Drain any stale single-conversion FIFO entries before starting a new sample.
+  while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) != 0)
+  {
+    (void)IADC_pullSingleFifoResult(IADC0);
+  }
+
   IADC_command(IADC0, iadcCmdStartSingle); // start single queue conversion (LMP_VOUT)
 
   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)
