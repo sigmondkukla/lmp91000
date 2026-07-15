@@ -11,6 +11,7 @@
 #include "lmp91000.h"
 #include "app_log.h"
 #include "experiment_status.h"
+#include "ble_debug.h"
 
 // Abstract Experiment parent class
 
@@ -32,32 +33,34 @@ void Experiment::init(void)
   lmp->set_internal_zero(1); // internal zero 20% (used to have it on 50%)
 
   lmp->set_outputs_to_zero();
-  printf("intialized experiment\n");
-  printf("LOCK: %02x\n", lmp->read(LMP91000_REG_LOCK));
-  printf("REFCN: %02x\n", lmp->read(LMP91000_REG_REFCN));
-  printf("MODECN: %02x\n", lmp->read(LMP91000_REG_MODECN));
-  printf("STATUS: %02x\n", lmp->read(LMP91000_REG_STATUS));
+  ble_printf("LOCK: %02x\n", lmp->read(LMP91000_REG_LOCK));
+  ble_printf("intialized experiment\n");
+  ble_printf("LOCK: %02x\n", lmp->read(LMP91000_REG_LOCK));
+  ble_printf("REFCN: %02x\n", lmp->read(LMP91000_REG_REFCN));
+  ble_printf("MODECN: %02x\n", lmp->read(LMP91000_REG_MODECN));
+  ble_printf("STATUS: %02x\n", lmp->read(LMP91000_REG_STATUS));
   //LMP91000_set_bias_magnitude(0x5); // TODO see if we can delete this
 }
 
 void Experiment::begin(void)
 {
   iteration = 0;
+  ble_printf("[TIMER] Starting periodic timer with timestep=%u ms\n", timestep);
   //printf("[TIMER] Starting periodic timer with timestep=%u ms\n", timestep);
   sl_sleeptimer_start_periodic_timer_ms(&experiment_timer, timestep, timerCallback, this, 0, 0);
 
   if(status_flag_callback) // callback if it exists
     {
         status_flag_callback(STATUS_RUNNING, 1);
-        //printf("status flag set\n");
+        ble_printf("status flag set\n");
     }
-    printf("experiment begun\n");
+    ble_printf("experiment begun\n");
 }
 
 void Experiment::end(void)
 {
   sl_sleeptimer_stop_timer(&experiment_timer);
-  printf("experiment timer stopped - ending experiment...\n");
+  ble_printf("experiment timer stopped - ending experiment...\n");
   lmp->Reset_Previous_Values();
   lmp->set_outputs_to_zero(); // set outputs to zero for safety
   lmp->set_mode(0);
@@ -91,35 +94,15 @@ void Experiment::tickHandler(void)
   bool continue_experiment = get_next_voltage(voltage);
   float current = lmp->get_current();
 
-  static int b = 0;
-  static int current_b = 0;
-
   if (!continue_experiment) {
       end();
+      ble_printf("[TICK] Experiment ended at iteration=%lu\n", iteration);
       //printf("[TICK] Experiment ended at iteration=%lu\n", iteration);
       app_log("Ended\n");
       return;
   }
 
-  // if true use the output voltage function (for CA), if false use the output voltage with static bias function (for CV, DPV, SWV)
-  if (output_voltage) {
-    lmp->output_voltage(voltage);
-  } else {
-    lmp->output_voltage(voltage);
-    // VDAC_ChannelOutputSet(VDAC0, 0, 0xfff);
-    // if (b != current_b){
-    //   lmp->set_bias_magnitude(b);
-    //   current_b = b;
-    //   printf("REFCN: %02x\n", lmp->read(LMP91000_REG_REFCN));
-    // }
-    
-      //lmp->output_voltage_static_bias(voltage, user_max_voltage_mag);
-      //printf("static function, max target voltage: %d\n", user_max_voltage_mag);
-  }
-
-  // lmp->output_voltage(voltage);
-  
-  b = (int)(iteration/100) % 13;
+  lmp->output_voltage(voltage);
 
   DataPoint dp;
   dp.timestamp = iteration * timestep; // [ms]

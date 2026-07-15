@@ -12,6 +12,8 @@
 #include "app.h" // For access to lmp1 / lmp2
 #include "experiment_status.h"
 #include <cstdio>
+#include <stdio.h>
+#include <stdarg.h>
 
 #define TIMESTEP 10 // [ms] let's keep it at 100 Hz for now
 
@@ -70,9 +72,8 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             if (len != sizeof(CVConfig)) return; // check for size mismatch
             const CVConfig* cfg = reinterpret_cast<const CVConfig*>(data); // if all's well convert it
             
-            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->vertex_1, cfg->vertex_2)); // find the largest magnitude voltage for safety checks in output function
             currentExperiment = new CyclicVoltammetry(
-                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->vertex_1, cfg->vertex_2,
                 cfg->scan_rate, cfg->scans,
                 cfg->quiet_time, cfg->scan_delay
@@ -83,9 +84,8 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             if (len != sizeof(SWVConfig)) return;
             const SWVConfig* cfg = reinterpret_cast<const SWVConfig*>(data);
 
-            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->final_e, cfg->init_e + (int32_t)cfg->amplitude)); // find the largest magnitude voltage for safety checks in output function. for SWV the pulse can go above final voltage by amplitude amount so we need to check that too
             currentExperiment = new SquareWaveVoltammetry(
-                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency, cfg->quiet_time
             );
@@ -95,9 +95,8 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
             if (len != sizeof(DPVConfig)) return;
             const DPVConfig* cfg = reinterpret_cast<const DPVConfig*>(data);
 
-            int32_t user_max_voltage_mag = abs(max(cfg->init_e, cfg->final_e, cfg->init_e + (int32_t)cfg->amplitude)); // find the largest magnitude voltage for safety checks in output function
             currentExperiment = new DifferentialPulseVoltammetry(
-                &lmp, TIMESTEP, set_status_flag, USE_STATIC_BIAS_OUTPUT, user_max_voltage_mag,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->final_e, cfg->incr_e,
                 cfg->amplitude, cfg->frequency,
                 cfg->quiet_time, cfg->duty_cycle
@@ -116,7 +115,7 @@ static void create_new_experiment(const uint8_t* data, size_t len) {
 
             // no need for a max voltage calculation for CA
             currentExperiment = new Chronoamperometry(
-                &lmp, TIMESTEP, set_status_flag, USE_DYNAMIC_BIAS_OUTPUT, 0,
+                &lmp, TIMESTEP, set_status_flag,
                 cfg->init_e, cfg->quiet_time,
                 cfg->e_1, cfg->duration_1,
                 cfg->e_2, cfg->duration_2,
@@ -136,12 +135,14 @@ void handle_ble_connection_status(sl_bt_msg_t *evt) {
     //printf("Handling BLE connection status event with ID: %x\n", SL_BT_MSG_ID(evt->header));
     switch (SL_BT_MSG_ID(evt->header)) {
         case sl_bt_evt_connection_opened_id:
+            printf("sl_bt_evt_connection_opened_id\n");
         //printf("sl_bt_evt_connection_opened_id\n");
             active_connection_handle = evt->data.evt_connection_opened.connection;
             sl_bt_gatt_server_set_max_mtu(247, NULL); // request max MTU of 247 bytes. maybe we can go higher in future?
             break;
 
         case sl_bt_evt_connection_closed_id:
+            printf("sl_bt_evt_connection_closed_id\n");
         //printf("sl_bt_evt_connection_closed_id\n");
             active_connection_handle = 0xFF;
             results_notification_enabled = false;
@@ -278,3 +279,5 @@ void notify_experiment_status(void) {
         }
     }
 }
+
+

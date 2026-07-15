@@ -113,7 +113,7 @@ private:
 
   // void DAC_write(const uint16_t value);
 
-  uint32_t sample_adc();
+  int32_t sample_adc();
 
   //  double LMP91000_get_current(uint32_t adc_voltage);
   // uint32_t get_vdac_value(uint32_t mv);

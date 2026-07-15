@@ -105,11 +105,12 @@ void lmp91000::initADC(void)
 
   // Allocate the ADC analog buses for the configured input pins.
   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00
+  GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AODD0_ADC0;     // Port A odd for PA01
   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
 
-  // LMP_VOUT on the configured ADC input pin.
-  singleInput.posInput = pos_input;
-  singleInput.negInput = iadcNegInputGnd;
+  // LMP_VOUT on PA00
+  singleInput.posInput = iadcPosInputPortAPin0;
+  singleInput.negInput = iadcNegInputPortAPin1;  // PA01 - odd mux
 
   // BATT_MEAS on PD00.
   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
@@ -414,66 +415,13 @@ void lmp91000::output_voltage(int32_t voltage)
   this->current_DAC_output_mv = get_current_DAC_output_mv(get_vdac_value(dacVout));
 }
 
-
-void lmp91000::output_voltage_test(void){
-  int settling_time = 50, rate = 200;
-  DAC_write(0xFFF);
-  for (int j = 0; j < 3; j++)
-  {
-    set_bias_sign(0);
-    for (int i = 1; i < 11; i++)
-    {
-      set_bias_magnitude(i);
-      //delay(50);
-      sl_sleeptimer_delay_millisecond(settling_time);
-      printf("%d,", i*-1);
-      sl_sleeptimer_delay_millisecond(1);
-      printf("%f\n", get_current());
-      sl_sleeptimer_delay_millisecond(rate);
-    }
-    for (int i = 10; i >= 0; i--)
-    {
-      set_bias_magnitude(i);
-      //delay(50);
-      sl_sleeptimer_delay_millisecond(settling_time);
-      printf("%d,", i*-1);
-      sl_sleeptimer_delay_millisecond(1);
-      printf("%f\n", get_current());
-      sl_sleeptimer_delay_millisecond(rate);
-    }
-    set_bias_sign(1);
-    for (int i = 1; i < 11; i++)
-    {
-      set_bias_magnitude(i);
-      //delay(50);
-      sl_sleeptimer_delay_millisecond(settling_time);
-      printf("%d,", i*1);
-      sl_sleeptimer_delay_millisecond(1);
-      printf("%f\n", get_current());
-      sl_sleeptimer_delay_millisecond(rate);
-    }
-    for (int i = 10; i >= 0; i--)
-    {
-      set_bias_magnitude(i);
-      //delay(50);
-      sl_sleeptimer_delay_millisecond(settling_time);
-      printf("%d,", i*1);
-      sl_sleeptimer_delay_millisecond(1);
-      printf("%f\n", get_current());
-      sl_sleeptimer_delay_millisecond(rate);
-    }
-  }
-  
-  set_bias_magnitude(0);
-}
-
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
 {
   //printf("DAC output: %lu mV\n", mv);
   return mv * 0xFFF / vref; // 12-bit instead of 16-bit DAC, and vref is in mV so it cancels out factor of 1000
 }
 
-uint32_t lmp91000::sample_adc(void)
+int32_t lmp91000::sample_adc(void)
 {
   // Drain any stale single-conversion FIFO entries before starting a new sample.
   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) != 0)
@@ -489,35 +437,22 @@ uint32_t lmp91000::sample_adc(void)
   }
 
   IADC_Result_t sample = IADC_pullSingleFifoResult(IADC0);
-  uint32_t single_result = sample.data * vref / 0xFFF;
 
-  return single_result;
+  // For differential inputs, the result is a signed two's complement value.
+  // The full-scale range is -Vref to +Vref (i.e., 2 * vref span).
+  // 12-bit result: 0xFFF represents +Vref, 0x800 represents -Vref.
+  int32_t differential_result = ((int32_t)sample.data * 2 * (int32_t)vref) / 0xFFF;
+
+  return differential_result;
 }
-
-// int32_t lmp91000::sample_adc(void)
-// {
-//   IADC_command(IADC0, iadcCmdStartSingle);
-
-//   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)
-//   {
-//     // wait for conversion to complete
-//   }
-
-//   IADC_Result_t sample = IADC_pullSingleFifoResult(IADC0);
-
-//   // For differential mode, range is -Vref to +Vref (full scale = 2 * vref)
-//   int32_t single_result = ((int32_t)sample.data * 2 * vref) / 0xFFF;
-
-//   return single_result;
-// }
-
 
 float lmp91000::get_current(void)
 {
-  uint32_t adc_voltage = sample_adc();
-  float current = (adc_voltage - (vref * TIA_ZERO[current_tia_zero])) / (TIA_GAIN[current_tia_gain]);
-  //  printf("get_current current: %.3f\n", current);
-  return current;
+  int32_t diffential = sample_adc();
+
+  float current_amperes = (diffential) / (TIA_GAIN[current_tia_gain]);
+
+  return current_amperes;
 }
 
 
