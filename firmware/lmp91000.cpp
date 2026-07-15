@@ -20,6 +20,7 @@
 #include "em_vdac.h"
 
 #include "sl_sleeptimer.h"
+#include "config/pin_config.h"
 
 lmp91000::~lmp91000()
 {
@@ -75,6 +76,7 @@ void lmp91000::initI2C(void)
   I2C_Init(I2C0, &i2cInit); // Initialize the I2C
 }
 
+//original 
 void lmp91000::initADC(void)
 {
   uint32_t clk_src_adc_freq = CMU_ClockFreqGet(cmuClock_IADC0); // Get actual frequency of IADC clock source
@@ -97,7 +99,11 @@ void lmp91000::initADC(void)
   initAllConfigs.configs[0].vRef = vref; // [mV] TODO: measure actual voltage and update
   initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
 
-  // Analog bus allocation
+  // Configure the analog input pins used by the ADC front-end.
+  GPIO_PinModeSet(IADC0_POS_PORT, IADC0_POS_PIN, gpioModeInput, 0);
+  GPIO_PinModeSet(BATT_MEAS_PORT, BATT_MEAS_PIN, gpioModeInput, 0);
+
+  // Allocate the ADC analog buses for the configured input pins.
   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00
   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AODD0_ADC0;     // Port A odd for PA01
   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
@@ -106,7 +112,7 @@ void lmp91000::initADC(void)
   singleInput.posInput = iadcPosInputPortAPin0;
   singleInput.negInput = iadcNegInputPortAPin1;  // PA01 - odd mux
 
-  // BATT_MEAS on PD00
+  // BATT_MEAS on PD00.
   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
   scanTable.entries[0].negInput = iadcNegInputGnd;
   scanTable.entries[0].includeInScan = true;
@@ -115,6 +121,48 @@ void lmp91000::initADC(void)
   IADC_initSingle(IADC0, &initSingle, &singleInput);
   IADC_initScan(IADC0, &initScan, &scanTable);
 }
+
+// void lmp91000::initADC(void)
+// {
+//   uint32_t clk_src_adc_freq = CMU_ClockFreqGet(cmuClock_IADC0);
+//   uint32_t clk_adc_freq = 16000000;
+
+//   IADC_Init_t init = IADC_INIT_DEFAULT;
+//   IADC_AllConfigs_t initAllConfigs = IADC_ALLCONFIGS_DEFAULT;
+
+//   // InitSingle for LMP_VOUT
+//   IADC_InitSingle_t initSingle = IADC_INITSINGLE_DEFAULT;
+//   IADC_SingleInput_t singleInput = IADC_SINGLEINPUT_DEFAULT;
+
+//   // InitScan for BATT_MEAS
+//   IADC_InitScan_t initScan = IADC_INITSCAN_DEFAULT;
+//   IADC_ScanTable_t scanTable = IADC_SCANTABLE_DEFAULT;
+
+//   // Clock configuration
+//   init.srcClkPrescale = IADC_calcSrcClkPrescale(IADC0, clk_src_adc_freq, 0);
+//   initAllConfigs.configs[0].reference = iadcCfgReferenceVddx;
+//   initAllConfigs.configs[0].vRef = vref;
+//   initAllConfigs.configs[0].analogGain = iadcCfgAnalogGain0P5x;
+//   initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
+
+//   // Analog bus allocation
+//   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00 (positive input)
+//   GPIO->BBUSALLOC |= GPIO_BBUSALLOC_BODD0_ADC0;     // Port B odd for PB03 (negative input)
+//   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
+
+//   // LMP_VOUT on PA00 (even) differential with PB03 (odd) as negative
+//   singleInput.posInput = iadcPosInputPortAPin0;
+//   singleInput.negInput = iadcNegInputPortBPin3;
+
+//   // BATT_MEAS on PD00 (single-ended)
+//   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
+//   scanTable.entries[0].negInput = iadcNegInputGnd;
+//   scanTable.entries[0].includeInScan = true;
+
+//   IADC_init(IADC0, &init, &initAllConfigs);
+//   IADC_initSingle(IADC0, &initSingle, &singleInput);
+//   IADC_initScan(IADC0, &initScan, &scanTable);
+// }
 
 void lmp91000::initDAC(void)
 {
@@ -138,9 +186,9 @@ void lmp91000::initDAC(void)
 void lmp91000::enable(bool enabled)
 {
   if (enabled)
-    GPIO_PinOutClear(menb_port, menb_pin);
-  else 
     GPIO_PinOutSet(menb_port, menb_pin);
+  else 
+    GPIO_PinOutClear(menb_port, menb_pin);
 }
 
 void lmp91000::DAC_write(const uint16_t value)
@@ -328,7 +376,6 @@ void lmp91000::output_voltage(int32_t voltage)
     set_bias_sign(voltage >= 0); // will write 0 for neg and 1 for pos
     set_bias_magnitude(0);
     //        VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
-    printf("DAC ERRONEOUSLY WRITTEN");
     DAC_write(get_vdac_value(dacVout));
     return;
   }
@@ -376,6 +423,12 @@ uint32_t lmp91000::get_vdac_value(uint32_t mv)
 
 int32_t lmp91000::sample_adc(void)
 {
+  // Drain any stale single-conversion FIFO entries before starting a new sample.
+  while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) != 0)
+  {
+    (void)IADC_pullSingleFifoResult(IADC0);
+  }
+
   IADC_command(IADC0, iadcCmdStartSingle); // start single queue conversion (LMP_VOUT)
 
   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)

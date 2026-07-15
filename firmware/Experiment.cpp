@@ -46,6 +46,7 @@ void Experiment::begin(void)
 {
   iteration = 0;
   ble_printf("[TIMER] Starting periodic timer with timestep=%u ms\n", timestep);
+  //printf("[TIMER] Starting periodic timer with timestep=%u ms\n", timestep);
   sl_sleeptimer_start_periodic_timer_ms(&experiment_timer, timestep, timerCallback, this, 0, 0);
 
   if(status_flag_callback) // callback if it exists
@@ -96,6 +97,7 @@ void Experiment::tickHandler(void)
   if (!continue_experiment) {
       end();
       ble_printf("[TICK] Experiment ended at iteration=%lu\n", iteration);
+      //printf("[TICK] Experiment ended at iteration=%lu\n", iteration);
       app_log("Ended\n");
       return;
   }
