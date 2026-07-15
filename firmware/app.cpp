@@ -37,16 +37,7 @@
 #include "battery.h"
 #include "sl_sleeptimer.h"
 
-// EVERYTHING THAT I DID
-// - added logic for choosing correct output voltage function in Experiment.cpp
-// - added get_current_DAC_output_mv function to lmp91000.h and lmp91000.cpp for reporting the actual voltage being output by the DAC (for debugging and for user information in future iterations)
-// - added logic to lmp91000.cpp output_voltage_static_bias function to prevent unnecessary writes to the DAC and bias registers which was causing issues with stability and reliability. Now it only changes the bias settings when necessary, and it always allows changes to the output voltage, even if the bias settings are the same as before (this is important for CV where the voltage is always changing).
-// - reset previous values and set outputs to zero at the end of each experiment for safety and stability
-// - added more debug prints in the output_voltage_static_bias function to report the internal calculations
-
-// THINGS TO WORK ON
-// - figure out the weird behaviour with CV (always getting same general shape even without electrode)
-// - make the current_DAC_output_mv value that actuall DAC out not the requested DAC out
+#include "ble_debug.h"
 
 lmp91000 lmp(I2C0,
              gpioPortA, 5,
@@ -65,36 +56,14 @@ extern "C"
   // Application Init.
   void app_init(void)
   {
-    /////////////////////////////////////////////////////////////////////////////
-    // Put your additional application init code here!                         //
-    // This is called once during start-up.                                    //
-    /////////////////////////////////////////////////////////////////////////////
-    // GPIO_PinModeSet()
+    // **** THIS LINE OF CODE DISABLE SWO DEBUGGING PLEASE DELETE FOR NEW BOARD DESIGN ***** //
+    GPIO->DBGROUTEPEN = 0; 
+    // **** ONLY USED FOR OTA WORK-AROUND FOR DIFFENTIAL INPUT ***** //
+
     lmp.init();
 
-    // lmp.set_mode(0x03); // three lead amperometric cell
-    // lmp.set_fet_enable(false); // disable FET
-    // lmp.set_gain(3); // initially had it at 3 for 7k ohms
-    // lmp.set_rload(0); // 10 ohms
-    // lmp.set_ref_source(1); // external
-    // lmp.set_internal_zero(1); // internal zero 20% (used to have it on 50%)
-    // lmp.set_bias_magnitude(3);
-
-    // printf("LOCK: %02x\n", lmp.read(LMP91000_REG_LOCK));
-    // printf("REFCN: %02x\n", lmp.read(LMP91000_REG_REFCN));
-    // printf("MODECN: %02x\n", lmp.read(LMP91000_REG_MODECN));
-    // printf("STATUS: %02x\n", lmp.read(LMP91000_REG_STATUS));
-
-    // lmp.set_outputs_to_zero();
-
-    // sl_sleeptimer_delay_millisecond(100);
-    // lmp.output_voltage_test();
-    // lmp.set_bias_magnitude(0);
-    // lmp.DAC_write(0xfff);
-    // sl_sleeptimer_delay_millisecond(1000);
-    //imu.init();
     GPIO_PinModeSet(gpioPortC, 0, gpioModePushPull, 1);
-    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1);
+    GPIO_PinModeSet(gpioPortA, 8, gpioModePushPull, 1); // led
     
   }
 
@@ -104,6 +73,7 @@ extern "C"
     
     //printf("battery voltage: %f\n", battery_get_voltage());
     //printf("app process required: %d\n", app_is_process_required());
+
     // if (app_is_process_required())
     // {
     //   /////////////////////////////////////////////////////////////////////////////
@@ -119,7 +89,6 @@ extern "C"
     notify_experiment_results();
     notify_experiment_status();
   }
-
   /**************************************************************************
    * Bluetooth stack event handler.
    * This overrides the default weak implementation.
@@ -129,6 +98,8 @@ extern "C"
   void sl_bt_on_event(sl_bt_msg_t *evt)
   {
     sl_status_t sc;
+
+    ble_debug_handle_event(evt);
 
     switch (SL_BT_MSG_ID(evt->header))
     {
@@ -164,6 +135,10 @@ extern "C"
     case sl_bt_evt_connection_opened_id:
       printf("BLE Connection opened\n");
       handle_ble_connection_status(evt);
+      
+      // keep advertising for debug connections (delete for production)
+      sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
+                                         sl_bt_legacy_advertiser_connectable);
       break;
 
     // -------------------------------

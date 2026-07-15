@@ -8,7 +8,7 @@
 
     <!--Device Name-->
     <characteristic const="false" id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
-      <value length="0" type="utf-8" variable_length="false">Potentiostat</value>
+      <value length="0" type="utf-8" variable_length="false">OTA_potentiostat</value>
       <properties>
         <read authenticated="false" bonded="false" encrypted="false"/>
         <write authenticated="false" bonded="false" encrypted="false"/>
@@ -99,6 +99,18 @@
     <!--Experiment Results-->
     <characteristic const="false" id="experiment_results" name="Experiment Results" sourceId="" uuid="38e0383b-8228-42b9-b53b-d973ad9defdf">
       <value length="244" type="hex" variable_length="true">00</value>
+      <properties>
+        <notify authenticated="false" bonded="false" encrypted="false"/>
+      </properties>
+    </characteristic>
+  </service>
+
+  <!--Debug Service-->
+  <service advertise="false" name="Debug Service" requirement="mandatory" sourceId="" type="primary" uuid="3985a7a1-46e4-44cc-9e94-2b44f91f07dc">
+
+    <!--Log Output-->
+    <characteristic const="false" id="debug_log_char" name="Log Output" sourceId="" uuid="4b872075-b5ae-4af5-a7a1-6cefcae1cb5f">
+      <value length="220" type="hex" variable_length="true">00</value>
       <properties>
         <notify authenticated="false" bonded="false" encrypted="false"/>
       </properties>

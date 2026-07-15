@@ -17,8 +17,6 @@ public:
         lmp91000* lmp,
         uint32_t timestep,
         SetStatusFlagCallback status_flag_callback,
-        bool output_voltage,
-        int32_t user_max_voltage_mag,
 
         int32_t init_e,
         int32_t final_e,
@@ -29,7 +27,7 @@ public:
         uint32_t quiet_time,
         float duty_cycle):
 
-        Experiment(lmp, timestep, status_flag_callback, output_voltage, user_max_voltage_mag),
+        Experiment(lmp, timestep, status_flag_callback),
 
         init_e(init_e),
         final_e(final_e),

@@ -85,7 +85,7 @@
 // <i> backwards compatibility with legacy SDKs, and the support will be discontinued in future SDK releases.
 // <i> The recommended method is to store CTUNE value in the MFG_CTUNE token.
 // <i> Default: 0
-#define SL_BT_CONFIG_SET_CTUNE_FROM_NVM3  (0)
+#define SL_BT_CONFIG_SET_CTUNE_FROM_NVM3  0
 // </e>
 
 // </h> End Bluetooth Stack Configuration
