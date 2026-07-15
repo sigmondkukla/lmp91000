@@ -376,6 +376,195 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:Crystal"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "Y"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Crystal"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Two pin crystal"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "quartz ceramic resonator oscillator"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "Crystal*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "Crystal_0_1"
+				(polyline
+					(pts
+						(xy -2.54 0) (xy -1.905 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.905 -1.27) (xy -1.905 1.27)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.143 2.54)
+					(end 1.143 -2.54)
+					(stroke
+						(width 0.3048)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.905 -1.27) (xy 1.905 1.27)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 0) (xy 1.905 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Crystal_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 1.27)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 1.27)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:Crystal_GND24"
 			(pin_names
 				(offset 1.016)
@@ -3206,6 +3395,18 @@
 		(uuid "73709b5d-1b17-4d37-8d9f-730a4b8beaa8")
 	)
 	(rectangle
+		(start 215.9 12.7)
+		(end 248.92 50.8)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid "7c95d667-a516-4398-991c-22309ffd16b8")
+	)
+	(rectangle
 		(start 114.3 12.7)
 		(end 165.1 50.8)
 		(stroke
@@ -3287,6 +3488,17 @@
 			)
 		)
 		(uuid "417f52de-cb5a-44a3-9ca1-4cf7f6333df5")
+	)
+	(text "32.768KHz for\ninternal RTC"
+		(exclude_from_sim no)
+		(at 239.522 18.796 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.1588)
+			)
+		)
+		(uuid "4ac3b200-b638-420e-a4f0-a11240fc6719")
 	)
 	(text "simplified according to AN933.2 with no DCDC"
 		(exclude_from_sim no)
@@ -3372,6 +3584,18 @@
 			)
 		)
 		(uuid "9a58fc62-8d9c-4e3f-b106-9bf4fb9a2667")
+	)
+	(text "LF Crystal"
+		(exclude_from_sim no)
+		(at 221.488 14.732 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+		)
+		(uuid "9f4f3bd4-1d45-4bb2-9942-3b10cf783274")
 	)
 	(text "swapped 0201 for 0402\nlikely doesn't match tuning\nand tolerances are out"
 		(exclude_from_sim no)
@@ -3514,16 +3738,6 @@
 			(type default)
 		)
 		(uuid "06e1fbcf-3505-4ae7-b6e4-180267264627")
-	)
-	(wire
-		(pts
-			(xy 254 114.3) (xy 266.7 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "088b3b2c-3789-49d7-8dd5-07e696e301f1")
 	)
 	(wire
 		(pts
@@ -3727,6 +3941,26 @@
 	)
 	(wire
 		(pts
+			(xy 254 114.3) (xy 266.7 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2e48a068-2c86-4012-ab70-9f1aab026712")
+	)
+	(wire
+		(pts
+			(xy 229.87 31.75) (xy 227.33 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2fea154a-e338-4926-af72-3d8873c16d67")
+	)
+	(wire
+		(pts
 			(xy 106.68 109.22) (xy 104.14 109.22)
 		)
 		(stroke
@@ -3754,6 +3988,26 @@
 			(type default)
 		)
 		(uuid "37cba75b-dd2b-45ad-8c5f-8e48983b1dd8")
+	)
+	(wire
+		(pts
+			(xy 190.5 129.54) (xy 203.2 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "398bf2e9-da85-4dad-aa74-444612c2f543")
+	)
+	(wire
+		(pts
+			(xy 254 111.76) (xy 266.7 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39994865-441b-4faa-92a9-7c063c7b227f")
 	)
 	(wire
 		(pts
@@ -4017,6 +4271,16 @@
 	)
 	(wire
 		(pts
+			(xy 240.03 31.75) (xy 240.03 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8931f8fc-3de1-42a7-ae4e-be2fcce798fb")
+	)
+	(wire
+		(pts
 			(xy 238.76 86.36) (xy 238.76 88.9)
 		)
 		(stroke
@@ -4024,6 +4288,16 @@
 			(type default)
 		)
 		(uuid "925f3f1e-766b-454c-8b1a-61a7e9db86cf")
+	)
+	(wire
+		(pts
+			(xy 227.33 31.75) (xy 227.33 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "94a0438b-84ce-4a2f-acea-6a4caaf3c323")
 	)
 	(wire
 		(pts
@@ -4427,6 +4701,16 @@
 	)
 	(wire
 		(pts
+			(xy 237.49 31.75) (xy 240.03 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fa45c05a-a398-412f-b7ba-904ac78c39bd")
+	)
+	(wire
+		(pts
 			(xy 266.7 127) (xy 254 127)
 		)
 		(stroke
@@ -4596,6 +4880,36 @@
 			(justify right bottom)
 		)
 		(uuid "40c1af83-c660-4741-9571-8f5afbe18f57")
+	)
+	(label "LFXTAL_I"
+		(at 190.5 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "42e1f1c9-ff87-4b8a-bbfb-bdf68ce657f1")
+	)
+	(label "BATT_MEAS"
+		(at 266.7 114.3 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "46c09ec7-0d4a-446d-b473-a1123b05472d")
+	)
+	(label "LED"
+		(at 266.7 111.76 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "476126c7-75ff-4247-abbf-d4acddda0331")
 	)
 	(label "LMP_MENB"
 		(at 50.8 104.14 180)
@@ -4848,16 +5162,6 @@
 		)
 		(uuid "b423b1e5-cf1e-4896-81bc-7e9b3100859a")
 	)
-	(label "LED"
-		(at 266.7 114.3 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "b97b3d81-0793-4bd0-bad1-35f9d0ec1dea")
-	)
 	(label "IMU_SDO"
 		(at 50.8 142.24 180)
 		(effects
@@ -4867,6 +5171,16 @@
 			(justify right bottom)
 		)
 		(uuid "c05f898d-c2e1-445e-bbad-64c00e85aa93")
+	)
+	(label "LFXTAL_O"
+		(at 240.03 40.64 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c8bff34f-aa0e-430d-8a72-4b62e821db28")
 	)
 	(label "LMP_SCL"
 		(at 50.8 106.68 180)
@@ -4888,7 +5202,7 @@
 		)
 		(uuid "cd597675-4baf-4182-b9e9-b666d8c823b0")
 	)
-	(label "BATT_MEAS"
+	(label "LFXTAL_O"
 		(at 190.5 127 0)
 		(effects
 			(font
@@ -4896,7 +5210,17 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "d3c92bc9-ec6c-4671-9986-4af3fcdebf48")
+		(uuid "d19f619a-2a89-4711-b4a1-b99644226340")
+	)
+	(label "LFXTAL_I"
+		(at 227.33 39.37 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "de3e4bd1-5d7a-43f2-aebf-eeacc9d001e1")
 	)
 	(label "SWDIO"
 		(at 266.7 99.06 180)
@@ -5147,6 +5471,17 @@
 			)
 		)
 		(property "HQ_MPN" "CC0402FRNPO9BN180"
+			(at 114.3 106.68 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 114.3 106.68 90)
 			(hide yes)
 			(show_name no)
@@ -5636,6 +5971,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 139.7 106.68 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "267f751c-f9ab-4060-9330-1461482b3509")
 		)
@@ -5719,6 +6065,17 @@
 			)
 		)
 		(property "HQ_MPN" ""
+			(at 50.8 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 50.8 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -5816,6 +6173,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 238.76 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "5f371394-490a-4749-aa2c-499b28dc13ad")
 		)
@@ -5899,6 +6267,17 @@
 			)
 		)
 		(property "HQ_MPN" ""
+			(at 137.16 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 137.16 31.75 0)
 			(hide yes)
 			(show_name no)
@@ -6004,6 +6383,17 @@
 			)
 		)
 		(property "HQ_MPN" ""
+			(at 63.5 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 63.5 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -6179,6 +6569,97 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:Crystal")
+		(at 233.68 31.75 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "87f4a225-a826-473c-ba79-75be116e5180")
+		(property "Reference" "Y2"
+			(at 233.68 24.13 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "KDS-DST1610A"
+			(at 233.68 26.67 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "crystal_smd_dst1610a:KDS-DST1610A"
+			(at 233.68 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 233.68 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Two pin crystal"
+			(at 233.68 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
+			(at 233.68 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c54358e7-dd7a-4950-818f-2730a9f8a0a0")
+		)
+		(pin "2"
+			(uuid "a3d49791-116b-4063-8520-d7e5b7b1d7b2")
+		)
+		(instances
+			(project "lmp91000-pcb"
+				(path "/c5dc7468-0018-4ea3-a638-bcb85b791a5d"
+					(reference "Y2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R_Small_US")
 		(at 190.5 31.75 0)
 		(unit 1)
@@ -6246,6 +6727,17 @@
 			)
 		)
 		(property "HQ_MPN" "RTT02301JTH"
+			(at 190.5 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 190.5 31.75 0)
 			(hide yes)
 			(show_name no)
@@ -6349,6 +6841,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 38.1 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "6ae059e2-dfda-43c4-8973-cefaf6defb23")
 		)
@@ -6442,6 +6945,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 196.85 146.05 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "deb38a25-2917-4246-993e-139907285959")
 		)
@@ -6525,6 +7039,17 @@
 			)
 		)
 		(property "HQ_MPN" "CL05X105KP5NNNC"
+			(at 25.4 31.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 25.4 31.75 0)
 			(hide yes)
 			(show_name no)
@@ -6784,6 +7309,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 228.6 91.44 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "20"
 			(uuid "536ce9b8-8044-4e93-a5c2-264f60eb1199")
 		)
@@ -6994,6 +7530,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 38.1 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(instances
 			(project "lmp91000-pcb"
 				(path "/c5dc7468-0018-4ea3-a638-bcb85b791a5d"
@@ -7068,6 +7615,17 @@
 			)
 		)
 		(property "HQ_MPN" "7D039000I01"
+			(at 82.55 31.75 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 82.55 31.75 90)
 			(hide yes)
 			(show_name no)
@@ -7265,6 +7823,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 184.15 25.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "dd02564d-fa35-4c63-84e5-889671782c6c")
 		)
@@ -7347,6 +7916,17 @@
 			)
 		)
 		(property "HQ_MPN" "2450AT18D0100001E"
+			(at 95.25 105.41 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 95.25 105.41 0)
 			(hide yes)
 			(show_name no)
@@ -7448,6 +8028,17 @@
 			)
 		)
 		(property "HQ_MPN" ""
+			(at 25.4 177.8 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 25.4 177.8 0)
 			(hide yes)
 			(show_name no)
@@ -7612,6 +8203,17 @@
 			)
 		)
 		(property "HQ_MPN" "GJM1555C1H1R4WB01D"
+			(at 127 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 127 111.76 0)
 			(hide yes)
 			(show_name no)

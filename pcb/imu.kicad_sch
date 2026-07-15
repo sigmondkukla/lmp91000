@@ -1233,6 +1233,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 50.8 25.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "8"
 			(uuid "f155f50a-dd76-4940-a362-75221d703372")
 		)
@@ -1432,6 +1443,17 @@
 			)
 		)
 		(property "HQ_MPN" "CL05X105KP5NNNC"
+			(at 101.6 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 101.6 38.1 0)
 			(hide yes)
 			(show_name no)
@@ -1759,6 +1781,17 @@
 			)
 		)
 		(property "HQ_MPN" "CL05X105KP5NNNC"
+			(at 114.3 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 114.3 38.1 0)
 			(hide yes)
 			(show_name no)

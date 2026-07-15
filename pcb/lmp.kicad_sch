@@ -2503,6 +2503,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 101.6 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "05dba46c-46eb-4b06-8fad-8c1817d1b33d")
 		)
@@ -2596,6 +2607,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 57.15 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "fdeca92a-c1c2-40c5-b92b-ddbf05395fa5")
 		)
@@ -2679,6 +2701,17 @@
 			)
 		)
 		(property "HQ_MPN" "TB0011-350-03GR"
+			(at 157.48 40.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 157.48 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -2786,6 +2819,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 157.48 27.94 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "3"
 			(uuid "a42cb2d8-00d6-43a7-8853-9fdf40dd6c38")
 		)
@@ -2872,6 +2916,17 @@
 			)
 		)
 		(property "HQ_MPN" "0528070310"
+			(at 157.48 53.34 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 157.48 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -3056,6 +3111,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 76.2 38.1 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "15"
 			(uuid "141c21a5-0712-4927-9110-f4facf620810")
 		)
@@ -3188,6 +3254,17 @@
 				)
 			)
 		)
+		(property "LCSC Part #" ""
+			(at 107.95 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "2"
 			(uuid "9b4af983-f1d9-4d86-86c1-a9af4ccc1399")
 		)
@@ -3271,6 +3348,17 @@
 			)
 		)
 		(property "HQ_MPN" "WR04X5101FTL"
+			(at 50.8 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC Part #" ""
 			(at 50.8 35.56 0)
 			(hide yes)
 			(show_name no)
