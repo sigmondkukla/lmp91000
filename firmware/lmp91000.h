@@ -35,12 +35,13 @@
 #define LMP91000_MIN_VREF 1500 // min input from DAC
 
 // LMP91000 TIA
-const double TIA_GAIN[] = {2750, 3500, 7000, 14000, 35000, 120000, 350000};                                // ohms
+// must have 0 in TIA_GAIN for correct indexing
+const double TIA_GAIN[] = {0, 2750, 3500, 7000, 14000, 35000, 120000, 350000};                             // ohms
 const double TIA_BIAS[] = {0, 0.01, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24}; // bias percentages, 0 means 100
 const uint8_t NUM_TIA_BIAS = 14;                                                                           // length of above array (for iterating)
 const double TIA_ZERO[] = {0.2, 0.5, 0.67};
 
-const float v_tolerance = 0.008; // for voltage generation
+const float v_tolerance = 0.05; // for voltage generation
 // const float v_tolerance = 0.01;
 
 class lmp91000
@@ -70,6 +71,7 @@ public:
                             pos_input(pos_input),
 
                             vref(vref) {};
+  
 
   void init();
 
@@ -83,9 +85,19 @@ public:
   void set_mode(uint8_t mode);
   void set_bias_sign(uint8_t sign);
   void set_bias_magnitude(uint8_t magnitude);
-  void output_voltage(int32_t voltage);
+  void output_voltage(int32_t voltage); // use this function for static experiments such as CA
+  void output_voltage_static_bias(int32_t voltage, int32_t user_max_target_voltage); // use this function during constinuously changing experiments such as CV
+  void output_voltage_test(void);
   void set_outputs_to_zero(void);
+  void Reset_Previous_Values(void);
   float get_current();
+  int32_t get_current_DAC_output_mv(uint32_t);
+  uint8_t read(uint8_t reg);
+
+  void unlock(bool lock = false);
+
+  void DAC_write(const uint16_t value);
+  uint32_t get_vdac_value(uint32_t mv);
 
 private:
   // init
@@ -96,16 +108,15 @@ private:
 
   void enable(bool enabled);
   void write(uint8_t reg, uint8_t value);
-  uint8_t read(uint8_t reg);
 
-  void unlock(bool lock = false);
+  // void unlock(bool lock = false);
 
-  void DAC_write(const uint16_t value);
+  // void DAC_write(const uint16_t value);
 
   uint32_t sample_adc();
 
   //  double LMP91000_get_current(uint32_t adc_voltage);
-  uint32_t get_vdac_value(uint32_t mv);
+  // uint32_t get_vdac_value(uint32_t mv);
   //  int8_t convert_mv_to_c(uint32_t mv);
 
   I2C_TypeDef *i2c;
@@ -124,6 +135,19 @@ private:
   IADC_PosInput_t pos_input;
 
   uint32_t vref; // [mV]
+
+  // prevent i2c flooding by only changing bias settings when necessary
+  // must be signed integers
+  int16_t previousVoltage = 9999;
+  int8_t previousBias = 127;
+
+  // this one might be the only one we need?
+  int8_t previous_bias_sign = -1;
+
+  // for dynamic Vref calcuation
+  int32_t current_DAC_output_mv = 0;
+
+  int32_t previous_dacVout;
 };
 
 #endif /* LMP91000_LMP91000_H_ */

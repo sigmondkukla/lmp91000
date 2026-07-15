@@ -20,6 +20,7 @@
 #include "em_vdac.h"
 
 #include "sl_sleeptimer.h"
+#include "config/pin_config.h"
 
 lmp91000::~lmp91000()
 {
@@ -34,7 +35,10 @@ void lmp91000::init()
   initADC();
   initDAC();
 
+  printf("rebooted\n");
+
   unlock();
+
 }
 
 void lmp91000::initCMU(void)
@@ -72,6 +76,7 @@ void lmp91000::initI2C(void)
   I2C_Init(I2C0, &i2cInit); // Initialize the I2C
 }
 
+//original 
 void lmp91000::initADC(void)
 {
   uint32_t clk_src_adc_freq = CMU_ClockFreqGet(cmuClock_IADC0); // Get actual frequency of IADC clock source
@@ -94,15 +99,19 @@ void lmp91000::initADC(void)
   initAllConfigs.configs[0].vRef = vref; // [mV] TODO: measure actual voltage and update
   initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
 
-  // Analog bus allocation
+  // Configure the analog input pins used by the ADC front-end.
+  GPIO_PinModeSet(IADC0_POS_PORT, IADC0_POS_PIN, gpioModeInput, 0);
+  GPIO_PinModeSet(BATT_MEAS_PORT, BATT_MEAS_PIN, gpioModeInput, 0);
+
+  // Allocate the ADC analog buses for the configured input pins.
   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00
   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
 
-  // LMP_VOUT on PA00
-  singleInput.posInput = iadcPosInputPortAPin0;
+  // LMP_VOUT on the configured ADC input pin.
+  singleInput.posInput = pos_input;
   singleInput.negInput = iadcNegInputGnd;
 
-  // BATT_MEAS on PD00
+  // BATT_MEAS on PD00.
   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
   scanTable.entries[0].negInput = iadcNegInputGnd;
   scanTable.entries[0].includeInScan = true;
@@ -112,16 +121,61 @@ void lmp91000::initADC(void)
   IADC_initScan(IADC0, &initScan, &scanTable);
 }
 
+// void lmp91000::initADC(void)
+// {
+//   uint32_t clk_src_adc_freq = CMU_ClockFreqGet(cmuClock_IADC0);
+//   uint32_t clk_adc_freq = 16000000;
+
+//   IADC_Init_t init = IADC_INIT_DEFAULT;
+//   IADC_AllConfigs_t initAllConfigs = IADC_ALLCONFIGS_DEFAULT;
+
+//   // InitSingle for LMP_VOUT
+//   IADC_InitSingle_t initSingle = IADC_INITSINGLE_DEFAULT;
+//   IADC_SingleInput_t singleInput = IADC_SINGLEINPUT_DEFAULT;
+
+//   // InitScan for BATT_MEAS
+//   IADC_InitScan_t initScan = IADC_INITSCAN_DEFAULT;
+//   IADC_ScanTable_t scanTable = IADC_SCANTABLE_DEFAULT;
+
+//   // Clock configuration
+//   init.srcClkPrescale = IADC_calcSrcClkPrescale(IADC0, clk_src_adc_freq, 0);
+//   initAllConfigs.configs[0].reference = iadcCfgReferenceVddx;
+//   initAllConfigs.configs[0].vRef = vref;
+//   initAllConfigs.configs[0].analogGain = iadcCfgAnalogGain0P5x;
+//   initAllConfigs.configs[0].adcClkPrescale = IADC_calcAdcClkPrescale(IADC0, clk_adc_freq, 0, iadcCfgModeNormal, init.srcClkPrescale);
+
+//   // Analog bus allocation
+//   GPIO->ABUSALLOC |= GPIO_ABUSALLOC_AEVEN0_ADC0;    // Port A even for PA00 (positive input)
+//   GPIO->BBUSALLOC |= GPIO_BBUSALLOC_BODD0_ADC0;     // Port B odd for PB03 (negative input)
+//   GPIO->CDBUSALLOC |= GPIO_CDBUSALLOC_CDEVEN0_ADC0; // Port CD even for PD00
+
+//   // LMP_VOUT on PA00 (even) differential with PB03 (odd) as negative
+//   singleInput.posInput = iadcPosInputPortAPin0;
+//   singleInput.negInput = iadcNegInputPortBPin3;
+
+//   // BATT_MEAS on PD00 (single-ended)
+//   scanTable.entries[0].posInput = iadcPosInputPortDPin0;
+//   scanTable.entries[0].negInput = iadcNegInputGnd;
+//   scanTable.entries[0].includeInScan = true;
+
+//   IADC_init(IADC0, &init, &initAllConfigs);
+//   IADC_initSingle(IADC0, &initSingle, &singleInput);
+//   IADC_initScan(IADC0, &initScan, &scanTable);
+// }
+
 void lmp91000::initDAC(void)
 {
+  GPIO_PinModeSet(gpioPortB, 0, gpioModeDisabled, 0);
   VDAC_Init_TypeDef init = VDAC_INIT_DEFAULT;
   VDAC_InitChannel_TypeDef initChannel = VDAC_INITCHANNEL_DEFAULT;
 
   init.prescaler = VDAC_PrescaleCalc(VDAC0, 1000000); // get prescaler for 1 MHz VDAC clock
   init.reference = vdacRefAvdd;
+  initChannel.powerMode        = vdacPowerModeHighPower;
+  initChannel.mainOutEnable    = true;
 
   VDAC_Init(VDAC0, &init);
-  VDAC_InitChannel(VDAC0, &initChannel, 0); // Using channel 0 (PA00 I think)
+  VDAC_InitChannel(VDAC0, &initChannel, 0); // Using channel 0
 
   VDAC_Enable(VDAC0, 0, true);
 
@@ -131,58 +185,58 @@ void lmp91000::initDAC(void)
 void lmp91000::enable(bool enabled)
 {
   if (enabled)
-    GPIO_PinOutClear(menb_port, menb_pin);
-  else 
     GPIO_PinOutSet(menb_port, menb_pin);
+  else 
+    GPIO_PinOutClear(menb_port, menb_pin);
 }
 
 void lmp91000::DAC_write(const uint16_t value)
 {
   VDAC_ChannelOutputSet(VDAC0, 0, value); // write to channel 0 DATA register the value to output
-  //  printf("DAC write %u\n", value);
 }
 
 void lmp91000::write(uint8_t reg, uint8_t value)
 {
-  printf("LMP91000_write to reg 0x%x value 0x%x\n", reg, value);
-  I2C_TransferSeq_TypeDef i2cTransfer;
+  // 1. ALWAYS zero-initialize stack structures to wipe out garbage data
+  I2C_TransferSeq_TypeDef i2cTransfer = {0}; 
   I2C_TransferReturn_TypeDef result;
   uint8_t i2c_write_data[2];
 
-  i2cTransfer.addr = LMP91000_I2C_ADDR; // not bit shifted because done already
-  i2cTransfer.flags = I2C_FLAG_WRITE_WRITE;
-
   i2c_write_data[0] = reg;
   i2c_write_data[1] = value;
+
+  i2cTransfer.addr = LMP91000_I2C_ADDR;
+  
+  // 2. Changed to I2C_FLAG_WRITE because this is a single, continuous 2-byte write
+  i2cTransfer.flags = I2C_FLAG_WRITE; 
+
   i2cTransfer.buf[0].data = i2c_write_data;
   i2cTransfer.buf[0].len = 2;
 
-  // enable this lmp
+  // Enable the LMP91000 chip select/enable pin
   enable(true);
 
   result = I2C_TransferInit(I2C0, &i2cTransfer);
   while (result == i2cTransferInProgress)
   {
-    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
-  // return result;
 
+  // Disable the chip select pin
   enable(false);
 }
 
 uint8_t lmp91000::read(uint8_t reg)
 {
-  // Transfer structure
-  I2C_TransferSeq_TypeDef i2cTransfer;
+  // FIX: Zero-initialize the structure to wipe out stack garbage
+  I2C_TransferSeq_TypeDef i2cTransfer = {0};
   I2C_TransferReturn_TypeDef result;
 
-  // I2C Buffers
-  uint8_t i2c_rxBuffer[10]; // maybe it can be smaller
+  uint8_t i2c_rxBuffer[1]; // Reduced size since we only read 1 byte
 
   // Initialize I2C transfer
   i2cTransfer.addr = LMP91000_I2C_ADDR;
-  i2cTransfer.flags = I2C_FLAG_WRITE_READ; // must write target address before reading
+  i2cTransfer.flags = I2C_FLAG_WRITE_READ; 
   i2cTransfer.buf[0].data = &reg;
   i2cTransfer.buf[0].len = 1;
   i2cTransfer.buf[1].data = i2c_rxBuffer;
@@ -192,16 +246,13 @@ uint8_t lmp91000::read(uint8_t reg)
 
   result = I2C_TransferInit(I2C0, &i2cTransfer);
 
-  // Read data
   while (result == i2cTransferInProgress)
   {
-    //printf("transfer in progress...\n");
     result = I2C_Transfer(I2C0);
   }
-
-  return i2c_rxBuffer[0];
-
+  
   enable(false);
+  return i2c_rxBuffer[0];
 }
 
 void lmp91000::set_fet_enable(bool enabled)
@@ -224,6 +275,7 @@ void lmp91000::set_gain(uint8_t gain)
   tiacn |= (gain << 2); // set gain bits 4:2 with new gain
   write(LMP91000_REG_TIACN, tiacn);
   current_tia_gain = gain;
+  printf("set gain to %f\n", TIA_GAIN[gain]);
 }
 
 void lmp91000::set_rload(uint8_t load)
@@ -256,6 +308,7 @@ void lmp91000::set_internal_zero(uint8_t internal_zero)
   refcn |= (internal_zero << 5); // sets internal zero on 5 and 6
   write(LMP91000_REG_REFCN, refcn);
   current_tia_zero = internal_zero;
+  printf("set internal zero to %f\n", TIA_ZERO[internal_zero]);
 }
 
 // mode:
@@ -352,21 +405,82 @@ void lmp91000::output_voltage(int32_t voltage)
     setV = dacVout * TIA_BIAS[bias_setting];
   }
 
-  //    printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
+  // printf("Selected bias %d * DAC vout: %lu = Actual: %ld\n", bias_setting, dacVout, setV);
 
   set_bias_sign(original_voltage >= 0); // will write 0 for neg and 1 for pos
   set_bias_magnitude(bias_setting);
   //    VDAC_ChannelOutputSet(vdac, vdac_channel, get_vdac_value(dacVout));
   DAC_write(get_vdac_value(dacVout));
+  this->current_DAC_output_mv = get_current_DAC_output_mv(get_vdac_value(dacVout));
+}
+
+
+void lmp91000::output_voltage_test(void){
+  int settling_time = 50, rate = 200;
+  DAC_write(0xFFF);
+  for (int j = 0; j < 3; j++)
+  {
+    set_bias_sign(0);
+    for (int i = 1; i < 11; i++)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*-1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    for (int i = 10; i >= 0; i--)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*-1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    set_bias_sign(1);
+    for (int i = 1; i < 11; i++)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+    for (int i = 10; i >= 0; i--)
+    {
+      set_bias_magnitude(i);
+      //delay(50);
+      sl_sleeptimer_delay_millisecond(settling_time);
+      printf("%d,", i*1);
+      sl_sleeptimer_delay_millisecond(1);
+      printf("%f\n", get_current());
+      sl_sleeptimer_delay_millisecond(rate);
+    }
+  }
+  
+  set_bias_magnitude(0);
 }
 
 uint32_t lmp91000::get_vdac_value(uint32_t mv)
 {
+  //printf("DAC output: %lu mV\n", mv);
   return mv * 0xFFF / vref; // 12-bit instead of 16-bit DAC, and vref is in mV so it cancels out factor of 1000
 }
 
 uint32_t lmp91000::sample_adc(void)
 {
+  // Drain any stale single-conversion FIFO entries before starting a new sample.
+  while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) != 0)
+  {
+    (void)IADC_pullSingleFifoResult(IADC0);
+  }
+
   IADC_command(IADC0, iadcCmdStartSingle); // start single queue conversion (LMP_VOUT)
 
   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)
@@ -380,6 +494,24 @@ uint32_t lmp91000::sample_adc(void)
   return single_result;
 }
 
+// int32_t lmp91000::sample_adc(void)
+// {
+//   IADC_command(IADC0, iadcCmdStartSingle);
+
+//   while ((IADC_getStatus(IADC0) & IADC_STATUS_SINGLEFIFODV) == 0)
+//   {
+//     // wait for conversion to complete
+//   }
+
+//   IADC_Result_t sample = IADC_pullSingleFifoResult(IADC0);
+
+//   // For differential mode, range is -Vref to +Vref (full scale = 2 * vref)
+//   int32_t single_result = ((int32_t)sample.data * 2 * vref) / 0xFFF;
+
+//   return single_result;
+// }
+
+
 float lmp91000::get_current(void)
 {
   uint32_t adc_voltage = sample_adc();
@@ -388,9 +520,20 @@ float lmp91000::get_current(void)
   return current;
 }
 
+
 void lmp91000::set_outputs_to_zero(void)
 {
   set_bias_magnitude(0); // return bias to 100% of vref
   set_bias_sign(1);      // positive bias sign
   DAC_write(0);
+}
+
+void lmp91000::Reset_Previous_Values(void) {
+  previousVoltage = 9999;
+  previousBias = 127;
+  previous_bias_sign = -1;
+}
+
+int32_t lmp91000::get_current_DAC_output_mv(uint32_t value) {
+  return (int32_t) (vref * (value / (1 << 12) ));
 }

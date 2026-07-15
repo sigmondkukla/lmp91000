@@ -16,6 +16,10 @@
 #ifndef EXPERIMENT_EXPERIMENT_H_
 #define EXPERIMENT_EXPERIMENT_H_
 
+// macros for choosing correct output voltage function
+#define USE_DYNAMIC_BIAS_OUTPUT true // for CA
+#define USE_STATIC_BIAS_OUTPUT false // for CV, DPV, SWV
+
 struct DataPoint {
   uint32_t timestamp; // [ms] 4 bytes
   int32_t voltage; // [mV] 4 bytes
@@ -27,7 +31,7 @@ typedef void (*SetStatusFlagCallback)(uint8_t, uint8_t);
 class Experiment {
 public:
 
-  Experiment(lmp91000* lmp, uint32_t timestep, SetStatusFlagCallback status_flag_callback): lmp(lmp), timestep(timestep), status_flag_callback(status_flag_callback) {};
+  Experiment(lmp91000* lmp, uint32_t timestep, SetStatusFlagCallback status_flag_callback, bool output_voltage, int32_t user_max_voltage_mag): lmp(lmp), timestep(timestep), status_flag_callback(status_flag_callback), output_voltage(output_voltage), user_max_voltage_mag(user_max_voltage_mag) {};
   virtual ~Experiment();
 
   void init(void);
@@ -51,6 +55,10 @@ protected:
   sl_sleeptimer_timer_handle_t experiment_timer;
 
   SetStatusFlagCallback status_flag_callback = nullptr;
+
+  // added logic by zach for choosing correct output voltage funttion
+  bool output_voltage = false;
+  int32_t user_max_voltage_mag;
 };
 
 #endif /* EXPERIMENT_EXPERIMENT_H_ */
