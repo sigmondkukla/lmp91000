@@ -10,6 +10,9 @@
 #include "battery.h"
 
 void initBURTC(void) {
+  //Enable BURAM
+  CMU_ClockEnable(cmuClock_BURAM, true);
+  
   //Detect Reset Cause
   uint32_t rstCause = EMU->RSTCAUSE;
   EMU->CMD = EMU_CMD_RSTCAUSECLR;
@@ -22,6 +25,7 @@ void initBURTC(void) {
   //Other Reset Causes
   else {
     printf("Reset cause: 0x%08lX\n", (unsigned long)rstCause);
+    BURAM->RET[0].REG = 0;
 
     if (rstCause & EMU_RSTCAUSE_POR)        { printf("Power On Reset\n"); }
     if (rstCause & EMU_RSTCAUSE_PIN)        { printf("Pin Reset\n"); }
@@ -40,6 +44,10 @@ void initBURTC(void) {
 
     initBURTC_cold(rstCause);
   }
+
+  //Number of Resets
+  BURAM->RET[0].REG ++;
+  printf("Number of Resets: %ld \r\n", BURAM->RET[0].REG);
 }
 
 void update_time(uint32_t new_time) {

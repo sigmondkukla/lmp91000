@@ -17,7 +17,7 @@
 #include "sl_spidrv_instances.h"
 
 void lsm6dsv::init(void){
-   printf("Initializing LSM6DSV...\n");
+   //printf("Initializing LSM6DSV...\n");
    spi_init();
    
    // Reset
@@ -25,7 +25,7 @@ void lsm6dsv::init(void){
    sl_sleeptimer_delay_millisecond(50);
 
    uint8_t out = read_reg(0x1e);
-   printf("%d\r\n", out);
+   //printf("%d\r\n", out);
 
    // Enable BDU and Address Auto-Increment
    // 0x44 = 0b01000100 (BDU=1, IF_INC=1)
